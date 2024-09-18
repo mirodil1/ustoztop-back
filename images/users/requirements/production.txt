@@ -1,0 +1,6 @@
+# PRECAUTION: avoid production dependencies that aren't in development
+
+-r base.txt
+
+uvicorn==0.30.1 # https://www.uvicorn.org
+psycopg[c]==3.1.9  # https://github.com/psycopg/psycopg

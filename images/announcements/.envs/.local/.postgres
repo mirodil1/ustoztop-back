@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=announcements_postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=announcements
+POSTGRES_USER=YInJdbjQMIKTKmuzPhUOWxqyWZNujgmG
+POSTGRES_PASSWORD=LvQmULwo3kWCuIHSwyBLg6wOZS0Z5OIz7qdl1Nn8Co5M68WAKEhyE5UR3LeUfTby

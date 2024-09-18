@@ -1,0 +1,23 @@
+Pillow==10.2.0  # https://github.com/python-pillow/Pillow
+argon2-cffi==23.1.0  # https://github.com/hynek/argon2_cffi
+
+# Django
+# ------------------------------------------------------------------------------
+django==4.2.10  # pyup: < 5.0  # https://www.djangoproject.com/
+django-environ==0.11.2  # https://github.com/joke2k/django-environ
+django-model-utils==4.4.0  # https://github.com/jazzband/django-model-utils
+django-crispy-forms==2.1  # https://github.com/django-crispy-forms/django-crispy-forms
+crispy-bootstrap5==2023.10  # https://github.com/django-crispy-forms/crispy-bootstrap5
+django-redis==5.4.0  # https://github.com/jazzband/django-redis
+django-imagekit==5.0.0 # https://github.com/matthewwithanm/django-imagekit
+django-taggit==5.0.1 # https://github.com/jazzband/django-taggit
+django-autocomplete-light==3.9.7 # https://github.com/yourlabs/django-autocomplete-light
+django-ckeditor-5==0.2.11 # https://pypi.org/project/django-ckeditor-5/
+django-mptt==0.16.0 # https://github.com/django-mptt/django-mptt/
+
+# Django translation
+django-parler==2.3 # https://github.com/edoburu/django-parler
+
+# Django admin
+django-jazzmin==2.6.0 # https://github.com/farridav/django-jazzmin
+django-admin-sortable2==2.1.10 # https://github.com/jrief/django-admin-sortable2
