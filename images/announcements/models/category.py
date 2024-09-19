@@ -1,14 +1,8 @@
-from sqlalchemy import BigInteger
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
+from sqlalchemy import BigInteger, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from announcements.models.core import TimeStampedModel
-from announcements.db.postgres import Base
+from db.postgres import Base
+from models.core import TimeStampedModel
 
 
 class Category(TimeStampedModel):
@@ -26,8 +20,8 @@ class Category(TimeStampedModel):
     parent = relationship("Category", remote_side=[id], backref="children")
     translations = relationship("CategoryTranslation", back_populates="category")
 
-    project = relationship("Project", back_populates="category")
-    blog = relationship("Blog", back_populates="category")
+    # project = relationship("Project", back_populates="category")
+    # blog = relationship("Blog", back_populates="category")
 
 
 class CategoryTranslation(Base):

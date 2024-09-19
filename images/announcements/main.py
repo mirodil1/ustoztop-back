@@ -1,5 +1,4 @@
 # ruff: noqa: INP001
-import os
 import logging
 
 import uvicorn as uvicorn
@@ -8,11 +7,8 @@ from fastapi.responses import ORJSONResponse
 
 from core import config
 from core.logger import LOGGING
-from src.api.v1 import announcements
-
-from db.postgres import Base
-from db.postgres import engine
-
+from db.postgres import Base, engine
+from src.api.v1 import categories
 
 app = FastAPI(
     title=config.PROJECT_NAME,
@@ -24,7 +20,7 @@ app = FastAPI(
 Base.metadata.create_all(bind=engine)
 
 
-app.include_router(announcements.router, prefix='/v1/announcements', tags=['announcement'])
+app.include_router(categories.router, prefix="/v1/categories")
 
 if __name__ == "__main__":
     uvicorn.run(
@@ -35,4 +31,3 @@ if __name__ == "__main__":
         log_level=logging.DEBUG,
         reload=True
     )   
-# models.Base.metadata.create_all(bind=engine)

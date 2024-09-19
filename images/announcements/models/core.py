@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime
 from sqlalchemy.sql import func
 
-from announcements.db.postgres import Base
+from db.postgres import Base
 
 
 class TimeStampedModel(Base):

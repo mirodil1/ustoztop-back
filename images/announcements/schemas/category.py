@@ -1,5 +1,43 @@
-from .mixins import TranslatedBaseModel
+import orjson
+from pydantic import BaseModel
+
+from schemas.mixins import TranslatedBaseModel
 
 
-class CategoryScheme(TranslatedBaseModel):
-    pass
+class CategoryTranslationSchema(BaseModel):
+    name: str
+    slug: str
+    language_code: str
+
+    class Config:
+        from_attributes = True
+        json_loads = orjson.loads
+        json_dumps = orjson.dumps
+
+
+class CategorySchema(TranslatedBaseModel):
+    id: int
+    order: int
+    icon: str
+    translations: list[CategoryTranslationSchema]
+    children: list["CategoryTranslationSchema"]
+
+    class Config:
+        from_attributes = True
+        json_loads = orjson.loads
+        json_dumps = orjson.dumps
+
+
+class CategoryOutputSchema(BaseModel):
+    id: int
+    name: str
+    slug: str
+    language_code: str
+    order: int
+    icon: str
+    children: list["CategoryTranslationSchema"]
+
+    class Config:
+        from_attributes = True
+        json_loads = orjson.loads
+        json_dumps = orjson.dumps
