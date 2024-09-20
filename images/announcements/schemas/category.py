@@ -35,7 +35,7 @@ class CategoryOutputSchema(BaseModel):
     language_code: str
     order: int
     icon: str
-    children: list["CategoryTranslationSchema"]
+    children: list["CategoryTranslationSchema"] = []
 
     class Config:
         from_attributes = True

@@ -18,7 +18,7 @@ class TranslatedBaseModel(BaseModel):
                 # Handle translations
                 translations = obj.get(field_name, [])
                 translation = next(
-                    (t for t in translations if t["language_code"] == language or "uz"),
+                    (t for t in translations if t["language_code"] == language),
                     None,
                 )
                 if translation:

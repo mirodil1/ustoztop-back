@@ -1,12 +1,9 @@
-from fastapi import APIRouter, Depends, Request
-from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session, joinedload
+from fastapi import APIRouter, Depends, Header, Request
 from starlette import status
 from starlette.responses import RedirectResponse
 
-from db.postgres import get_db
-from models.category import Category
-from schemas.category import CategoryOutputSchema, CategorySchema
+from core.config import LANGUAGES
+from services.category import CategoryService, get_category_service
 
 router = APIRouter(
     tags=["categories"],
@@ -15,18 +12,12 @@ router = APIRouter(
 
 
 @router.get("/")
-async def get_categories(db: Session = Depends(get_db)):
-    data = (
-        db.query(Category)
-        .options(
-            joinedload(Category.translations),
-            joinedload(Category.parent),
-        )
-        .filter(Category.parent_id.is_(None))
-    )
-
-    res = [
-        CategorySchema.model_validate(category).model_dump(language="uz")
-        for category in data
-    ]
-    return res
+async def get_categories(
+    category_service: CategoryService = Depends(get_category_service),
+    X_language: str = Header(...)
+):
+    if X_language not in LANGUAGES["available"]:
+        X_language = LANGUAGES["default"]
+        
+    categories = await category_service.get_categories(X_language)
+    return categories
