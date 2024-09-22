@@ -21,7 +21,6 @@ class CategoryService:
                 )
                 .filter(Category.parent_id.is_(None))
         )
-
         translated_categories = [
             CategorySchema.model_validate(category).model_dump(language=language)
             for category in categories

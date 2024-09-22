@@ -20,6 +20,8 @@ class Category(TimeStampedModel):
     parent = relationship("Category", remote_side=[id], backref="children")
     translations = relationship("CategoryTranslation", back_populates="category")
 
+    announcement = relationship("Announcement", back_populates="category")
+
 
 class CategoryTranslation(Base):
     __tablename__ = "category_translation"

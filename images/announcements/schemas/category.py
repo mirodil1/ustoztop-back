@@ -20,7 +20,7 @@ class CategorySchema(TranslatedBaseModel):
     order: int
     icon: str
     translations: list[CategoryTranslationSchema]
-    children: list["CategoryTranslationSchema"]
+    children: list["CategorySchema"]
 
     class Config:
         from_attributes = True

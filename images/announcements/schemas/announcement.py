@@ -1,34 +1,35 @@
+import enum
 from datetime import date
 from decimal import Decimal
-from enum import Enum
 from typing import Optional
 
 import orjson
 from pydantic import BaseModel
+from sqlalchemy import Enum
 
-# from sqlalchemy import Enum
-
-
-class LessonTypeEnum(str, Enum):
-    GROUP = "group"
-    INDIVIDUAL = "individual"
+from schemas.category import CategorySchema
 
 
-class LessonPlaceEnum(str, Enum):
-    ONLINE = "online"
-    IN_PERSON = "in_person"
+class LessonTypeEnum(enum.Enum):
+    group = "group"
+    individual = "individual"
 
 
-class LessonLanguageEnum(str, Enum):
-    UZ = "uz"
-    RU = "ru"
-    EN = "en"
+class LessonPlaceEnum(enum.Enum):
+    online = "online"
+    in_person = "in_person"
 
 
-class LessonAudienceEnum(str, Enum):
-    CHILDREN = "children"
-    ADULTS = "adults"
-    ALL = "all"
+class LessonLanguageEnum(enum.Enum):
+    uz = "uz"
+    ru = "ru"
+    en = "en"
+
+
+class LessonAudienceEnum(enum.Enum):
+    children = "children"
+    adults = "adults"
+    all = "all"
 
 
 class AnnouncementSchema(BaseModel):
@@ -56,3 +57,23 @@ class AnnouncementSchema(BaseModel):
         orm_mode = True
         json_loads = orjson.loads
         json_dumps = orjson.dumps
+
+
+class AnnouncementOutputSchema(BaseModel):
+    id: Optional[int]
+    name: str
+    slug: str  
+    user_id: int
+    phone_number: str
+    price: Decimal
+    lessons_in_week: int
+    lesson_duration_hours: int
+    lesson_type: LessonTypeEnum
+    lesson_place: LessonPlaceEnum
+    lesson_language: LessonLanguageEnum
+    lesson_audience: LessonAudienceEnum
+    description: str
+    is_promoted: bool = False
+    promotion_started: Optional[date]
+    promotion_expired: Optional[date]
+    category: CategorySchema

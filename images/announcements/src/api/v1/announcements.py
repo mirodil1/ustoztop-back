@@ -1,35 +1,44 @@
-from typing import Annotated
 from datetime import datetime
+from typing import Annotated, List
 
+from fastapi import APIRouter, Depends, HTTPException, Path
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, HTTPException, Path
 from starlette import status
 
+from schemas.announcement import AnnouncementOutputSchema
+from services.announcement import AnnouncementService, get_announcement_service
 
-router = APIRouter()
-
-
-class Announcement(BaseModel):
-    id: str
-    title: str
-    # description: str
-    # slug: str
-    # price: float
-    # lesson_duration_hours: int
-    # lesson_in_week: int
-    # lesson_place: str
-    # lesson_type: str
-    # lesson_language: str
-    # lesson_audience: str
-    # is_active: bool
-    # is_confirmed: bool
-    # is_promoted: bool
-    # published: datetime
-    # created_at: datetime
-    # updated_at: datetime
+router = APIRouter(
+    tags=["announcements"],
+    responses={404: {"description": "Not found"}},
+)
 
 
-@router.get("/", status_code=status.HTTP_200_OK)
-async def get_all():
-    return Announcement(id="1", title="title")
+@router.get("/", response_model=List[AnnouncementOutputSchema])
+async def announcements_list(
+    announcement_service: AnnouncementService = Depends(get_announcement_service),
+):        
+    announcements_list = await announcement_service.get_announcements()
+    filtered_list = [
+        AnnouncementOutputSchema(
+            id=announcement.id,
+            name=announcement.name,
+            slug=announcement.slug, 
+            user_id=announcement.user_id,
+            phone_number=announcement.phone_number,
+            price=announcement.price,
+            lessons_in_week=announcement.lessons_in_week,
+            lesson_duration_hours= announcement.lesson_duration_hours,
+            lesson_type= announcement.lesson_type,
+            lesson_place= announcement.lesson_place,
+            lesson_language=announcement.lesson_language,
+            lesson_audience=announcement.lesson_audience,
+            description=announcement.description,
+            is_promoted=announcement.is_promoted,
+            promotion_started=announcement.promotion_started,
+            promotion_expired=announcement.promotion_expired,
+            category= announcement.category
+        ) for announcement in announcements_list
+    ]
+    return filtered_list

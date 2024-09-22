@@ -8,7 +8,7 @@ from fastapi.responses import ORJSONResponse
 from core import config
 from core.logger import LOGGING
 from db.postgres import Base, engine
-from src.api.v1 import categories
+from src.api.v1 import announcements, categories
 
 app = FastAPI(
     title=config.PROJECT_NAME,
@@ -21,6 +21,7 @@ Base.metadata.create_all(bind=engine)
 
 
 app.include_router(categories.router, prefix="/v1/categories")
+app.include_router(announcements.router, prefix="/v1/announcements")
 
 if __name__ == "__main__":
     uvicorn.run(
