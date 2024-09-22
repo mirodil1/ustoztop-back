@@ -1,5 +1,6 @@
 Pillow==10.2.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==23.1.0  # https://github.com/hynek/argon2_cffi
+Unidecode==1.3.7 # https://pypi.org/project/Unidecode/
 
 # Django
 # ------------------------------------------------------------------------------

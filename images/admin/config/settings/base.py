@@ -27,7 +27,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "Asia/Tashkent"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = "en"
+LANGUAGE_CODE = "uz"
 # https://docs.djangoproject.com/en/dev/ref/settings/#languages
 # from django.utils.translation import gettext_lazy as _
 LANGUAGES = [
@@ -48,7 +48,7 @@ PARLER_LANGUAGES = {
         },
     ),
     "default": {
-        "fallbacks": ["ru"],  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        "fallbacks": ["uz"],  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
         "hide_untranslated": True,  # the default; let .active_translations() return fallbacks too.
     },
 }
@@ -99,6 +99,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "apps.users",
     "apps.announcements",
+    "apps.core",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -263,7 +264,7 @@ JAZZMIN_SETTINGS = {
     "icons": {
 
     },
-    # "custom_css": "css/project.css",
+    "custom_css": "css/project.css",
     # "language_chooser": {
     #     "languages": [
     #         {"code": "uz", "name": _("Ўзбекча"), "name_native": "Oʻzbekcha"},
