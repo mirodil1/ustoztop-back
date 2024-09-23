@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Optional
 
 from fastapi import Depends
 from sqlalchemy.orm import Session, joinedload
@@ -27,6 +28,12 @@ class CategoryService:
         ]
         return translated_categories
 
+    async def get_category_by_id(
+            self, category_id: int, language: str
+    ) -> Optional[CategorySchema]:
+        category = self.db.query(Category).filter(Category.id==category_id).scalar()
+        if category:
+            return CategorySchema.model_validate(category).model_dump(language=language)
 
 @lru_cache
 def get_category_service(db: Session = Depends(get_db)) -> CategoryService:

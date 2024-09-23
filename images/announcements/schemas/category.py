@@ -32,12 +32,6 @@ class CategoryOutputSchema(BaseModel):
     id: int
     name: str
     slug: str
-    language_code: str
     order: int
     icon: str
-    children: list["CategoryTranslationSchema"] = []
-
-    class Config:
-        from_attributes = True
-        json_loads = orjson.loads
-        json_dumps = orjson.dumps
+    children: list["CategoryOutputSchema"] = []
