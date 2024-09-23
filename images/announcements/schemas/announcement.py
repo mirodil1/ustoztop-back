@@ -64,6 +64,7 @@ class AnnouncementOutputSchema(BaseModel):
     name: str
     slug: str  
     user_id: int
+    category_id: int
     phone_number: str
     price: Decimal
     lessons_in_week: int
@@ -76,4 +77,3 @@ class AnnouncementOutputSchema(BaseModel):
     is_promoted: bool = False
     promotion_started: Optional[date]
     promotion_expired: Optional[date]
-    category: CategorySchema

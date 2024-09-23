@@ -15,7 +15,6 @@ class AnnouncementService:
 
     async def get_announcements(self):
         announcements = await self._get_default_announcements()
-        # schema = AnnouncementSchema(announcements)
         return announcements
 
     async def get_announcement_by_id(self, announcement_id: int):
@@ -30,15 +29,11 @@ class AnnouncementService:
     async def _get_default_announcements(self):
         announcements = (
             self.db.query(Announcement)
-                .options(
-                    joinedload(Announcement.category),
-                )
                 .filter(
                     Announcement.is_active==True,
                     Announcement.is_confirmed_by_admin==True
                 ).all()
         )
-        print(announcements)
         return announcements
 
 

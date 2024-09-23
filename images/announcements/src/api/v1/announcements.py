@@ -18,14 +18,16 @@ router = APIRouter(
 @router.get("/", response_model=List[AnnouncementOutputSchema])
 async def announcements_list(
     announcement_service: AnnouncementService = Depends(get_announcement_service),
-):        
+) -> List[AnnouncementOutputSchema]:        
     announcements_list = await announcement_service.get_announcements()
+
     filtered_list = [
         AnnouncementOutputSchema(
             id=announcement.id,
             name=announcement.name,
             slug=announcement.slug, 
             user_id=announcement.user_id,
+            category_id= announcement.category_id,
             phone_number=announcement.phone_number,
             price=announcement.price,
             lessons_in_week=announcement.lessons_in_week,
@@ -38,7 +40,6 @@ async def announcements_list(
             is_promoted=announcement.is_promoted,
             promotion_started=announcement.promotion_started,
             promotion_expired=announcement.promotion_expired,
-            category= announcement.category
         ) for announcement in announcements_list
     ]
     return filtered_list
