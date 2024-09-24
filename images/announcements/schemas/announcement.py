@@ -5,9 +5,6 @@ from typing import Optional
 
 import orjson
 from pydantic import BaseModel
-from sqlalchemy import Enum
-
-from schemas.category import CategorySchema
 
 
 class LessonTypeEnum(enum.Enum):
