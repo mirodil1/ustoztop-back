@@ -3,6 +3,8 @@ version: '3'
 volumes:
   ustoz_local_announcements_postgres: {}
   ustoz_local_announcements_postgres_backups: {}
+  ustoz_local_users_postgres: {}
+  ustoz_local_users_postgres_backups: {}
 
 services:
   admin:
@@ -38,6 +40,24 @@ services:
     ports:
       - '8080:8080'
     command: /start
+  
+  users_api:
+    build:
+      context: .
+      dockerfile: ./images/users/compose/local/api/Dockerfile
+    image: ustoz_local_users_api
+    container_name: ustoz_local_users_api
+    depends_on:
+      - users_postgres
+      - announcements_postgres
+    volumes:
+      - ./images/users:/app:z
+    env_file:
+      - ./images/users/.envs/.local/.api
+      - ./images/users/.envs/.local/.postgres
+    ports:
+      - '5000:5000'
+    command: /start
 
   announcements_postgres:
     build:
@@ -51,14 +71,14 @@ services:
     env_file:
       - ./images/announcements/.envs/.local/.postgres
 
-  # announcements_data:
-  #   build:
-  #     context: .
-  #     dockerfile: ./compose/production/announcements_data/Dockerfile
-  #   image: ustoz_production_announc_postgres
-  #   container_name: ustoz_local_announc_postgres
-  #   volumes:
-  #     - ustoz_local_announc_data:/var/lib/postgresql/data
-  #     - ustoz_local_announc_data_backups:/backups
-  #   env_file:
-  #     - ./.envs/.local/.announcements_data
+  users_postgres:
+    build:
+      context: .
+      dockerfile: ./images/users/compose/production/postgres/Dockerfile
+    image: ustoz_production_users_postgres
+    container_name: ustoz_local_users_postgres
+    volumes:
+      - ustoz_local_users_postgres:/var/lib/postgresql/data
+      - ustoz_local_users_postgres_backups:/backups
+    env_file:
+      - ./images/users/.envs/.local/.postgres
