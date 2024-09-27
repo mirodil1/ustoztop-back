@@ -1,7 +1,18 @@
-from sqlalchemy import (BigInteger, Boolean, Column, Date, Enum, ForeignKey,
-                        Integer, Numeric, String, DateTime, Array)
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import (
+    Array,
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+)
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import backref, relationship
 
 from models.core import TimeStampedModel
 
@@ -19,6 +30,8 @@ class User(TimeStampedModel):
     facebook_link = Column(nullable=True)
     telegram_link = Column(nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
+
+    tutor = relationship("Tutor", uselist=False, back_populates="user")
 
     logins = relationship(
         "LoginRecord",
