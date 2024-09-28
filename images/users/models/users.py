@@ -1,5 +1,4 @@
 from sqlalchemy import (
-    Array,
     BigInteger,
     Boolean,
     Column,
@@ -30,8 +29,10 @@ class User(TimeStampedModel):
     facebook_link = Column(nullable=True)
     telegram_link = Column(nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
+    
 
     tutor = relationship("Tutor", uselist=False, back_populates="user")
+    learning_center = relationship("LearningCenter", uselist=False, back_populates="user")
 
     logins = relationship(
         "LoginRecord",
@@ -46,7 +47,7 @@ class Role(TimeStampedModel):
     id = Column(Integer, primary_key=True, unique=True)
     name = Column(String(80), unique=True)
     description = Column(String(255), nullable=True)
-    permissions = Column(ARRAY(String, dimensions=1), default=[])
+    permissions = Column(ARRAY(String, dimensions=1), default=[], nullable=True)
 
     # @classmethod
     # def get(cls, name):
@@ -64,6 +65,7 @@ class RolesUsers(TimeStampedModel):
 
 class LoginRecord(TimeStampedModel):
     __tablename__ = "login_entries"
+
     id = Column(BigInteger, primary_key=True, unique=True)
     user_id = Column("user_id", ForeignKey("users.id"))
     user_agent = Column(String)
