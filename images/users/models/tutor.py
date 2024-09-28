@@ -21,7 +21,8 @@ class Tutor(TimeStampedModel):
     id = Column(BigInteger, primary_key=True)
     first_name = Column(String(length=64), nullable=False)
     last_name = Column(String(length=64), nullable=False)
-
+    gender = Column(String(length=6), nullable=False)
+    
     user_id = Column(BigInteger, ForeignKey("users.id"))
     user = relationship("User", back_populates="tutor", single_parent=True)
 
