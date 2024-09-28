@@ -12,3 +12,8 @@ class LanguageLevel(enum.Enum):
     intermediate = "intermediate"
     expert = "expert"
     fluent = "fluent"
+
+
+class Gender(enum.Enum):
+    man = "man"
+    woman = "woman"
