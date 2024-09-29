@@ -1,0 +1,10 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_ENGINE=postgresql
+POSTGRES_HOST=users_postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=users
+POSTGRES_USER=MInjdbjQMIKTKmuzzabBWxqyWZNujgmL
+POSTGRES_PASSWORD=PvQmUL1o3kWCuI2SwyBLg6wVZS0Z5OIz7qOl1Nn8Co5M68WAKEhyE5UR3LeUfTby
+
+# PvQmUL1o3kWCuI2SwyBLg6wVZS0Z5OIz7qOl1Nn8Co5M68WAKEhyE5UR3LeUfTby
