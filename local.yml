@@ -15,6 +15,7 @@ services:
     container_name: ustoz_local_admin
     depends_on:
       - announcements_postgres
+      - users_postgres
     volumes:
       - ./images/admin:/app:z
     env_file:
@@ -32,6 +33,7 @@ services:
     container_name: ustoz_local_announcement_api
     depends_on:
       - announcements_postgres
+      - users_postgres
     volumes:
       - ./images/announcements:/app:z
     env_file:
