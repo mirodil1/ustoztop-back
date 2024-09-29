@@ -35,9 +35,9 @@ class Branch(Base):
     __tablename__ = "branch"
 
     id = Column(BigInteger, primary_key=True)
-    name = Column(String(length=255, nullable=False))
+    name = Column(String(length=255), nullable=False)
 
-    learning_center_id = Column(BigInteger, ForeignKey("learning_canter.id"))
+    learning_center_id = Column(BigInteger, ForeignKey("learning_center.id"))
     learning_center = relationship("LearningCenter", back_populates="branch")
 
 
@@ -50,7 +50,7 @@ class WorkingSchedule(Base):
     closing_time = Column(Time, nullable=True)
     is_closed = Column(Boolean, default=False)
 
-    learning_center_id = Column(BigInteger, ForeignKey("learning_canter.id"))
+    learning_center_id = Column(BigInteger, ForeignKey("learning_center.id"))
     learning_center = relationship("LearningCenter", back_populates="working_schedule")
 
     __table_args__ = (UniqueConstraint(
