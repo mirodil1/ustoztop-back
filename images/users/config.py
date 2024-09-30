@@ -1,5 +1,12 @@
 import os, random, string
-# from pydantic import BaseSettings
+from datetime import timedelta
+
+
+jwt_access_token_expires_days = int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES_MINUTES')) if \
+    os.environ.get('JWT_ACCESS_TOKEN_EXPIRES_MINUTES') else 31
+
+jwt_refresh_token_expires_days = int(os.environ.get('JWT_REFRESH_TOKEN_EXPIRES_DAYS')) if \
+    os.environ.get('JWT_REFRESH_TOKEN_EXPIRES_DAYS') else 60
 
 
 class Config:
@@ -14,6 +21,14 @@ class Config:
     if not SECRET_KEY:
         SECRET_KEY = ''.join(random.choice(string.ascii_lowercase) for i in range( 32 ))
 
+    # JWT config
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=jwt_access_token_expires_days)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=jwt_refresh_token_expires_days)
+    JWT_PUBLIC_KEY = os.environ.get("JWT_PUBLIC_KEY")
+    JWT_PRIVATE_KEY = os.environ.get("JWT_PRIVATE_KEY")
+    JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "RS256")
+
+    # Database configs
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     POSTGRES_ENGINE   = os.getenv("POSTGRES_ENGINE"   , None)
