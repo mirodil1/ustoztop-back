@@ -9,19 +9,22 @@ gevent==24.2.1 # https://github.com/gevent/gevent/
 pyjwt==2.9.0 # https://github.com/jpadilla/pyjwt
 authlib==1.3.2 # https://github.com/lepture/authlib
 passlib==1.7.4 # https://passlib.readthedocs.io/
+marshmallow==3.22.0 # https://github.com/marshmallow-code/marshmallow
 
 # FastApi
 # -------------------------------------------------------------------------------------------
 Flask==3.0.3 # https://github.com/pallets/flask/
 pydantic[email]==2.9.0 # https://github.com/pydantic/pydantic
-SQLAlchemy==2.0.7 # https://github.com/sqlalchemy/sqlalchemy
+SQLAlchemy==2.0.30 # https://github.com/sqlalchemy/sqlalchemy
 orjson==3.10.5 # https://github.com/ijl/orjson
 starlette==0.39.0 # https://github.com/encode/starlette
 flask-jwt-extended[asymmetric_crypto]==4.6.0 # https://github.com/vimalloc/flask-jwt-extended
 sqlalchemy-utils==0.41.2 # https://github.com/kvesteri/sqlalchemy-utils
 flask-script==2.0.6 # http://github.com/smurfix/flask-script
+Flask-SQLAlchemy==3.1.1 # https://github.com/pallets-eco/flask-sqlalchemy
 
 # Documentation
+# ---------------------------------------------------------------------------------------------
 flask-swagger-ui==4.11.1 # https://github.com/sveint/flask-swagger-ui
 apispec-webframeworks==1.2.0 # https://github.com/marshmallow-code/apispec-webframeworks
 apispec[yaml]==6.6.1 # https://github.com/marshmallow-code/apispec
