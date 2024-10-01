@@ -1,6 +1,3 @@
-import requests
-from authlib.jose import jwt
-from authlib.oidc.core import CodeIDToken
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.models import User
