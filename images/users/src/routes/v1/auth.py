@@ -13,13 +13,19 @@ from src.services.user import UserService
 from src.routes.v1 import router
 
 
-@router.route('/register', methods=["GET"])
+@router.route("/register", methods=["POST"])
 def create_account():
-    user_data = request.json
     print("CREATE")
+    user_data = request.json
+    print(user_data)
     schemas.UserSchema().load(user_data)
     phone_number = user_data.get("phone_number")
     password = user_data.get('password')
 
     UserService.create_user(phone_number=phone_number, password=password)
     return {"error": "no error", "detail": 'Account created successfully'}, 201
+
+
+@router.route("/send-code", methods=["GET"])
+def send_otp():
+    pass

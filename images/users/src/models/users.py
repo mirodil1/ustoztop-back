@@ -1,8 +1,78 @@
-from sqlalchemy.dialects.postgresql import ARRAY
+import datetime
+import uuid
+
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import UniqueConstraint
 
 from src.models.core import TimeStampedModel
 from src.db import db
+
+
+class LoginHistoryRecord(db.Model):
+    __tablename__ = 'login_history'
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
+    device_id = db.Column(UUID(as_uuid=True), db.ForeignKey('devices.id'), nullable=False)
+    login_date = db.Column(db.DateTime, default=datetime.datetime.now(), nullable=False)
+    device_type = db.Column(db.String, primary_key=True, default='web', nullable=False)
+
+    UniqueConstraint('id', 'device_type', name='id_device_type_pk')
+
+    def __repr__(self):
+        return f"<LoginHistoryRecord user={self.user_id} device={self.device_id} date={self.login_date}>"
+
+
+class Device(db.Model):
+    __tablename__ = 'devices'
+
+    id = db.Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'))
+    user_agent = db.Column(db.Text)
+    history_records = relationship("LoginHistoryRecord", backref="device")
+
+    def __repr__(self):
+        return f'<Device id={self.id}, user_id={self.user_id}>'
+
+user_role_asscoations = db.Table(
+    "user_role_association",
+    db.Column(
+        "user_id",
+        db.BigInteger,
+        db.ForeignKey('users.id'),
+        primary_key=True
+    ),
+    db.Column(
+        "role_id",
+        UUID(as_uuid=True),
+        db.ForeignKey('roles.id'),
+        primary_key=True)
+    )
+
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+
+    id = db.Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False
+    )
+    role_name = db.Column(db.String, unique=True, nullable=False)
+    users = relationship(
+        "User",
+        secondary="user_role_association",
+        back_populates="roles")
+
 
 class User(TimeStampedModel):
     __tablename__ = "users"
@@ -17,66 +87,16 @@ class User(TimeStampedModel):
     facebook_link = db.Column(db.String(length=255), nullable=True)
     telegram_link = db.Column(db.String(length=255), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
-    is_confirmed_by_admin = db.Column(db.Boolean, default=False)
-    is_promoted = db.Column(db.Boolean, default=False)
-    promotion_started = db.Column(db.Date, nullable=True)
-    promotion_expired = db.Column(db.Date, nullable=True)
-    
+    is_verified_by_admin = db.Column(db.Boolean, default=False)
+    is_premium = db.Column(db.Boolean, default=False)
+    premium_started = db.Column(db.Date, nullable=True)
+    premium_expired = db.Column(db.Date, nullable=True)
 
+    devices = relationship("Device", backref=backref("user", uselist=False))
+    roles = relationship(
+        "Role",
+        secondary="user_role_association",
+        back_populates="users")
+    
     tutor = relationship("Tutor", uselist=False, back_populates="user")
     learning_center = relationship("LearningCenter", uselist=False, back_populates="user")
-
-    logins = relationship(
-        "LoginRecord",
-        lazy="dynamic",
-        cascade="all, delete-orphan",
-        backref=backref("user"),
-    )
-
-
-class Role(TimeStampedModel):
-    __tablename__ = "roles"
-    id = db.Column(db.Integer, primary_key=True, unique=True)
-    name = db.Column(db.String(80), unique=True)
-    description = db.Column(db.String(255), nullable=True)
-    permissions = db.Column(ARRAY(db.String, dimensions=1), default=[], nullable=True)
-
-    # @classmethod
-    # def get(cls, name):
-    #     role = session.query(cls).filter_by(name=name).one_or_none()
-    #     if not role:
-    #         raise NotFound(f"Role with name {name} is not found")
-
-
-class RolesUsers(TimeStampedModel):
-    __tablename__ = "roles_users"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column("user_id", db.ForeignKey("users.id"))
-    role_id = db.Column("role_id", db.Integer, db.ForeignKey("roles.id"))
-
-
-class LoginRecord(TimeStampedModel):
-    __tablename__ = "login_entries"
-
-    id = db.Column(db.BigInteger, primary_key=True, unique=True)
-    user_id = db.Column("user_id", db.ForeignKey("users.id"))
-    user_agent = db.Column(db.String)
-    platform = db.Column(db.String(100))
-    browser = db.Column(db.String(255))
-    ip = db.Column(db.String(100))
-
-    def __init__(self, user_id, platform, browser, user_agent, ip):
-        self.user_id = user_id
-        self.platform = platform
-        self.browser = browser
-        self.user_agent = user_agent
-        self.ip = ip
-
-    # def to_api_model(self) -> UserLoginRecord:
-    #     return UserLoginRecord(
-    #         user_agent=self.user_agent,
-    #         platform=self.platform,
-    #         browser=self.browser,
-    #         timestamp=self.timestamp,
-    #         ip=self.ip,
-    #     )
