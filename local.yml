@@ -14,6 +14,7 @@ services:
     image: ustoz_local_admin
     container_name: ustoz_local_admin
     depends_on:
+      - redis
       - announcements_postgres
       - users_postgres
     volumes:
@@ -34,6 +35,7 @@ services:
     depends_on:
       - announcements_postgres
       - users_postgres
+      - redis
     volumes:
       - ./images/announcements:/app:z
     env_file:
@@ -43,7 +45,7 @@ services:
       - '8080:8080'
     command: /start
   
-  users_api:
+  users_api: &users_api
     build:
       context: .
       dockerfile: ./images/users/compose/local/api/Dockerfile
@@ -52,6 +54,7 @@ services:
     depends_on:
       - users_postgres
       - announcements_postgres
+      - redis
     volumes:
       - ./images/users:/app:z
     env_file:
@@ -84,3 +87,18 @@ services:
       - ustoz_local_users_postgres_backups:/backups
     env_file:
       - ./images/users/.envs/.local/.postgres
+
+  redis:
+    image: docker.io/redis:6
+    container_name: ustoz_local_redis
+
+  celeryworker:
+    <<: *users_api
+    image: ustoz_local_celeryworker
+    container_name: ustoz_local_celeryworker
+    depends_on:
+      - redis
+      - users_postgres
+      - announcements_postgres
+    ports: []
+    command: /start-celeryworker
