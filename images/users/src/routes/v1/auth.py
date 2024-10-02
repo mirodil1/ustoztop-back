@@ -11,13 +11,11 @@ from src import schemas
 from src.services.user import UserService
 
 from src.routes.v1 import router
-
+from src.tasks import send_security_code_task
 
 @router.route("/register", methods=["POST"])
 def create_account():
-    print("CREATE")
     user_data = request.json
-    print(user_data)
     schemas.UserSchema().load(user_data)
     phone_number = user_data.get("phone_number")
     password = user_data.get('password')
@@ -28,4 +26,6 @@ def create_account():
 
 @router.route("/send-code", methods=["GET"])
 def send_otp():
-    pass
+    print("REQUESTED")
+    send_security_code_task.delay("+99890")
+    return {"error": "no error", "detail": "code sent successfully"}, 200
