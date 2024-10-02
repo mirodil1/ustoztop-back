@@ -48,14 +48,14 @@ def create_app(app_config):
     from src.routes.v1 import router as main_blueprint
     app.register_blueprint(main_blueprint, url_prefix='/api/v1')
     
-    app.config.from_mapping(
-        CELERY=dict(
-            broker_url="redis://redis:6379/0",
-            result_backend="redis://redis:6379/0",
-            task_ignore_result=True,
-        ),
-    )
-    app.config.from_prefixed_env()
-    celery_configuration(app)
+    # app.config.from_mapping(
+    #     CELERY=dict(
+    #         broker_url="redis://redis:6379/0",
+    #         result_backend="redis://redis:6379/0",
+    #         task_ignore_result=True,
+    #     ),
+    # )
+    # app.config.from_prefixed_env()
+    # celery_configuration(app)
     
     return app
