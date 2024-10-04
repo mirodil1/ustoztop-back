@@ -10,9 +10,9 @@ class Tutor(TimeStampedModel):
     __tablename__ = "tutor"
 
     id = db.Column(db.BigInteger, primary_key=True)
-    first_name = db.Column(db.String(length=64), nullable=False)
-    last_name = db.Column(db.String(length=64), nullable=False)
-    gender = db.Column(db.String(length=6), nullable=False)
+    first_name = db.Column(db.String(length=64), nullable=True)
+    last_name = db.Column(db.String(length=64), nullable=True)
+    gender = db.Column(db.String(length=6), nullable=True)
     
     user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"))
     user = relationship("User", back_populates="tutor", single_parent=True)

@@ -10,7 +10,7 @@ class LearningCenter(TimeStampedModel):
     __tablename__ = "learning_center"
 
     id = db.Column(db.BigInteger, primary_key=True)
-    name = db.Column(db.String(length=255), nullable=False)
+    name = db.Column(db.String(length=255), nullable=True)
     description = db.Column(db.String, nullable=True)
 
     user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"))
