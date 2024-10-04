@@ -1,6 +1,9 @@
 class InvalidEmail(Exception):
     pass
 
+class InvalidPhoneNumber(Exception):
+    pass
+
 
 class UnknownUser(Exception):
     pass
