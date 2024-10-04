@@ -20,13 +20,23 @@ class UserService:
         return user
 
     @staticmethod
-    def create_user(phone_number, password):
+    def create_user(phone_number, password, role_name):
         user = User(phone_number=phone_number, password=password)
         user.password = generate_password_hash(
             user.password, method="pbkdf2:sha256:5", salt_length=8,
         )
         db.session.add(user)
         db.session.commit()
+
+        from . import RoleService
+        RoleService.add_user_role(user.id, role_name)
+
+        if role_name == "tutor":
+            from . import TutorService
+            TutorService.create_tutor(user_id=user.id)
+        elif role_name == "learning_center":
+            from . import LearningCenterService
+            LearningCenterService.create_center(user_id=user.id)
 
     @classmethod
     def update_user(cls, user_id, **user_new_data):

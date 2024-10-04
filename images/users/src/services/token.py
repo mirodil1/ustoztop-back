@@ -1,7 +1,7 @@
 import datetime
 
-from cache import redis_db
-from exceptions import InvalidEmail, InvalidRefreshToken, UnknownDevice
+from src.cache import redis_db
+from src.exceptions import InvalidEmail, InvalidRefreshToken, UnknownDevice
 from flask_jwt_extended import create_access_token, create_refresh_token
 
 from . import RoleService, UserService
