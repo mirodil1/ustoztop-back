@@ -52,7 +52,9 @@ def create_account():
     schemas.UserSchema().load(user_data)
     phone_number = user_data.get("phone_number")
     password = user_data.get("password")
+    role = user_data.get("role")
     code = user_data.get("code")
+
     if UserService.get_user_by_phone_number(phone_number):
         return {
             "error": "Bad request", "detail": "User already registered",
@@ -60,7 +62,7 @@ def create_account():
 
     verified = SMSService.verify_code(phone_number, str(code))
     if verified:
-        UserService.create_user(phone_number=phone_number, password=password)
+        UserService.create_user(phone_number=phone_number, password=password, role_name=role)
         return {"error": "no error", "detail": "Account created successfully"}, 201
     return {
         "error": "Bad request", "detail": "Something went wrong, please try again",
@@ -70,6 +72,8 @@ def create_account():
 @router.route("/send-code", methods=["GET"])
 def send_security_code():
     user_data = request.json
+    user_agent = request.headers.get('User-Agent')
+    print(user_agent)
     phone_number = user_data.get("phone_number")
     SMSService.send_code_by_telegram(phone_number)
     send_security_code_task.delay("phone_number")
