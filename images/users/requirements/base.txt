@@ -2,7 +2,8 @@ requests==2.32.3 # https://requests.readthedocs.io/
 python-slugify==8.0.4  # https://github.com/un33k/python-slugify
 Pillow==10.2.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==23.1.0  # https://github.com/hynek/argon2_cffi
-redis==5.0.3 # https://github.com/redis/redis-py
+redis==5.0.1 # https://github.com/redis/redis-py
+hiredis==2.3.2  # https://github.com/redis/hiredis-py
 Unidecode==1.3.7 # https://pypi.org/project/Unidecode
 gunicorn==21.2.0  # https://github.com/benoitc/gunicorn
 gevent==24.2.1 # https://github.com/gevent/gevent/
@@ -10,7 +11,7 @@ pyjwt==2.9.0 # https://github.com/jpadilla/pyjwt
 authlib==1.3.2 # https://github.com/lepture/authlib
 passlib==1.7.4 # https://passlib.readthedocs.io/
 marshmallow==3.22.0 # https://github.com/marshmallow-code/marshmallow
-celery==5.4.0 # https://github.com/celery/celery
+celery==5.3.6 # https://github.com/celery/celery
 
 # FastApi
 # -------------------------------------------------------------------------------------------
