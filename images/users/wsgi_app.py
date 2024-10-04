@@ -4,8 +4,8 @@ monkey.patch_all()
 
 import os
 
-from src import create_app  # noqa: E402,F401
 from config import config_dict
+from src import create_app  # noqa: E402,F401
 
 # WARNING: Don't run with debug turned on in production!
 DEBUG = (os.getenv("DEBUG", 'False') == "True")
