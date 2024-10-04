@@ -4,7 +4,7 @@ monkey.patch_all()
 
 import os
 
-from app import create_app  # noqa: E402,F401
+from src import create_app  # noqa: E402,F401
 from config import config_dict
 
 # WARNING: Don't run with debug turned on in production!
@@ -21,9 +21,9 @@ except KeyError:
     exit("Error: Invalid <config_mode>. Expected values [Local, Production] ")
 
 
-app = create_app(app_config)
-celery_app = app.extensions["celery"]
+flask_app = create_app(app_config)
+celery_app = flask_app.extensions["celery"]
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=DEBUG)
+    flask_app.run(host="0.0.0.0", debug=DEBUG)
