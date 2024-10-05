@@ -1,8 +1,9 @@
 import datetime
 
+from flask_jwt_extended import create_access_token, create_refresh_token
+
 from src.cache import redis_db
 from src.exceptions import InvalidEmail, InvalidRefreshToken, UnknownDevice
-from flask_jwt_extended import create_access_token, create_refresh_token
 
 from . import RoleService, UserService
 
@@ -25,18 +26,18 @@ class TokenService:
 
         user_roles = ",".join(
             [
-                role.role_name for role in RoleService.get_user_roles(phone_number)
+                role.role_name for role in RoleService.get_user_roles(user.id)
             ],
         )
 
-        access_token = create_access_token(identity=user.phone_number,
+        access_token = create_access_token(identity=phone_number,
                                            additional_claims={"prm": user.is_premium,
                                                               "roles": user_roles or "",
                                                             },
                                            fresh=True)
-        refresh_token = create_refresh_token(identity=user.email)
+        refresh_token = create_refresh_token(identity=phone_number)
 
-        redis_db.setex(device_id, 60 * 60 * 24 * 30, refresh_token)
+        # redis_db.setex(device_id, 60 * 60 * 24 * 30, refresh_token)
 
         return access_token, refresh_token
 
