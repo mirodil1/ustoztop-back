@@ -1,6 +1,7 @@
-import os, random, string
+import os
+import random
+import string
 from datetime import timedelta
-
 
 jwt_access_token_expires_days = int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES_MINUTES')) if \
     os.environ.get('JWT_ACCESS_TOKEN_EXPIRES_MINUTES') else 31
@@ -24,10 +25,11 @@ class Config:
     # JWT config
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=jwt_access_token_expires_days)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=jwt_refresh_token_expires_days)
-    JWT_PUBLIC_KEY = os.environ.get("JWT_PUBLIC_KEY")
-    JWT_PRIVATE_KEY = os.environ.get("JWT_PRIVATE_KEY")
+    # JWT_PUBLIC_KEY = os.environ.get("JWT_PUBLIC_KEY")
+    # JWT_PRIVATE_KEY = os.environ.get("JWT_PRIVATE_KEY")
     JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "RS256")
-
+    JWT_PUBLIC_KEY = open("public.pem").read()
+    JWT_PRIVATE_KEY = open("private.pem").read()
     # Redis
     REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
     REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
