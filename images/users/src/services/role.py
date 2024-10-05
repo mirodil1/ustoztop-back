@@ -1,7 +1,6 @@
 from src import models
 from src.db import db
 from src.exceptions import RoleAlreadyExists, UnknownRole
-from src.services import UserService
 
 
 class RoleService:
@@ -33,6 +32,8 @@ class RoleService:
 
     @staticmethod
     def add_user_role(user_id, role_name):
+        from . import UserService
+
         user = UserService.get_user_by_id(user_id)
         role = RoleService.get_role_by_name(role_name)
         user.roles.append(role)
@@ -40,6 +41,8 @@ class RoleService:
 
     @staticmethod
     def delete_user_role(user_id, role_name):
+        from . import UserService
+
         user = UserService.get_user_by_id(user_id)
         role = RoleService.get_role_by_name(role_name)
         user.roles.remove(role)
@@ -47,5 +50,7 @@ class RoleService:
 
     @staticmethod
     def get_user_roles(user_id):
+        from . import UserService
+
         user = UserService.get_user_by_id(user_id)
         return [role for role in user.roles]
