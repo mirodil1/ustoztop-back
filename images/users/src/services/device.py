@@ -1,11 +1,9 @@
 import uuid
 
-import models
-from cache import redis_db
-from db import db
-from exceptions import DeviceAlreadyExists, UnknownDevice
-
-from . import UserService
+from src import models
+from src.cache import redis_db
+from src.db import db
+from src.exceptions import DeviceAlreadyExists, UnknownDevice
 
 
 class DeviceService:
@@ -23,8 +21,8 @@ class DeviceService:
         device_auth_id = str(uuid.uuid4())
 
         data = {
-                'email': email,
-                'device_id': device_id
+                "email": email,
+                "device_id": device_id,
         }
 
         redis_db.hset(name=device_auth_id, mapping=data)
@@ -34,27 +32,31 @@ class DeviceService:
 
     @staticmethod
     def is_device_registered(email, device_id):
+        from . import UserService
+
         user = UserService.get_user_by_email(email)
-
-        device_exists = db.session.query(models.User, models.Device).filter(models.Device.id == device_id).one_or_none()
-        if device_exists:
-            return True
-
-        return False
+        device_exists = db.session.query(models.User, models.Device).filter(
+            models.Device.id == device_id,
+        ).one_or_none()
+        return device_exists
 
     @staticmethod
     def authorize_device(device_auth_id):
+        from . import UserService
+
         device_data = redis_db.hgetall(str(device_auth_id))
 
         if not device_data:
             raise UnknownDevice
 
-        email = device_data['email']
-        device_id = device_data['device_id']
+        email = device_data["email"]
+        device_id = device_data["device_id"]
 
         user = UserService.get_user_by_email(email)
 
-        device_is_already_registered = db.session.query(models.User, models.Device).filter(models.Device.id == device_id).one_or_none()
+        device_is_already_registered = db.session.query(models.User, models.Device).filter(
+            models.Device.id == device_id
+        ).one_or_none()
         if device_is_already_registered:
             raise DeviceAlreadyExists
 
