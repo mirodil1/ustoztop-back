@@ -1,4 +1,4 @@
-from .users import User, Role
 from .core import TimeStampedModel
-from .tutor import Tutor, Language, Education, Experience
-from .learning_center import LearningCenter, Branch
+from .learning_center import Branch, LearningCenter
+from .tutor import Education, Experience, Language, Tutor
+from .users import Device, Role, User
