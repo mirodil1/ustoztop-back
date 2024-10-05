@@ -6,3 +6,8 @@ class UserSchema(Schema):
     password = fields.String(required=True, load_only=True)
     role = fields.String(required=True)
     code = fields.String(required=True)
+
+
+class UserAuthInfoSchema(Schema):
+    phone_number = fields.String(required=True)
+    password = fields.String(required=True, load_only=True)
