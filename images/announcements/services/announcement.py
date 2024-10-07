@@ -1,18 +1,15 @@
-from typing import List
-
-from fastapi import Depends
-from sqlalchemy.orm import Session
-
 from db.postgres import get_db
+from fastapi import Depends
 from models.announcement import Announcement
 from schemas.announcement import AnnouncementSchema
+from sqlalchemy.orm import Session
 
 
 class AnnouncementService:
     def __init__(self, db: Session) -> None:
         self.db = db
 
-    async def get_announcements(self) -> List[AnnouncementSchema]:
+    async def get_announcements(self) -> list[AnnouncementSchema]:
         announcements = await self._get_active_announcements()
         return announcements.all()
 
@@ -22,9 +19,9 @@ class AnnouncementService:
         return announcement
 
     async def get_announcement_by_category(
-        self, 
-        category_id: int
-    ) -> List[AnnouncementSchema]:
+        self,
+        category_id: int,
+    ) -> list[AnnouncementSchema]:
         active = await self._get_active_announcements()
         announcements = active.filter(Announcement.category_id==category_id).all()
         return announcements
