@@ -28,27 +28,29 @@ def login():
     is_password_correct = UserService.check_user_password(
         user_data["phone_number"], user_data["password"],
     )
-    # email = user_data["email"]
+    phone_number = user_data["phone_number"]
 
     if not is_password_correct:
         return {"error": "Wrong username or password"}, 401
 
     device_id = user_data.get("device_id", None)
-    access_token, refresh_token = TokenService.create_token_pair(
-                user_data["phone_number"], device_id,
+    if device_id:
+        if DeviceService.is_device_registered(
+            phone_number=phone_number,
+            device_id=device_id,
+        ):
+            access_token, refresh_token = TokenService.create_token_pair(
+                phone_number, device_id,
             )
-    return {"access_token": access_token, "refresh_token": refresh_token}, 200
-    # if device_id:
-    #     if DeviceService.is_device_registered(email=email, device_id=device_id):
-    #         access_token, refresh_token = TokenService.create_token_pair(
-    #             user_data["phone_number"], device_id,
-    #         )
-    #         HistoryService.add_history_record(device_id)
-    #         return {"access_token": access_token, "refresh_token": refresh_token}, 200
-    #     return {"error": "Unknown device"}, 400
+            HistoryService.add_history_record(device_id)
+            return {"access_token": access_token, "refresh_token": refresh_token}, 200
+        return {"error": "Unknown device"}, 400
 
-    # device_id, device_auth_id = DeviceService.create_device_auth_request(email)
-    # return {"device_id": device_id, "device_auth_id": device_auth_id}, 200
+    device_id, device_auth_id = DeviceService.create_device_auth_request(
+        phone_number,
+        user_agent,
+    )
+    return {"device_id": device_id, "device_auth_id": device_auth_id}, 200
 
 
 @router.route("/register", methods=["POST"])
@@ -75,6 +77,12 @@ def create_account():
     return {
         "error": "Bad request", "detail": "Something went wrong, please try again",
     }, 400
+
+
+@router.route("/authorize_device/<uuid:device_auth_id>", methods=["GET"])
+def authorize_device(device_auth_id):
+    DeviceService.authorize_device(device_auth_id)
+    return {"msg": "device activated"}, 200
 
 
 @router.route("/send-code", methods=["GET"])
