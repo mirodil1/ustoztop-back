@@ -5,27 +5,32 @@ from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import UniqueConstraint
 
-from src.models.core import TimeStampedModel
 from src.db import db
+from src.models.core import TimeStampedModel
 
 
 class LoginHistoryRecord(db.Model):
-    __tablename__ = 'login_history'
+    __tablename__ = "login_history"
 
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
-    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
-    device_id = db.Column(UUID(as_uuid=True), db.ForeignKey('devices.id'), nullable=False)
+    id = db.Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False,
+    )
+    user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"), nullable=False)
+    device_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey("devices.id"), nullable=False,
+    )
     login_date = db.Column(db.DateTime, default=datetime.datetime.now(), nullable=False)
-    device_type = db.Column(db.String, primary_key=True, default='web', nullable=False)
+    device_type = db.Column(db.String, primary_key=True, default="web", nullable=False)
 
-    UniqueConstraint('id', 'device_type', name='id_device_type_pk')
+    UniqueConstraint("id", "device_type", name="id_device_type_pk")
 
     def __repr__(self):
-        return f"<LoginHistoryRecord user={self.user_id} device={self.device_id} date={self.login_date}>"
+        return f"<LoginHistoryRecord user={self.user_id} \
+            device={self.device_id} date={self.login_date}>"
 
 
 class Device(db.Model):
-    __tablename__ = 'devices'
+    __tablename__ = "devices"
 
     id = db.Column(
         UUID(as_uuid=True),
@@ -34,38 +39,38 @@ class Device(db.Model):
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'))
+    user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"))
     user_agent = db.Column(db.Text)
     history_records = relationship("LoginHistoryRecord", backref="device")
 
     def __repr__(self):
-        return f'<Device id={self.id}, user_id={self.user_id}>'
+        return f"<Device id={self.id}, user_id={self.user_id}>"
 
 user_role_asscoations = db.Table(
     "user_role_association",
     db.Column(
         "user_id",
         db.BigInteger,
-        db.ForeignKey('users.id'),
-        primary_key=True
+        db.ForeignKey("users.id"),
+        primary_key=True,
     ),
     db.Column(
         "role_id",
         UUID(as_uuid=True),
-        db.ForeignKey('roles.id'),
-        primary_key=True)
+        db.ForeignKey("roles.id"),
+        primary_key=True),
     )
 
 
 class Role(db.Model):
-    __tablename__ = 'roles'
+    __tablename__ = "roles"
 
     id = db.Column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         unique=True,
-        nullable=False
+        nullable=False,
     )
     role_name = db.Column(db.String, unique=True, nullable=False)
     users = relationship(
@@ -97,6 +102,10 @@ class User(TimeStampedModel):
         "Role",
         secondary="user_role_association",
         back_populates="users")
-    
+
     tutor = relationship("Tutor", uselist=False, back_populates="user")
-    learning_center = relationship("LearningCenter", uselist=False, back_populates="user")
+    learning_center = relationship(
+        "LearningCenter",
+        uselist=False,
+        back_populates="user",
+    )

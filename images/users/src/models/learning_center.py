@@ -47,5 +47,5 @@ class WorkingSchedule(db.Model):
     __table_args__ = (UniqueConstraint(
         "learning_center_id",
         "day_of_week",
-        name='uix_learning_center_id_day_of_week'),
+        name="uix_learning_center_id_day_of_week"),
     )
