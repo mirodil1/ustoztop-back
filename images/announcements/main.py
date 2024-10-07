@@ -2,13 +2,14 @@
 import logging
 
 import uvicorn as uvicorn
-from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
-
 from core import config
 from core.logger import LOGGING
 from db.postgres import Base, engine
+from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 from src.api.v1 import announcements, categories
+from src.middlewares import JWTAuthBackend
+from starlette.middleware.authentication import AuthenticationMiddleware
 
 app = FastAPI(
     title=config.PROJECT_NAME,
@@ -16,7 +17,7 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
     default_response_class=ORJSONResponse,
 )
-
+app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
 Base.metadata.create_all(bind=engine)
 
 
@@ -30,5 +31,5 @@ if __name__ == "__main__":
         port=8080,
         log_config=LOGGING,
         log_level=logging.DEBUG,
-        reload=True
-    )   
+        reload=True,
+    )
