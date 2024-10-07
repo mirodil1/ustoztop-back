@@ -9,9 +9,10 @@ logging_config.dictConfig(LOGGING)
 PROJECT_NAME = os.environ.get("FAST_PROJECT_NAME", "announcements")
 LANGUAGES = {
     "available": ["uz", "ru", "en"],
-    "default": "uz"
+    "default": "uz",
 }
-
+JWT_PUBLIC_KEY=open("public.pem").read()
+JWT_ALGORITHM="RS256"
 # Redis config
 # REDIS_HOST = env("REDIS_HOST", "127.0.0.1")
 # REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
