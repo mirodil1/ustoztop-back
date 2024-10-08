@@ -13,7 +13,7 @@ class AnnouncementService:
         announcements = await self._get_active_announcements()
         return announcements.all()
 
-    async def get_announcement_by_slug(self, slug: str):
+    async def get_announcement_by_slug(self, slug: str) -> AnnouncementSchema:
         active = await self._get_active_announcements()
         announcement = active.filter(Announcement.slug==slug).scalar()
         return announcement
@@ -26,8 +26,16 @@ class AnnouncementService:
         announcements = active.filter(Announcement.category_id==category_id).all()
         return announcements
 
-    async def create_announcement(self):
-        pass
+    async def create_announcement(self, user_id: int, data: dict):
+        print("CREATE")
+        announcement = Announcement(user_id=user_id)
+        for key, value in data.items():
+            print(key)
+            if hasattr(announcement, key):
+                setattr(announcement, key, value)
+        self.db.add(announcement)
+        self.db.commit()
+        return announcement
 
     async def _get_active_announcements(self):
         announcements = (

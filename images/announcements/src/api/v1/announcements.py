@@ -1,10 +1,10 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
-from starlette import status
-
-from schemas.announcement import AnnouncementOutputSchema
+from fastapi import APIRouter, Depends, Header, HTTPException
+from schemas.announcement import AnnouncementInputSchema, AnnouncementOutputSchema
 from services.announcement import AnnouncementService, get_announcement_service
+from starlette import status
+from starlette.requests import Request
 
 router = APIRouter(
     tags=["announcements"],
@@ -12,17 +12,17 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[AnnouncementOutputSchema])
+@router.get("/", response_model=list[AnnouncementOutputSchema])
 async def announcements_list(
     announcement_service: AnnouncementService = Depends(get_announcement_service),
-) -> List[AnnouncementOutputSchema]:        
+) -> list[AnnouncementOutputSchema]:
     announcements_list = await announcement_service.get_announcements()
 
     filtered_list = [
         AnnouncementOutputSchema(
             id=announcement.id,
             name=announcement.name,
-            slug=announcement.slug, 
+            slug=announcement.slug,
             user_id=announcement.user_id,
             category_id= announcement.category_id,
             phone_number=announcement.phone_number,
@@ -46,18 +46,18 @@ async def announcements_list(
 async def announcements_detail(
     slug: str,
     announcement_service: AnnouncementService = Depends(get_announcement_service),
-) -> List[AnnouncementOutputSchema]:        
+) -> list[AnnouncementOutputSchema]:
     announcement = await announcement_service.get_announcement_by_slug(slug=slug)
 
     if not announcement:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not found"
+            detail="Not found",
         )
     return AnnouncementOutputSchema(
             id=announcement.id,
             name=announcement.name,
-            slug=announcement.slug, 
+            slug=announcement.slug,
             user_id=announcement.user_id,
             category_id= announcement.category_id,
             phone_number=announcement.phone_number,
@@ -75,20 +75,20 @@ async def announcements_detail(
         )
 
 
-@router.get("/category/{category_id}/", response_model=List[AnnouncementOutputSchema])
+@router.get("/category/{category_id}/", response_model=list[AnnouncementOutputSchema])
 async def announcements_by_category(
     category_id: int,
     announcement_service: AnnouncementService = Depends(get_announcement_service),
-) -> List[AnnouncementOutputSchema]:        
+) -> list[AnnouncementOutputSchema]:
     announcements = await announcement_service.get_announcement_by_category(
-        category_id=category_id
+        category_id=category_id,
     )
-   
+
     filtered_list = [
         AnnouncementOutputSchema(
             id=announcement.id,
             name=announcement.name,
-            slug=announcement.slug, 
+            slug=announcement.slug,
             user_id=announcement.user_id,
             category_id= announcement.category_id,
             phone_number=announcement.phone_number,
@@ -106,3 +106,21 @@ async def announcements_by_category(
         ) for announcement in announcements
     ]
     return filtered_list
+
+
+@router.post("/announcement/create/")
+async def create_new_announcement(
+    request: Request,
+    announcement: AnnouncementInputSchema,
+    annoincement_service: AnnouncementService = Depends(get_announcement_service),
+):
+    if not request.user:
+        raise HTTPException(status_code=401, detail="Not authorized")
+    announcement_data = announcement.dict()
+    announcement = await annoincement_service.create_announcement(
+        user_id=request.user.user_id,
+        data=announcement_data,
+    )
+    if announcement:
+        return {"message": "created"}, 201
+    return {"something went wrong"}, 400
