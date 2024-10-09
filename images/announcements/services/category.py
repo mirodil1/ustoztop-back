@@ -1,12 +1,11 @@
 from functools import lru_cache
 from typing import Optional
 
-from fastapi import Depends
-from sqlalchemy.orm import Session, joinedload
-
 from db.postgres import get_db
+from fastapi import Depends
 from models.category import Category
 from schemas.category import CategorySchema
+from sqlalchemy.orm import Session, joinedload
 
 
 class CategoryService:
@@ -30,10 +29,11 @@ class CategoryService:
 
     async def get_category_by_id(
             self, category_id: int, language: str
-    ) -> Optional[CategorySchema]:
+    ) -> CategorySchema | None:
         category = self.db.query(Category).filter(Category.id==category_id).scalar()
         if category:
             return CategorySchema.model_validate(category).model_dump(language=language)
+        return None
 
 @lru_cache
 def get_category_service(db: Session = Depends(get_db)) -> CategoryService:

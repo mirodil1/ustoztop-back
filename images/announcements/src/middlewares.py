@@ -17,20 +17,20 @@ class User(BaseUser):
 
     @property
     def is_authenticated(self) -> bool:
-        """Признак авторизации пользователя."""
+        """Authenticated status."""
         return True
 
     @property
     def display_name(self) -> str:
-        """Отображаемое имя пользователя."""
+        """User display name"""
         return f"user_id={self.user_id}"
 
 
 class JWTAuthBackend(AuthenticationBackend):
-    """Класс для работы с авторизацией."""
+    """Class for working with authorization."""
 
     async def authenticate(self, request):
-        """Авторизация пользователя."""
+        """User authorization."""
         # Get JWT token from user's cookies
 
         if "Authorization" not in request.headers:
@@ -47,18 +47,16 @@ class JWTAuthBackend(AuthenticationBackend):
         # Returns UnauthenticatedUser if token does not exists in header
         if not token:
             return
-
-        # Checks the validity of the JWT token, if token is invalid returns UnauthenticatedUser object
+        # Checks the validity of the JWT token,
+        # if token is invalid returns UnauthenticatedUser object
         try:
             jwt_decoded = jwt.decode(
                 token,
                 JWT_PUBLIC_KEY,
                 algorithms=[JWT_ALGORITHM],
             )
-            print(jwt_decoded)
         except PyJWTError as err:
             raise AuthenticationError("Invalid credentials")
-
         # In case if token is valid returns an object of the authorized user
         permissions = "write"
 
