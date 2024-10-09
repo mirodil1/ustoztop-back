@@ -277,3 +277,6 @@ images/admin/apps/media/
 .env
 .envs/*
 !.envs/.local/
+
+# pem files
+*.pem
