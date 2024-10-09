@@ -1,7 +1,10 @@
+import uuid
+
 from db.postgres import get_db
 from fastapi import Depends
 from models.announcement import Announcement
 from schemas.announcement import AnnouncementSchema
+from slugify import slugify
 from sqlalchemy.orm import Session
 
 
@@ -27,14 +30,17 @@ class AnnouncementService:
         return announcements
 
     async def create_announcement(self, user_id: int, data: dict):
-        print("CREATE")
-        announcement = Announcement(user_id=user_id)
+        # TODO: check category existence by its id
+
+        slug = f"{slugify(data.get('name'))}-{uuid.uuid4().hex[:6]}"
+
+        announcement = Announcement(user_id=user_id, slug=slug)
         for key, value in data.items():
-            print(key)
             if hasattr(announcement, key):
                 setattr(announcement, key, value)
         self.db.add(announcement)
         self.db.commit()
+
         return announcement
 
     async def _get_active_announcements(self):
@@ -42,7 +48,7 @@ class AnnouncementService:
             self.db.query(Announcement)
                 .filter(
                     Announcement.is_active==True,
-                    Announcement.is_confirmed_by_admin==True
+                    Announcement.is_confirmed_by_admin==True,
                 )
         )
         return announcements

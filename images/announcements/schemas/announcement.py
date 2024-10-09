@@ -1,10 +1,9 @@
 import enum
 from datetime import date
 from decimal import Decimal
-from typing import Optional
 
 import orjson
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class LessonTypeEnum(enum.Enum):
@@ -30,10 +29,10 @@ class LessonAudienceEnum(enum.Enum):
 
 
 class AnnouncementSchema(BaseModel):
-    id: Optional[int]
+    id: int | None
     name: str
-    slug: str  
-    user_id: int  
+    slug: str
+    user_id: int
     phone_number: str
     price: Decimal
     lessons_in_week: int
@@ -46,8 +45,8 @@ class AnnouncementSchema(BaseModel):
     is_active: bool = False
     is_confirmed_by_admin: bool = False
     is_promoted: bool = False
-    promotion_started: Optional[date]
-    promotion_expired: Optional[date]
+    promotion_started: date | None
+    promotion_expired: date | None
     category_id: int
 
     class Config:
@@ -57,9 +56,9 @@ class AnnouncementSchema(BaseModel):
 
 
 class AnnouncementOutputSchema(BaseModel):
-    id: Optional[int]
+    id: int
     name: str
-    slug: str  
+    slug: str
     user_id: int
     category_id: int
     phone_number: str
@@ -72,5 +71,19 @@ class AnnouncementOutputSchema(BaseModel):
     lesson_audience: LessonAudienceEnum
     description: str
     is_promoted: bool = False
-    promotion_started: Optional[date]
-    promotion_expired: Optional[date]
+    promotion_started: date | None
+    promotion_expired: date | None
+
+
+class AnnouncementInputSchema(BaseModel):
+    name: str = Field(max_length=128)
+    category_id: int
+    phone_number: str = Field(max_length=14)
+    price: Decimal = Field(lte=15_000_000)
+    lessons_in_week: int = Field(gt=0, lt=8)
+    lesson_duration_hours: Decimal = Field(lt=12)
+    lesson_type: LessonTypeEnum
+    lesson_place: LessonPlaceEnum
+    lesson_language: LessonLanguageEnum
+    lesson_audience: LessonAudienceEnum
+    description: str

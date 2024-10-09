@@ -1,10 +1,23 @@
-from sqlalchemy import (BigInteger, Boolean, Column, Date, Enum, ForeignKey,
-                        Integer, Numeric, String)
+from schemas.announcement import (
+    LessonAudienceEnum,
+    LessonLanguageEnum,
+    LessonPlaceEnum,
+    LessonTypeEnum,
+)
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    Enum,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+)
 from sqlalchemy.orm import relationship
 
 from models.core import TimeStampedModel
-from schemas.announcement import (LessonAudienceEnum, LessonLanguageEnum,
-                                  LessonPlaceEnum, LessonTypeEnum)
 
 
 class Announcement(TimeStampedModel):
@@ -16,8 +29,8 @@ class Announcement(TimeStampedModel):
     user_id = Column(BigInteger, nullable=False)
     phone_number = Column(String(length=14), nullable=False)
     price = Column(Numeric(14, 2), nullable=False)
-    lessons_in_week = Column(Integer, nullable=False) 
-    lesson_duration_hours = Column(Integer, nullable=False)
+    lessons_in_week = Column(Integer, nullable=True)
+    lesson_duration_hours = Column(Numeric(2, 1), nullable=False)
     lesson_type = Column(Enum(LessonTypeEnum), nullable=False)
     lesson_place = Column(Enum(LessonPlaceEnum), nullable=False)
     lesson_language = Column(Enum(LessonLanguageEnum), nullable=False)
@@ -31,4 +44,3 @@ class Announcement(TimeStampedModel):
 
     category_id = Column(BigInteger, ForeignKey("category.id"), nullable=False)
     category = relationship("Category", back_populates="announcement")
- 

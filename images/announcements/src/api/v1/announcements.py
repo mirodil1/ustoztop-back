@@ -108,7 +108,7 @@ async def announcements_by_category(
     return filtered_list
 
 
-@router.post("/announcement/create/")
+@router.post("/announcement/create/", status_code=201)
 async def create_new_announcement(
     request: Request,
     announcement: AnnouncementInputSchema,
@@ -122,5 +122,7 @@ async def create_new_announcement(
         data=announcement_data,
     )
     if announcement:
-        return {"message": "created"}, 201
-    return {"something went wrong"}, 400
+        return {"message": "created"}
+    raise HTTPException(
+        status_code=400, detail="Something went wrong, please try again"
+    )
