@@ -48,4 +48,4 @@ class CategoryAdmin(TranslatableAdmin, MPTTModelAdmin):
 
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["name", "is_confirmed_by_admin"]
