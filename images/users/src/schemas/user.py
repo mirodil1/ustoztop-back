@@ -12,3 +12,12 @@ class UserAuthInfoSchema(Schema):
     phone_number = fields.String(required=True)
     password = fields.String(required=True, load_only=True)
     device_id = fields.String(load_only=True)
+
+
+class UserUpdateSchema(Schema):
+    phone_number = fields.String(required=False)
+    avatar = fields.String(required=False)
+    web_link = fields.String(required=False)
+    facebook_link = fields.String(required=False)
+    insta_link = fields.String(required=False)
+    telegram_link = fields.String(required=False)

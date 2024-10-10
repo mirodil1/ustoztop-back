@@ -48,10 +48,10 @@ class UserService:
                     user,
                     key,
                     generate_password_hash(user_new_data[key],
-                    method="pbkdf2:sha256:5", salt_length=8)
+                    method="pbkdf2:sha256:5", salt_length=8),
                 )
             elif key not in ["id", "is_premium"]:
-                setattr(user, key, user_new_data[key])
+                setattr(user, key, value)
             else:
                 raise Exception("insufficient privileges")
         db.session.add(user)
