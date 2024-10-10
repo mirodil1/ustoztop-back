@@ -30,14 +30,15 @@ class TokenService:
             ],
         )
 
-        access_token = create_access_token(identity=phone_number,
-                                           additional_claims={"prm": user.is_premium,
-                                                              "roles": user_roles or "",
-                                                            },
+        access_token = create_access_token(identity=user.id,
+                                           additional_claims={
+                                                "prm": user.is_premium,
+                                                "roles": user_roles or "",
+                                           },
                                            fresh=True)
-        refresh_token = create_refresh_token(identity=phone_number)
+        refresh_token = create_refresh_token(identity=user.id)
 
-        # redis_db.setex(device_id, 60 * 60 * 24 * 30, refresh_token)
+        redis_db.setex(device_id, 60 * 60 * 24 * 30, refresh_token)
 
         return access_token, refresh_token
 
