@@ -8,3 +8,7 @@ class TutorService:
         tutor = Tutor(user_id=user_id)
         db.session.add(tutor)
         db.session.commit()
+
+    @staticmethod
+    def get_tutor_by_user_id(user_id):
+        tutor = Tutor.query.filter_by(user_id=user_id).first()
