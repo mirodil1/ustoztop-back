@@ -1,12 +1,4 @@
-import json
-import random
-import string
-from urllib.parse import urlencode
-from urllib.request import urlopen
-
-from celery import shared_task
 from flask import request
-from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from src import schemas
 from src.routes.v1 import router

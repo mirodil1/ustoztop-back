@@ -36,11 +36,9 @@ class DeviceService:
 
     @staticmethod
     def is_device_registered(phone_number, device_id):
-        from . import UserService
-
-        user = UserService.get_user_by_phone_number(phone_number)
         device_exists = db.session.query(models.User, models.Device).filter(
             models.Device.id == device_id,
+            models.User.phone_number == phone_number,
         ).one_or_none()
         return device_exists
 

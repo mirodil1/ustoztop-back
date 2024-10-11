@@ -10,6 +10,4 @@ from src.services.tutor import TutorService
 @router.route("/get/tutor/<int:user_id>", methods=["GET"])
 def get_tutor(user_id):
     tutor = TutorService.get_tutor_by_user_id(user_id=user_id)
-    print(tutor)
     return tutor, 200
-

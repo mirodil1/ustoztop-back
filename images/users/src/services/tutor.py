@@ -1,5 +1,6 @@
-from src.models import Tutor
 from src.db import db
+from src.models import Tutor
+
 
 class TutorService:
 
@@ -12,7 +13,6 @@ class TutorService:
     @staticmethod
     def get_tutor_by_user_id(user_id):
         tutor = Tutor.query.filter_by(user_id=user_id).first()
-        print(tutor)
         if not tutor:
             return None
         return {
@@ -23,3 +23,7 @@ class TutorService:
             "language": tutor.language,
             "experience": tutor.experience,
         }
+
+    @staticmethod
+    def update_tutor():
+        pass
