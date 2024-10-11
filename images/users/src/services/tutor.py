@@ -15,15 +15,21 @@ class TutorService:
         tutor = Tutor.query.filter_by(user_id=user_id).first()
         if not tutor:
             return None
-        return {
-            "first_name": tutor.first_name,
-            "last_name": tutor.last_name,
-            "gender": tutor.gender,
-            "education": tutor.education,
-            "language": tutor.language,
-            "experience": tutor.experience,
-        }
+        return tutor
 
-    @staticmethod
-    def update_tutor():
-        pass
+    @classmethod
+    def update_tutor(cls, user_id, **tutor_new_data):
+        tutor = cls.get_tutor_by_user_id(user_id=user_id)
+        if tutor:
+            for key, value in tutor_new_data.items():
+                if hasattr(tutor, key):
+                    setattr(tutor, key, value)
+            db.session.add(tutor)
+            db.session.commit()
+        return None
+
+    @classmethod
+    def create_or_update_tutor_language(cls, user_id, *language_data):
+        tutor = cls.get_tutor_by_user_id(user_id=user_id)
+        for language in language_data:
+            pass

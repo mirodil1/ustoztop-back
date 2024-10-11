@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from src.models.core import TimeStampedModel
 from src.db import db
-from src.schemas.tutor import EducationDegree, LanguageLevel
+from src.schemas.tutor import EducationDegree, LanguageLevel, Gender
 
 
 class Tutor(TimeStampedModel):
@@ -12,7 +12,7 @@ class Tutor(TimeStampedModel):
     id = db.Column(db.BigInteger, primary_key=True)
     first_name = db.Column(db.String(length=64), nullable=True)
     last_name = db.Column(db.String(length=64), nullable=True)
-    gender = db.Column(db.String(length=6), nullable=True)
+    gender = db.Column(db.Enum(Gender), nullable=True)
     
     user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"))
     user = relationship("User", back_populates="tutor", single_parent=True)
