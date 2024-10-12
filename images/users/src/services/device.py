@@ -24,9 +24,9 @@ class DeviceService:
         device_auth_id = str(uuid.uuid4())
 
         data = {
-                "phone_number": phone_number,
-                "device_id": device_id,
-                "user_agent": user_agent,
+            "phone_number": phone_number,
+            "device_id": device_id,
+            "user_agent": user_agent,
         }
 
         redis_db.hset(name=device_auth_id, mapping=data)
