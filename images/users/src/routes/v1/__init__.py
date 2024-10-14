@@ -2,6 +2,4 @@ from flask import Blueprint
 
 router = Blueprint("router", __name__)
 
-from . import auth
-from . import account
-from . import tutor
+from . import account, auth, learning_center, tutor
