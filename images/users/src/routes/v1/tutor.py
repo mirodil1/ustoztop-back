@@ -17,7 +17,16 @@ def get_tutor(user_id):
             "first_name": tutor.first_name,
             "last_name": tutor.last_name,
             "gender": tutor.gender,
-            "education": tutor.education,
+            "education": [
+                {
+                    "id": education.id,
+                    "name": education.name,
+                    "degree": education.degree.name,
+                    "start_year": education.start_year,
+                    "finish_year": education.finish_year,
+                }
+                for education in tutor.education
+            ],
             "language": [
                 {
                     "id": language.id,
@@ -68,3 +77,13 @@ def update_tutor_experience():
 
     TutorService.create_or_update_tutor_experience(user_id, *experience_data)
     return {"error": "no error", "detail": "Experience updated successfully"}, 200
+
+
+@router.route("/tutor/education/update/", methods=["PUT"])
+@jwt_required(fresh=True)
+def update_tutor_education():
+    education_data = request.json
+    user_id = get_jwt_identity()
+
+    TutorService.create_or_update_tutor_education(user_id, *education_data)
+    return {"error": "no error", "detail": "Education updated successfully"}, 200
