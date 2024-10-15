@@ -16,7 +16,7 @@ def get_tutor(user_id):
     return {
             "first_name": tutor.first_name,
             "last_name": tutor.last_name,
-            "gender": tutor.gender,
+            "gender": tutor.gender.name,
             "education": [
                 {
                     "id": education.id,
