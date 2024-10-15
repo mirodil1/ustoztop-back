@@ -3,11 +3,11 @@ import random
 import string
 from datetime import timedelta
 
-jwt_access_token_expires_days = int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES_MINUTES')) if \
-    os.environ.get('JWT_ACCESS_TOKEN_EXPIRES_MINUTES') else 31
+jwt_access_token_expires_days = int(os.environ.get("JWT_ACCESS_TOKEN_EXPIRES_MINUTES")) if \
+    os.environ.get("JWT_ACCESS_TOKEN_EXPIRES_MINUTES") else 31
 
-jwt_refresh_token_expires_days = int(os.environ.get('JWT_REFRESH_TOKEN_EXPIRES_DAYS')) if \
-    os.environ.get('JWT_REFRESH_TOKEN_EXPIRES_DAYS') else 60
+jwt_refresh_token_expires_days = int(os.environ.get("JWT_REFRESH_TOKEN_EXPIRES_DAYS")) if \
+    os.environ.get("JWT_REFRESH_TOKEN_EXPIRES_DAYS") else 60
 
 
 class Config:
@@ -15,18 +15,16 @@ class Config:
     basedir = os.path.abspath(os.path.dirname(__file__))
 
     # Assets Management
-    ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
+    ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/static/assets")
     
     # Set up the App SECRET_KEY
-    SECRET_KEY  = os.getenv('SECRET_KEY', None)
+    SECRET_KEY  = os.getenv("SECRET_KEY", None)
     if not SECRET_KEY:
-        SECRET_KEY = ''.join(random.choice(string.ascii_lowercase) for i in range( 32 ))
+        SECRET_KEY = "".join(random.choice(string.ascii_lowercase) for i in range( 32 ))
 
     # JWT config
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=jwt_access_token_expires_days)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=jwt_refresh_token_expires_days)
-    # JWT_PUBLIC_KEY = os.environ.get("JWT_PUBLIC_KEY")
-    # JWT_PRIVATE_KEY = os.environ.get("JWT_PRIVATE_KEY")
     JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "RS256")
     JWT_PUBLIC_KEY = open("public.pem").read()
     JWT_PRIVATE_KEY = open("private.pem").read()
@@ -60,7 +58,7 @@ class Config:
 
         except Exception as e:
 
-            print('> Error: DBMS Exception: ' + str(e) )
+            print("> Error: DBMS Exception: " + str(e) )
 
 
 class ProductionConfig(Config):
