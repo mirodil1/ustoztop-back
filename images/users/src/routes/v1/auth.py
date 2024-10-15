@@ -1,7 +1,7 @@
 from flask import request
 
 from src import schemas
-from src.routes.v1 import router
+from src.routes.v1 import router, limiter
 from src.services.device import DeviceService
 from src.services.history import HistoryService
 from src.services.sms import SMSService
@@ -78,6 +78,7 @@ def authorize_device(device_auth_id):
 
 
 @router.route("/send-code", methods=["GET"])
+@limiter.limit("2/minute")
 def send_security_code():
     user_data = request.json
     phone_number = user_data.get("phone_number")

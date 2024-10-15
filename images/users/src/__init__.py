@@ -45,6 +45,9 @@ def create_app(app_config):
         db.session.commit()
 
     from src.routes.v1 import router as main_blueprint
+    from src.routes.v1 import limiter
+    
+    limiter.init_app(app)
     app.register_blueprint(main_blueprint, url_prefix="/api/v1")
     
     app.config.from_mapping(
