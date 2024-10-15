@@ -26,8 +26,8 @@ def get_center(user_id):
             {
                 "id": schedule.id,
                 "day_of_week": schedule.day_of_week.name,
-                "opening_time": schedule.opening_time.strftime("%H:%M:%S"),
-                "closing_time": schedule.closing_time.strftime("%H:%M:%S"),
+                "opening_time": schedule.opening_time.strftime("%H:%M"),
+                "closing_time": schedule.closing_time.strftime("%H:%M"),
                 "is_closed": schedule.is_closed,
             } for schedule in learning_center.working_schedule
         ],
