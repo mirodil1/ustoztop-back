@@ -50,11 +50,8 @@ def update_user_account():
     user_data = request.json
     user_id = get_jwt_identity()
 
-    try:
-        schemas.UserUpdateSchema().load(user_data)
-    except ValidationError as e:
-        return {"error": "validation error", "detail": e.messages}, 400
-
+    schemas.UserUpdateSchema().load(user_data)
+ 
     user = UserService.get_user_by_id(user_id=user_id)
     UserService.update_user(
         user_id=user_id,
