@@ -44,9 +44,12 @@ def create_app(app_config):
             db.session.add(child_role)
         db.session.commit()
 
+    from src.routes.v1 import limiter
     from src.routes.v1 import router as main_blueprint
-    app.register_blueprint(main_blueprint, url_prefix='/api/v1')
-    
+
+    limiter.init_app(app)
+    app.register_blueprint(main_blueprint, url_prefix="/api/v1")
+
     app.config.from_mapping(
         CELERY=dict(
             broker_url="redis://redis:6379/0",

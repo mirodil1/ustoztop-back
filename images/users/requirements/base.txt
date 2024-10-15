@@ -24,6 +24,7 @@ flask-jwt-extended[asymmetric_crypto]==4.6.0 # https://github.com/vimalloc/flask
 sqlalchemy-utils==0.41.2 # https://github.com/kvesteri/sqlalchemy-utils
 flask-script==2.0.6 # http://github.com/smurfix/flask-script
 Flask-SQLAlchemy==3.1.1 # https://github.com/pallets-eco/flask-sqlalchemy
+Flask-Limiter[redis]==3.8.0 # https://github.com/alisaifee/flask-limiter
 
 # Documentation
 # ---------------------------------------------------------------------------------------------
