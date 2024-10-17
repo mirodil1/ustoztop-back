@@ -25,10 +25,10 @@ class HistoryService:
         db.session.commit()
 
     @staticmethod
-    def get_history(email, start_date, end_date):
+    def get_history(phone_number, start_date, end_date):
         from . import UserService
 
-        user_id = UserService.get_user_by_email(email).id
+        user_id = UserService.get_user_by_phone_number(phone_number).id
         records = db.session.query(models.LoginHistoryRecord).filter(
             models.LoginHistoryRecord.user_id == user_id).filter(
             models.LoginHistoryRecord.login_date >= start_date).filter(
