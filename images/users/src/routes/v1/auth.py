@@ -1,7 +1,7 @@
 from flask import request
 
 from src import schemas
-from src.routes.v1 import router, limiter
+from src.routes.v1 import limiter, router
 from src.services.device import DeviceService
 from src.services.history import HistoryService
 from src.services.sms import SMSService

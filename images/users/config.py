@@ -16,7 +16,7 @@ class Config:
 
     # Assets Management
     ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/static/assets")
-    
+
     # Set up the App SECRET_KEY
     SECRET_KEY  = os.getenv("SECRET_KEY", None)
     if not SECRET_KEY:
@@ -45,19 +45,9 @@ class Config:
     # try to set up a Relational DBMS
     if POSTGRES_ENGINE and POSTGRES_DB and POSTGRES_USER:
         try:
-            
             # Relational DBMS: PSQL, MySql
-            SQLALCHEMY_DATABASE_URI = "{}://{}:{}@{}:{}/{}".format(
-                POSTGRES_ENGINE,
-                POSTGRES_USER,
-                POSTGRES_PASSWORD,
-                POSTGRES_HOST,
-                POSTGRES_PORT,
-                POSTGRES_DB
-            ) 
-
+            SQLALCHEMY_DATABASE_URI = f"{POSTGRES_ENGINE}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
         except Exception as e:
-
             print("> Error: DBMS Exception: " + str(e) )
 
 
