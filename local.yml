@@ -5,6 +5,7 @@ volumes:
   ustoz_local_announcements_postgres_backups: {}
   ustoz_local_users_postgres: {}
   ustoz_local_users_postgres_backups: {}
+  ustoz_local_stats_mongo: {}
 
 services:
   admin:
@@ -64,6 +65,25 @@ services:
       - '5000:5000'
     command: /start
 
+  statistics_api:
+    build:
+      context: .
+      dockerfile: ./images/statistics/compose/local/api/Dockerfile
+    image: ustoz_local_statistics_api
+    container_name: ustoz_local_statistics_api
+    depends_on:
+      - announcements_postgres
+      - users_postgres
+      - redis
+      - statistics_mongo
+    volumes:
+      - ./images/statistics:/app:z
+    env_file:
+      - ./images/statistics/.envs/.local/
+    ports:
+      - '8081:8081'
+    command: /start
+
   announcements_postgres:
     build:
       context: .
@@ -87,6 +107,15 @@ services:
       - ustoz_local_users_postgres_backups:/backups
     env_file:
       - ./images/users/.envs/.local/.postgres
+
+  statistics_mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - ustoz_local_stats_mongo:/data/db
+    env_file:
+      - ./images/statistics/.envs/.local
 
   redis:
     image: docker.io/redis:6
