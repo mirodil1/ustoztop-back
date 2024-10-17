@@ -41,6 +41,10 @@ def get_me():
         "is_verified_by_admin": user.is_verified_by_admin,
         "is_premium": user.is_premium,
         "roles": user_roles,
+        "wallet": {
+            "id": user.wallets.id,
+            "balance": user.wallets.balance,
+        } if user.wallets else None,
     }, 200
 
 

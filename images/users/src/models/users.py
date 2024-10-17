@@ -79,6 +79,26 @@ class Role(db.Model):
         back_populates="roles")
 
 
+class Wallet(db.Model):
+    __tablename__ = "wallets"
+
+    id = db.Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
+    user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"), nullable=False)
+    balance = db.Column(db.Float, default=0.0)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+
+    user = relationship("User", back_populates="wallets")
+
+    def __repr__(self):
+        return f"<Wallet(id={self.id}, user_id={self.user_id}, balance={self.balance})>"
+
+
 class User(TimeStampedModel):
     __tablename__ = "users"
 
@@ -106,6 +126,11 @@ class User(TimeStampedModel):
     tutor = relationship("Tutor", uselist=False, back_populates="user")
     learning_center = relationship(
         "LearningCenter",
+        uselist=False,
+        back_populates="user",
+    )
+    wallets = relationship(
+        "Wallet",
         uselist=False,
         back_populates="user",
     )

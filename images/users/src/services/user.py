@@ -28,7 +28,8 @@ class UserService:
         db.session.add(user)
         db.session.commit()
 
-        from . import RoleService
+        from . import RoleService, WalletService
+        WalletService.create_wallet(user_id=user.id)
         RoleService.add_user_role(user.id, role_name)
 
         if role_name == "tutor":
