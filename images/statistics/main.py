@@ -13,7 +13,7 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
-app.include_router(v1.router, prefix="/v1/categories")
+app.include_router(v1.router, prefix="/v1/statistics")
 
 
 if __name__ == "__main__":

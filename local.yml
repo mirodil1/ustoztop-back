@@ -110,6 +110,7 @@ services:
 
   statistics_mongo:
     image: mongo:latest
+    container_name: ustoz_local_statistics_mongo
     ports:
       - '27017:27017'
     volumes:
