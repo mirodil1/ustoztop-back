@@ -2,15 +2,19 @@
 import logging
 
 import uvicorn as uvicorn
-from core import config
+from core.config import settings
 from core.logger import LOGGING
+from src.api import v1
 from fastapi import FastAPI
 
 app = FastAPI(
-    title=config.PROJECT_NAME,
+    title=settings.project_name,
     docs_url="/api/openapi",
     openapi_url="/api/openapi.json",
 )
+
+app.include_router(v1.router, prefix="/v1/categories")
+
 
 if __name__ == "__main__":
     uvicorn.run(
