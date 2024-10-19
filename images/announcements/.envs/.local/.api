@@ -1,3 +1,4 @@
 FAST_PROJECT_NAME=announcements
 FAST_PORT=8080
 FAST_HOST=0.0.0.0
+FAST_STAT_URL=http://statistics_api:8081

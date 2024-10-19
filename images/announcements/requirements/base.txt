@@ -6,11 +6,13 @@ hiredis==2.3.2  # https://github.com/redis/hiredis-py
 Unidecode==1.3.7 # https://pypi.org/project/Unidecode
 uvicorn==0.30.1 # https://www.uvicorn.org
 PyJWT[crypto]==2.9.0 # https://github.com/jpadilla/pyjwt
+httpx==0.27.2 # https://github.com/encode/httpx
 
 # FastApi
 # -------------------------------------------------------------------------------------------
 fastapi==0.115.0 # https://github.com/fastapi/fastapi
 pydantic==2.9.0 # https://github.com/pydantic/pydantic
+pydantic-settings==2.6.0 # https://github.com/pydantic/pydantic-settings
 SQLAlchemy==2.0.7 # https://github.com/sqlalchemy/sqlalchemy
 orjson==3.10.5 # https://github.com/ijl/orjson
 starlette==0.37.2 # https://github.com/encode/starlette

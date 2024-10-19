@@ -1,11 +1,13 @@
 import uuid
 
+import httpx
 from db.postgres import get_db
 from fastapi import Depends
 from models.announcement import Announcement
 from schemas.announcement import AnnouncementSchema
 from slugify import slugify
 from sqlalchemy.orm import Session
+from core.config import settings
 
 
 class AnnouncementService:
@@ -19,6 +21,8 @@ class AnnouncementService:
     async def get_announcement_by_slug(self, slug: str) -> AnnouncementSchema:
         active = await self._get_active_announcements()
         announcement = active.filter(Announcement.slug==slug).scalar()
+        if announcement:
+            await self._add_views(announcement.id)
         return announcement
 
     async def get_announcement_by_category(
@@ -52,6 +56,16 @@ class AnnouncementService:
                 )
         )
         return announcements
+
+    async def _add_views(self, announcement_id):
+        """
+        Requesting to statistics service to add new views
+        """
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{settings.stat_url}/v1/statistics/announcement_views/create/{announcement_id}"
+            )
+        return response
 
 
 def get_announcement_service(db: Session = Depends(get_db)) -> AnnouncementService:

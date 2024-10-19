@@ -1,5 +1,5 @@
 import jwt
-from core.config import JWT_ALGORITHM, JWT_PUBLIC_KEY
+from core.config import settings
 from jwt import PyJWTError
 from starlette.authentication import (
     AuthCredentials,
@@ -10,8 +10,6 @@ from starlette.authentication import (
 
 
 class User(BaseUser):
-    """Класс пользователя."""
-
     def __init__(self, user_id: str) -> None:
         self.user_id = user_id
 
@@ -52,8 +50,8 @@ class JWTAuthBackend(AuthenticationBackend):
         try:
             jwt_decoded = jwt.decode(
                 token,
-                JWT_PUBLIC_KEY,
-                algorithms=[JWT_ALGORITHM],
+                settings.jwt_public_key,
+                algorithms=[settings.jwt_algorithm],
             )
         except PyJWTError as err:
             raise AuthenticationError("Invalid credentials")

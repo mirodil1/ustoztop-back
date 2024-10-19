@@ -2,7 +2,7 @@
 import logging
 
 import uvicorn as uvicorn
-from core import config
+from core.config import settings
 from core.logger import LOGGING
 from db.postgres import Base, engine
 from fastapi import FastAPI
@@ -12,7 +12,7 @@ from src.middlewares import JWTAuthBackend
 from starlette.middleware.authentication import AuthenticationMiddleware
 
 app = FastAPI(
-    title=config.PROJECT_NAME,
+    title=settings.project_name,
     docs_url="/api/openapi",
     openapi_url="/api/openapi.json",
     default_response_class=ORJSONResponse,

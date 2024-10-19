@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from schemas.announcement import AnnouncementInputSchema, AnnouncementOutputSchema
 from services.announcement import AnnouncementService, get_announcement_service
 from starlette import status
@@ -44,9 +44,10 @@ async def announcements_list(
 
 @router.get("/{slug}/", response_model=AnnouncementOutputSchema)
 async def announcements_detail(
+    request: Request,
     slug: str,
     announcement_service: AnnouncementService = Depends(get_announcement_service),
-) -> list[AnnouncementOutputSchema]:
+) -> AnnouncementOutputSchema:
     announcement = await announcement_service.get_announcement_by_slug(slug=slug)
 
     if not announcement:
@@ -54,6 +55,7 @@ async def announcements_detail(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Not found",
         )
+    
     return AnnouncementOutputSchema(
             id=announcement.id,
             name=announcement.name,

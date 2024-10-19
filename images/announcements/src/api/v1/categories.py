@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException
 from starlette import status
 from starlette.responses import RedirectResponse
 
-from core.config import LANGUAGES
+from core.config import settings
 from schemas.category import CategoryOutputSchema
 from services.category import CategoryService, get_category_service
 
@@ -19,8 +19,8 @@ async def categories_list(
     category_service: CategoryService = Depends(get_category_service),
     X_language: str = Header(...)
 ):
-    if X_language not in LANGUAGES["available"]:
-        X_language = LANGUAGES["default"]
+    if X_language not in settings.languages["available"]:
+        X_language = settings.languages["default"]
         
     categories = await category_service.get_categories(X_language)
     return [
@@ -41,8 +41,8 @@ async def category_detail(
     category_service: CategoryService = Depends(get_category_service),
     X_language: str = Header(...)
 ):
-    if X_language not in LANGUAGES["available"]:
-        X_language = LANGUAGES["default"]
+    if X_language not in settings.languages["available"]:
+        X_language = settings.languages["default"]
         
     category = await category_service.get_category_by_id(
         category_id=category_id,
