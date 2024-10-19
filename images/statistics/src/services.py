@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from src.db import (
     account_views_collection,
@@ -14,22 +14,30 @@ class PhoneNumberViewsService:
 class AnnouncementViewsService:
 
     @staticmethod
-    async def create_announcement_views(announcement_id: int):
-        result = await phone_views_collection.insert_one(
-                        {
+    async def create_announcement_views(announcement_id: int, data: str | None):
+        result = await announcement_views_collection.insert_one(
+            {
                 "announcement_id": announcement_id,
-                "user_data": "data",
-                "created_at": datetime.now()
-            }
-
+                "user_data": data,
+                "created_at": datetime.now(),
+            },
         )
         return result
-    
+
     @staticmethod
     async def get_announcement_views(announcement_id: int):
-        results = [views async for views in phone_views_collection.find({"announcement_id": announcement_id})]
-        return results
-
+        announcement_views = []
+        last_30 = datetime.now() - timedelta(days=30)
+        async for view in announcement_views_collection.find(
+            {
+                "announcement_id":announcement_id,
+                "created_at": {"$gte": last_30},
+            },
+        ):
+            # Convert MongoDB ObjectId to string for serialization
+            view["id"] = str(view["_id"])
+            announcement_views.append(view)
+        return announcement_views
 
 
 async def get_announcement_stat_service():
