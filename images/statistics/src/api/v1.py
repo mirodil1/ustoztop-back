@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.post("/announcement_views/craete/{announcement_id}")
+@router.post("/announcement_views/create/{announcement_id}")
 async def create_announcement_views(
     announcement_id: int,
     request: Request,
