@@ -11,6 +11,38 @@ class PhoneNumberViewsService:
     pass
 
 
+class AccountViewsService:
+    @staticmethod
+    async def create_account_views(user_id: int, data: str | None):
+        result = await account_views_collection.insert_one(
+            {
+                "user_id": user_id,
+                "user_data": data,
+                "created_at": datetime.now(),
+            },
+        )
+        return result
+
+    @staticmethod
+    async def get_account_views(user_id: int):
+        account_views = []
+        last_30 = datetime.now() - timedelta(days=30)
+        async for view in account_views_collection.find(
+            {
+                "user_id":user_id,
+                "created_at": {"$gte": last_30},
+            },
+        ):
+            # Convert MongoDB ObjectId to string for serialization
+            view["id"] = str(view["_id"])
+            account_views.append(view)
+        return account_views
+
+
+async def get_account_stat_service():
+    return AccountViewsService()
+
+
 class AnnouncementViewsService:
 
     @staticmethod
