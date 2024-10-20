@@ -48,7 +48,8 @@ async def announcements_detail(
     slug: str,
     announcement_service: AnnouncementService = Depends(get_announcement_service),
 ) -> AnnouncementOutputSchema:
-    announcement = await announcement_service.get_announcement_by_slug(slug=slug)
+    user_agent = request.headers.get("user-agent", "unknown")
+    announcement = await announcement_service.get_announcement_by_slug(slug=slug, user_agent=user_agent)
 
     if not announcement:
         raise HTTPException(

@@ -18,11 +18,11 @@ class AnnouncementService:
         announcements = await self._get_active_announcements()
         return announcements.all()
 
-    async def get_announcement_by_slug(self, slug: str) -> AnnouncementSchema:
+    async def get_announcement_by_slug(self, slug: str, user_agent: str) -> AnnouncementSchema:
         active = await self._get_active_announcements()
         announcement = active.filter(Announcement.slug==slug).scalar()
         if announcement:
-            await self._add_views(announcement.id)
+            await self._add_views(announcement.id, user_agent)
         return announcement
 
     async def get_announcement_by_category(
@@ -34,7 +34,7 @@ class AnnouncementService:
         return announcements
 
     async def create_announcement(self, user_id: int, data: dict):
-        # TODO: check category existence by its id
+        # TODO: check for category existence by its id
 
         slug = f"{slugify(data.get('name'))}-{uuid.uuid4().hex[:6]}"
 
@@ -57,13 +57,14 @@ class AnnouncementService:
         )
         return announcements
 
-    async def _add_views(self, announcement_id):
+    async def _add_views(self, announcement_id: int, user_agent: str):
         """
         Requesting to statistics service to add new views
         """
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                f"{settings.stat_url}/v1/statistics/announcement_views/create/{announcement_id}"
+                f"{settings.stat_url}/v1/statistics/announcement_views/create/{announcement_id}",
+                headers={"user-agent": user_agent}
             )
         return response
 
