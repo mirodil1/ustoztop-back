@@ -47,7 +47,7 @@ async def get_announcement_views(
     return result
 
 
-@router.post("/account_views/craete/{user_id}")
+@router.post("/account_views/create/{user_id}")
 async def create_account_views(
     user_id: int,
     request: Request,

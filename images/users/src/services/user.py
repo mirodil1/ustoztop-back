@@ -1,9 +1,11 @@
+import requests
+
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask import current_app as app
 
 from src.db import db
 from src.exceptions import UnknownUser
 from src.models import User
-
 
 class UserService:
 
@@ -12,11 +14,12 @@ class UserService:
         user = User.query.filter_by(phone_number=phone_number).first()
         return user
 
-    @staticmethod
-    def get_user_by_id(user_id):
+    @classmethod
+    def get_user_by_id(cls, user_id, user_agent: str):
         user = User.query.filter_by(id=user_id).first()
         if not user:
             raise UnknownUser
+        cls._add_account_views(user.id, user_agent)
         return user
 
     @staticmethod
@@ -64,3 +67,13 @@ class UserService:
         if user:
             return check_password_hash(user.password, plaintext_password)
         return False
+
+    @staticmethod
+    def _add_account_views(user_id: int, user_agent:str):
+        response = requests.post(
+            f"{app.config['STATISTICS_URL']}/v1/statistics/account_views/create/{user_id}",
+            headers={"user-agent": user_agent}
+        )
+        if response.status_code == 200:
+            print(response.json())
+        print(response)

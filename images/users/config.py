@@ -28,9 +28,13 @@ class Config:
     JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "RS256")
     JWT_PUBLIC_KEY = open("public.pem").read()
     JWT_PRIVATE_KEY = open("private.pem").read()
+    
     # Redis
     REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
     REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
+    
+    # statistics service
+    STATISTICS_URL = os.environ.get("STATISTICS_URL")
 
     # Database configs
     SQLALCHEMY_TRACK_MODIFICATIONS = False

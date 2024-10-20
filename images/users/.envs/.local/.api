@@ -1,1 +1,2 @@
 DEBUG=True
+STATISTICS_URL=http://statistics_api:8081
