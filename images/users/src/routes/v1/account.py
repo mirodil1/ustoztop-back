@@ -10,9 +10,10 @@ from src.services.user import UserService
 @router.route("/get/<int:user_id>", methods=["GET"])
 def get_user_account(user_id):
     user_agent = request.headers.get("user-agent", "unknown")
-    
+
     user = UserService.get_user_by_id(user_id=user_id, user_agent=user_agent)
     user_roles = ",".join([role.role_name for role in user.roles])
+    UserService.add_account_views(user.id, user_agent)
 
     return {
         "avatar": user.avatar,
