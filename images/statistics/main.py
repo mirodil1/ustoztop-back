@@ -4,8 +4,10 @@ import logging
 import uvicorn as uvicorn
 from core.config import settings
 from core.logger import LOGGING
-from src.api import v1
 from fastapi import FastAPI
+from src.api import v1
+from src.middlewares import JWTAuthBackend
+from starlette.middleware.authentication import AuthenticationMiddleware
 
 app = FastAPI(
     title=settings.project_name,
@@ -13,6 +15,7 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
+app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
 app.include_router(v1.router, prefix="/v1/statistics")
 
 

@@ -39,10 +39,13 @@ async def create_announcement_views(
     response_model=list[AnnouncementViews],
 )
 async def get_announcement_views(
+    request: Request,
     announcement_id: int,
     announc_statistic_service: AnnouncementViewsService = Depends(
         get_announcement_stat_service),
 ):
+    if not request.user:
+        raise HTTPException(status_code=401, detail="Not authorized")
     result = await announc_statistic_service.get_announcement_views(announcement_id)
     return result
 
@@ -68,13 +71,16 @@ async def create_account_views(
 
 
 @router.get(
-    "/account_views/{user_id}",
+    "/account_views",
     response_model=list[ProfileViews],
 )
 async def get_account_views(
-    user_id: int,
+    request: Request,
     account_statistic_service: AccountViewsService = Depends(
         get_account_stat_service),
 ):
-    result = await account_statistic_service.get_account_views(user_id)
+    print(dir(request.user.display_name))
+    if not request.user.is_authenticated:
+        raise HTTPException(status_code=401, detail="Not authorized")
+    result = await account_statistic_service.get_account_views(request.user.user_id)
     return result

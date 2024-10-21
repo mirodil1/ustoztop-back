@@ -15,11 +15,11 @@ class Settings(BaseSettings):
         "default": "uz",
     }
     jwt_algorithm: str = "RS256"
+    jwt_public_key: str = open("public.pem").read()
 
-    mongodb_url: str = os.getenv("MONGODB_URL", "mongodb://myuser:mypass@statistics_mongo:27017")
+    mongodb_url: str = os.getenv("MONGODB_URL", "mongodb://statistics_mongo:27017")
     mongodb_db: str = os.getenv("MONGODB_DB", "statistics")
 
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 settings = Settings()
