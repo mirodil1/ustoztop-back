@@ -55,6 +55,6 @@ class JWTAuthBackend(AuthenticationBackend):
         except PyJWTError as err:
             raise AuthenticationError("Invalid credentials")
         # In case if token is valid returns an object of the authorized user
-        permissions = "write"
+        permissions = "read"
 
         return AuthCredentials(permissions), User(user_id=jwt_decoded["sub"])
