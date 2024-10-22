@@ -270,7 +270,7 @@ tags
 dump.rdb
 
 ### Project template
-images/admin/apps/media/
+media/
 
 .pytest_cache/
 .ipython/
