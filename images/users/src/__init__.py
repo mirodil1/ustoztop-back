@@ -17,14 +17,12 @@ def celery_init(app: Flask) -> Celery:
 
 
 def create_app(app_config):
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path="/media/", static_folder="/src/media/")
     app.config.from_object(app_config)
-
     JWTManager(app)
 
     from src.db import db
     db.init_app(app)
-
     from src import models
     with app.app_context():
         # db.drop_all()
@@ -44,12 +42,12 @@ def create_app(app_config):
             db.session.add(student_role)
         db.session.commit()
 
-    from src.routes.v1 import router as main_blueprint
     from src.routes.v1 import limiter
-    
+    from src.routes.v1 import router as main_blueprint
+
     limiter.init_app(app)
     app.register_blueprint(main_blueprint, url_prefix="/api/v1")
-    
+
     app.config.from_mapping(
         CELERY=dict(
             broker_url="redis://redis:6379/0",

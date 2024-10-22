@@ -1,5 +1,11 @@
+from pathlib import Path
+
+from flask import current_app as app
+from werkzeug.utils import secure_filename
+
 from src.db import db
 from src.models import Branch, LearningCenter, WorkingSchedule
+from src.utils import allowed_file
 
 
 class LearningCenterService:
@@ -18,13 +24,31 @@ class LearningCenterService:
         return learning_center
 
     @classmethod
-    def update_center(cls, user_id, **learning_center_new_data):
+    def update_center(
+        cls, user_id, learning_center_new_data: dict, files: dict | None = None,
+    ):
         learning_center = cls.get_center_by_user_id(user_id=user_id)
         if not learning_center:
             return
         for key, value in learning_center_new_data.items():
             if hasattr(learning_center, key):
                 setattr(learning_center, key, value)
+        if files:
+            for field_name, file in files.items():
+                if file  and allowed_file(file.filename):
+                    file_name = secure_filename(file.filename)
+                    if field_name == "avatar":
+                        folder_path = Path(app.config["UPLOAD_FOLDER"]) / "avatar"
+                        file_path = folder_path / file_name
+                        learning_center.avatar = str(file_path)
+                    elif field_name == "banner":
+                        folder_path = Path(app.config["UPLOAD_FOLDER"]) / "banner"
+                        file_path = folder_path / file_name
+                        learning_center.banner = str(file_path)
+                    folder_path.mkdir(parents=True, exist_ok=True)
+                    file.save(file_path )
+
+                    
         db.session.add(learning_center)
         db.session.commit()
 

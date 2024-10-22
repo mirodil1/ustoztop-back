@@ -106,7 +106,6 @@ class User(TimeStampedModel):
     phone_number = db.Column(db.String(length=14), unique=True, nullable=False)
     email = db.Column(db.String(length=255), unique=True, nullable=True)
     password = db.Column("password", db.String(length=255), nullable=False)
-    avatar = db.Column(db.String(length=255), nullable=True)
     web_link = db.Column(db.String(length=255), nullable=True)
     insta_link = db.Column(db.String(length=255), nullable=True)
     facebook_link = db.Column(db.String(length=255), nullable=True)

@@ -16,7 +16,8 @@ def get_tutor(user_id):
     return {
             "first_name": tutor.first_name,
             "last_name": tutor.last_name,
-            "gender": tutor.gender.name,
+            "avatar": tutor.avatar,
+            "gender": tutor.gender.name if tutor.gender else None,
             "education": [
                 {
                     "id": education.id,
@@ -52,10 +53,11 @@ def get_tutor(user_id):
 @router.route("/tutor/update", methods=["PUT"])
 @jwt_required(fresh=True)
 def update_tutor():
-    tutor_data = request.json
+    file = request.files.to_dict()
+    tutor_data = request.form.to_dict()
     user_id = get_jwt_identity()
 
-    TutorService.update_tutor(user_id=user_id, **tutor_data)
+    TutorService.update_tutor(user_id=user_id, tutor_new_data=tutor_data, files=file)
     return {"error": "no error", "detail": "Tutor updated successfully"}, 200
 
 

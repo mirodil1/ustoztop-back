@@ -28,11 +28,16 @@ class Config:
     JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "RS256")
     JWT_PUBLIC_KEY = open("public.pem").read()
     JWT_PRIVATE_KEY = open("private.pem").read()
-    
+
     # Redis
     REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
     REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
-    
+
+    # Media upload
+    UPLOAD_FOLDER = "./src/media/uploads"
+    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+    MAX_CONTENT_LENGTH = 10 * 1000 * 1000
+
     # statistics service
     STATISTICS_URL = os.environ.get("STATISTICS_URL")
 

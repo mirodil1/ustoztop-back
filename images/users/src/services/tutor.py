@@ -1,5 +1,12 @@
+import os
+from pathlib import Path
+
+from flask import current_app as app
+from werkzeug.utils import secure_filename
+
 from src.db import db
 from src.models import Education, Experience, Language, Tutor
+from src.utils import allowed_file
 
 
 class TutorService:
@@ -18,13 +25,26 @@ class TutorService:
         return tutor
 
     @classmethod
-    def update_tutor(cls, user_id, **tutor_new_data):
+    def update_tutor(
+        cls, user_id: int, tutor_new_data: dict, files: dict | None = None,
+    ):
         tutor = cls.get_tutor_by_user_id(user_id=user_id)
         if not tutor:
             return
         for key, value in tutor_new_data.items():
             if hasattr(tutor, key):
                 setattr(tutor, key, value)
+        if files:
+            for file in files.values():
+                if file  and allowed_file(file.filename):
+                    file_name = secure_filename(file.filename)
+                    folder_path = Path(app.config["UPLOAD_FOLDER"]) / "avatar"
+                    folder_path.mkdir(parents=True, exist_ok=True)
+                    file_path = folder_path / file_name
+
+                    file.save(file_path )
+
+                    tutor.avatar = str(file_path)
         db.session.add(tutor)
         db.session.commit()
 

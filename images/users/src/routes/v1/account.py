@@ -16,7 +16,7 @@ def get_user_account(user_id):
     UserService.add_account_views(user.id, user_agent)
 
     return {
-        "avatar": user.avatar,
+        # "avatar": user.avatar,
         "phone_number": user.phone_number,
         "web_link": user.web_link,
         "facebook_link": user.facebook_link,
@@ -35,7 +35,7 @@ def get_me():
     user_roles = ",".join([role.role_name for role in user.roles])
 
     return {
-        "avatar": user.avatar,
+        # "avatar": user.avatar,
         "phone_number": user.phone_number,
         "web_link": user.web_link,
         "facebook_link": user.facebook_link,

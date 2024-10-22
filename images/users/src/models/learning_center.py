@@ -1,8 +1,8 @@
-from sqlalchemy import (UniqueConstraint)
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from src.models.core import TimeStampedModel
 from src.db import db
+from src.models.core import TimeStampedModel
 from src.schemas.learning_center import DayOfWeek
 
 
@@ -12,6 +12,8 @@ class LearningCenter(TimeStampedModel):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(length=255), nullable=True)
     description = db.Column(db.String, nullable=True)
+    avatar = db.Column(db.String, nullable=True)
+    banner = db.Column(db.String, nullable=True)
 
     user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"))
     user = relationship("User", back_populates="learning_center", single_parent=True)
