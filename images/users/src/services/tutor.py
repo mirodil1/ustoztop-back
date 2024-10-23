@@ -1,3 +1,4 @@
+import datetime
 import os
 from pathlib import Path
 
@@ -38,13 +39,20 @@ class TutorService:
             for file in files.values():
                 if file  and allowed_file(file.filename):
                     file_name = secure_filename(file.filename)
+                    timestamp = datetime.datetime.now(datetime.UTC).strftime(
+                        "%Y%m%d_%H%M%S",
+                    )
+                    file_name = f"{timestamp}_{file_name}"
+
                     folder_path = Path(app.config["UPLOAD_FOLDER"]) / "avatar"
                     folder_path.mkdir(parents=True, exist_ok=True)
                     file_path = folder_path / file_name
-
                     file.save(file_path )
 
-                    tutor.avatar = str(file_path)
+                    old_file = tutor.avatar
+                    tutor.avatar = str(file_name)
+                    if old_file:
+                        Path(folder_path / old_file).unlink()
         db.session.add(tutor)
         db.session.commit()
 

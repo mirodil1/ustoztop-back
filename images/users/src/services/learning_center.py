@@ -1,3 +1,5 @@
+import datetime
+import os
 from pathlib import Path
 
 from flask import current_app as app
@@ -35,20 +37,31 @@ class LearningCenterService:
                 setattr(learning_center, key, value)
         if files:
             for field_name, file in files.items():
+                # TODO: create new file manager service
+
                 if file  and allowed_file(file.filename):
                     file_name = secure_filename(file.filename)
-                    if field_name == "avatar":
-                        folder_path = Path(app.config["UPLOAD_FOLDER"]) / "avatar"
-                        file_path = folder_path / file_name
-                        learning_center.avatar = str(file_path)
-                    elif field_name == "banner":
-                        folder_path = Path(app.config["UPLOAD_FOLDER"]) / "banner"
-                        file_path = folder_path / file_name
-                        learning_center.banner = str(file_path)
-                    folder_path.mkdir(parents=True, exist_ok=True)
-                    file.save(file_path )
+                    timestamp = datetime.datetime.now(datetime.UTC).strftime(
+                        "%Y%m%d_%H%M%S"
+                    )
+                    file_name = f"{timestamp}_{file_name}"
 
-                    
+                    if field_name == "avatar":
+                        old_file = learning_center.avatar
+                        folder_path = Path(app.config["UPLOAD_FOLDER"]) / "avatar"
+                        learning_center.avatar = str(file_name)
+                    elif field_name == "banner":
+                        old_file = learning_center.banner
+                        folder_path = Path(app.config["UPLOAD_FOLDER"]) / "banner"
+                        learning_center.banner = str(file_name)
+
+                    folder_path.mkdir(parents=True, exist_ok=True)
+
+                    file_path = folder_path / file_name
+                    file.save(file_path)
+                    if old_file:
+                        Path(folder_path / old_file).unlink()
+
         db.session.add(learning_center)
         db.session.commit()
 
@@ -58,7 +71,8 @@ class LearningCenterService:
 
     @classmethod
     def create_or_update_center_schedule(cls, user_id, *schedule_data):
-        return cls.create_or_update_center_items(user_id, "working_schedule", *schedule_data)
+        return cls.create_or_update_center_items(
+            user_id, "working_schedule", *schedule_data)
 
     @classmethod
     def create_or_update_center_items(cls, user_id, item_type, *item_data):

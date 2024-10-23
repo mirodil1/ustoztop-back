@@ -37,10 +37,15 @@ def get_center(user_id):
 @router.route("/center/update", methods=["PUT"])
 @jwt_required(fresh=True)
 def update_center():
-    center_data = request.json
+    files = request.files.to_dict()
+    center_data = request.form.to_dict()
     user_id = get_jwt_identity()
 
-    LearningCenterService.update_center(user_id=user_id, **center_data)
+    LearningCenterService.update_center(
+        user_id=user_id,
+        learning_center_new_data=center_data,
+        files=files,
+    )
     return {"error": "no error", "detail": "Learning center updated successfully"}, 200
 
 
