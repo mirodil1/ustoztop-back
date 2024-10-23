@@ -56,7 +56,7 @@ def update_user_account():
     user_id = get_jwt_identity()
 
     schemas.UserUpdateSchema().load(user_data)
- 
+
     user = UserService.get_user_by_id(user_id=user_id)
     UserService.update_user(
         user_id=user_id,

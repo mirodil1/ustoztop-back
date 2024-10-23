@@ -23,7 +23,7 @@ def login():
     phone_number = user_data["phone_number"]
 
     if not is_password_correct:
-        return {"error": "Wrong username or password"}, 401
+        return {"error": "Wrong phone number or password"}, 401
 
     device_id = user_data.get("device_id", None)
     if device_id:
