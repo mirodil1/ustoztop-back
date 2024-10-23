@@ -37,6 +37,8 @@ class TutorService:
                 setattr(tutor, key, value)
         if files:
             for file in files.values():
+                # TODO: create file upload manager service
+
                 if file  and allowed_file(file.filename):
                     file_name = secure_filename(file.filename)
                     timestamp = datetime.datetime.now(datetime.UTC).strftime(
@@ -51,8 +53,7 @@ class TutorService:
 
                     old_file = tutor.avatar
                     tutor.avatar = str(file_name)
-                    if old_file:
-                        Path(folder_path / old_file).unlink()
+                    Path(folder_path / old_file).unlink(missing_ok=True)
         db.session.add(tutor)
         db.session.commit()
 

@@ -59,8 +59,7 @@ class LearningCenterService:
 
                     file_path = folder_path / file_name
                     file.save(file_path)
-                    if old_file:
-                        Path(folder_path / old_file).unlink()
+                    Path(folder_path / old_file).unlink(missing_ok=True)
 
         db.session.add(learning_center)
         db.session.commit()
