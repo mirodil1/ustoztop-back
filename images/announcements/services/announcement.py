@@ -1,21 +1,24 @@
 import uuid
 
 import httpx
+from core.config import settings
 from db.postgres import get_db
 from fastapi import Depends
 from models.announcement import Announcement
 from schemas.announcement import AnnouncementSchema
 from slugify import slugify
+from sqlalchemy.future import select
 from sqlalchemy.orm import Session
-from core.config import settings
+
+from services.announcement_filter import AnnouncementFilter
 
 
 class AnnouncementService:
     def __init__(self, db: Session) -> None:
         self.db = db
 
-    async def get_announcements(self) -> list[AnnouncementSchema]:
-        announcements = await self._get_active_announcements()
+    async def get_announcements(self, filters: AnnouncementFilter) -> list[AnnouncementSchema]:
+        announcements = await self._get_active_announcements(filters)
         return announcements.all()
 
     async def get_announcement_by_slug(self, slug: str, user_agent: str) -> AnnouncementSchema:
@@ -47,7 +50,7 @@ class AnnouncementService:
 
         return announcement
 
-    async def _get_active_announcements(self):
+    async def _get_active_announcements(self, filters: AnnouncementFilter):
         announcements = (
             self.db.query(Announcement)
                 .filter(
@@ -55,7 +58,8 @@ class AnnouncementService:
                     Announcement.is_confirmed_by_admin==True,
                 )
         )
-        return announcements
+        query = filters.filter(announcements)
+        return query
 
     async def _add_views(self, announcement_id: int, user_agent: str):
         """

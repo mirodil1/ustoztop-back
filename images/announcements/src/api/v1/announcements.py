@@ -1,8 +1,10 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from fastapi_filter import FilterDepends
 from schemas.announcement import AnnouncementInputSchema, AnnouncementOutputSchema
 from services.announcement import AnnouncementService, get_announcement_service
+from services.announcement_filter import AnnouncementFilter
 from starlette import status
 from starlette.requests import Request
 
@@ -15,8 +17,9 @@ router = APIRouter(
 @router.get("/", response_model=list[AnnouncementOutputSchema])
 async def announcements_list(
     announcement_service: AnnouncementService = Depends(get_announcement_service),
+    announcement_filter: AnnouncementFilter = FilterDepends(AnnouncementFilter),
 ) -> list[AnnouncementOutputSchema]:
-    announcements_list = await announcement_service.get_announcements()
+    announcements_list = await announcement_service.get_announcements(announcement_filter)
 
     filtered_list = [
         AnnouncementOutputSchema(
