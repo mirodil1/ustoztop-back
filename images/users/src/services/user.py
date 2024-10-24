@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.db import db
 from src.exceptions import UnknownUser
-from src.models import User
+from src.models import Role, Tutor, User
 
 
 class UserService:
@@ -20,6 +20,19 @@ class UserService:
         if not user:
             raise UnknownUser
         return user
+
+    @classmethod
+    def get_users(cls, gender: str | None, role_name: str | None):
+        query = User.query
+        if gender:
+            query = query.join(User.tutor).filter(Tutor.gender == gender)
+            # query = query.filter_by(gender=gender)
+        if role_name:
+            query = query.join(User.roles).filter(Role.role_name == role_name)
+        users = query.all()
+        if not users:
+            raise UnknownUser
+        return users
 
     @staticmethod
     def create_user(phone_number, password, role_name):

@@ -63,3 +63,16 @@ def update_user_account():
         **user_data,
     )
     return {"error": "no error", "detail": "Account updated successfully"}, 200
+
+
+@router.route("/get/users", methods=["GET"])
+def get_accounts():
+    gender = request.args.get("gender")
+    role_name = request.args.get("role")
+
+    users = UserService.get_users(gender, role_name)
+    users_data = [{
+            "id": user.id,
+            # Add any other fields you want to return
+        } for user in users]
+    return users_data, 200
