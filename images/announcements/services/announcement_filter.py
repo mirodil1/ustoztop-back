@@ -9,13 +9,18 @@ from models.announcement import (
 
 
 class AnnouncementFilter(Filter):
+    search: str | None = None
     price__gte: int | None = None
     price__lte: int | None = None
-    lesson_type__in: list[LessonTypeEnum] | None = None
-    lesson_language__in: list[LessonLanguageEnum] | None = None
-    lesson_audience__in: list[LessonAudienceEnum] | None = None
-    lesson_place__in: list[LessonPlaceEnum] | None = None
+    lesson_type: LessonTypeEnum | None = None
+    lesson_language: LessonLanguageEnum | None = None
+    lesson_audience: LessonAudienceEnum | None = None
+    lesson_place: LessonPlaceEnum | None = None
     category_id: int | None = None
+    gender: str | None = None
+    role: str | None = None
 
     class Constants(Filter.Constants):
         model = Announcement
+        search_field_name = "search"
+        search_model_fields = ["name", "description"]

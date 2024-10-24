@@ -58,7 +58,24 @@ class AnnouncementService:
                     Announcement.is_confirmed_by_admin==True,
                 )
         )
+        user_gender = filters.gender
+        role_name = filters.role
+
+        filters.gender = None
+        filters.role = None
+
         query = filters.filter(announcements)
+
+        if user_gender or role_name:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{settings.user_url}/api/v1/get/users?gender={user_gender if user_gender else ''}&role={role_name if user_gender else ''}",
+                )
+                users = response.json()
+                user_ids = []
+                if response.status_code == 200:
+                    user_ids = [user["id"] for user in users]
+                query = query.filter(Announcement.user_id.in_(user_ids))
         return query
 
     async def _add_views(self, announcement_id: int, user_agent: str):

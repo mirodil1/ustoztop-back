@@ -19,5 +19,6 @@ class Settings(BaseSettings):
 
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     stat_url: str = os.environ.get("FAST_STAT_URL")
+    user_url: str = os.environ.get("FAST_USER_URL")
 
 settings = Settings()
