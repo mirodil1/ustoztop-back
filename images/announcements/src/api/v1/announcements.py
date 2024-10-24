@@ -59,7 +59,7 @@ async def announcements_detail(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Not found",
         )
-    
+
     return AnnouncementOutputSchema(
             id=announcement.id,
             name=announcement.name,
