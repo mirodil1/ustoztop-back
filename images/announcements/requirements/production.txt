@@ -3,4 +3,5 @@
 -r base.txt
 
 uvicorn==0.30.1 # https://www.uvicorn.org
-psycopg[c]==3.1.9  # https://github.com/psycopg/psycopg
+# psycopg[c]==3.1.9  # https://github.com/psycopg/psycopg
+psycopg2-binary==2.9.9 # https://github.com/psycopg/psycopg2

@@ -31,3 +31,6 @@ Flask-Limiter[redis]==3.8.0 # https://github.com/alisaifee/flask-limiter
 flask-swagger-ui==4.11.1 # https://github.com/sveint/flask-swagger-ui
 apispec-webframeworks==1.2.0 # https://github.com/marshmallow-code/apispec-webframeworks
 apispec[yaml]==6.6.1 # https://github.com/marshmallow-code/apispec
+
+# pyTelegramBotAPI
+pyTelegramBotAPI==4.17.0 # https://github.com/eternnoir/pyTelegramBotAPI
