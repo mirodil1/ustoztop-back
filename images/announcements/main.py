@@ -21,8 +21,8 @@ app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
 Base.metadata.create_all(bind=engine)
 
 
-app.include_router(categories.router, prefix="/v1/categories")
-app.include_router(announcements.router, prefix="/v1/announcements")
+app.include_router(categories.router, prefix="/api/v1/categories")
+app.include_router(announcements.router, prefix="/api/v1/announcements")
 
 if __name__ == "__main__":
     uvicorn.run(

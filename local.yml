@@ -115,8 +115,8 @@ services:
       - '27017:27017'
     volumes:
       - ustoz_local_stats_mongo:/data/db
-    env_file:
-      - ./images/statistics/.envs/.local
+    # env_file:
+    #   - ./images/statistics/.envs/.local
 
   redis:
     image: docker.io/redis:6

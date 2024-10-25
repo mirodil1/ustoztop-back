@@ -1,0 +1,152 @@
+version: '3'
+
+volumes:
+  ustoz_production_announcements_postgres: {}
+  ustoz_production_announcements_postgres_backups: {}
+  ustoz_production_users_postgres: {}
+  ustoz_production_users_postgres_backups: {}
+  ustoz_production_stats_mongo: {}
+  ustoz_production_staticfiles: {}
+  ustoz_production_media: {}
+
+services:
+  admin:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./images/admin/compose/production/admin/Dockerfile
+    image: ustoz_production_admin
+    depends_on:
+      - redis
+      - announcements_postgres
+      - users_postgres
+    volumes:
+      - ./images/admin:/app:z
+    env_file:
+      - ./images/admin/.envs/.production/.admin
+      - ./images/admin/.envs/.production/.postgres
+    ports:
+      - '8000:8000'
+    command: /start
+  
+  announcements_api:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./images/announcements/compose/production/api/Dockerfile
+    image: ustoz_production_announcement_api
+    depends_on:
+      - announcements_postgres
+      - users_postgres
+      - redis
+    volumes:
+      - ./images/announcements:/app:z
+    env_file:
+      - ./images/announcements/.envs/.production/.api
+      - ./images/announcements/.envs/.production/.postgres
+    ports:
+      - '8080:8080'
+    command: /start
+  
+  users_api: &users_api
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./images/users/compose/production/api/Dockerfile
+    image: ustoz_production_users_api
+    depends_on:
+      - users_postgres
+      - announcements_postgres
+      - redis
+    volumes:
+      - ./images/users:/app:z
+    env_file:
+      - ./images/users/.envs/.production/.api
+      - ./images/users/.envs/.production/.postgres
+    ports:
+      - '5000:5000'
+    command: /start
+
+  statistics_api:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./images/statistics/compose/production/api/Dockerfile
+    image: ustoz_production_statistics_api
+    depends_on:
+      - announcements_postgres
+      - users_postgres
+      - redis
+      - statistics_mongo
+    volumes:
+      - ./images/statistics:/app:z
+    env_file:
+      - ./images/statistics/.envs/.production/
+    ports:
+      - '8081:8081'
+    command: /start
+
+  announcements_postgres:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./images/announcements/compose/production/postgres/Dockerfile
+    image: ustoz_production_announcements_postgres
+    volumes:
+      - ustoz_production_announcements_postgres:/var/lib/postgresql/data
+      - ustoz_production_announcements_postgres_backups:/backups
+    env_file:
+      - ./images/announcements/.envs/.production/.postgres
+
+  users_postgres:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./images/users/compose/production/postgres/Dockerfile
+    image: ustoz_production_users_postgres
+    volumes:
+      - ustoz_production_users_postgres:/var/lib/postgresql/data
+      - ustoz_production_users_postgres_backups:/backups
+    env_file:
+      - ./images/users/.envs/.production/.postgres
+
+  statistics_mongo:
+    restart: unless-stopped
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - ustoz_production_stats_mongo:/data/db
+    # env_file:
+    #   - ./images/statistics/.envs/.production
+
+  redis:
+    restart: unless-stopped
+    image: docker.io/redis:6
+
+  celeryworker:
+    <<: *users_api
+    image: ustoz_production_celeryworker
+    depends_on:
+      - redis
+      - users_postgres
+      - announcements_postgres
+    ports: []
+    command: /start-celeryworker
+
+  nginx:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./images/nginx/Dockerfile
+    image: ustoz_production_nginx
+    ports:
+      - 8021:80
+    depends_on:
+      - admin
+      - announcements_api
+      - users_api
+      - statistics_api
+    volumes:
+      - ustoz_production_staticfiles:/usr/share/nginx/staticfiles:ro
+      - ustoz_production_media:/usr/share/nginx/media:ro
