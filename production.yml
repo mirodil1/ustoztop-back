@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
     build:
       context: .
-      dockerfile: ./images/admin/compose/production/admin/Dockerfile
+      dockerfile: ./images/admin/compose/production/Dockerfile
     image: ustoz_production_admin
     depends_on:
       - redis
