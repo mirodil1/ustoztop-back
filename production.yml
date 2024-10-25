@@ -141,7 +141,7 @@ services:
       dockerfile: ./images/nginx/Dockerfile
     image: ustoz_production_nginx
     ports:
-      - 8021:80
+      - 8008:80
     depends_on:
       - admin
       - announcements_api
