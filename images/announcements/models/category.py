@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Column, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, Column, ForeignKey, Integer, String,UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from db.postgres import Base
@@ -29,10 +29,14 @@ class CategoryTranslation(Base):
     id = Column(BigInteger, primary_key=True)
     language_code = Column(String(length=15))
     name = Column(String(length=255))
-    slug = Column(String(length=255), unique=True)
+    slug = Column(String(length=255))
     master_id = Column(BigInteger, ForeignKey("category.id"))
 
     category = relationship("Category", back_populates="translations")
+
+    __table_args__ = (
+        UniqueConstraint('slug', 'language_code', name='uq_slug_language_code'),
+    )
 
     def __repr__(self):
         return f"<CategoryTranslation(id={self.id}, name='{self.name}')>"
