@@ -40,7 +40,6 @@ class CategoryAdmin(TranslatableAdmin, MPTTModelAdmin):
     list_display = [
         "order",
         "name",
-        "parent",
         "icon_tag",
     ]
     search_fields = [
@@ -57,6 +56,10 @@ class CategoryAdmin(TranslatableAdmin, MPTTModelAdmin):
             '<img src="%s" width="32" height="32" />'
             % (obj.icon.url if obj.icon else ""),
         )
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(parent=None)
 
 
 @admin.register(Announcement)
