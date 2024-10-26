@@ -22,7 +22,7 @@ services:
       - users_postgres
     volumes:
       - ustoz_production_staticfiles:/app/staticfiles
-      - ustoz_production_media:app/apps/media
+      - ustoz_production_media:/app/apps/media
     env_file:
       - ./images/admin/.envs/.production/.admin
       - ./images/admin/.envs/.production/.postgres
@@ -58,7 +58,7 @@ services:
       - announcements_postgres
       - redis
     volumes:
-      - ustoz_production_media:app/src/media
+      - ustoz_production_media:/app/src/media
     env_file:
       - ./images/users/.envs/.production/.api
       - ./images/users/.envs/.production/.postgres
