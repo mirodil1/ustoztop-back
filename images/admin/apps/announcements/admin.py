@@ -5,6 +5,7 @@ from mptt.admin import MPTTModelAdmin
 from mptt.forms import MPTTAdminForm
 from parler.admin import TranslatableAdmin, TranslatableStackedInline
 from parler.forms import TranslatableModelForm
+from adminsortable2.admin import SortableAdminMixin
 
 from .models import Announcement, Category
 
@@ -30,7 +31,7 @@ class CategoryChildInline(TranslatableStackedInline):
 
 
 @admin.register(Category)
-class CategoryAdmin(TranslatableAdmin, MPTTModelAdmin):
+class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
     fieldsets = (
         (
             _("General"),
@@ -38,9 +39,10 @@ class CategoryAdmin(TranslatableAdmin, MPTTModelAdmin):
         ),
     )
     list_display = [
-        "order",
         "name",
         "icon_tag",
+        "order",
+
     ]
     search_fields = [
         "name",
@@ -48,8 +50,10 @@ class CategoryAdmin(TranslatableAdmin, MPTTModelAdmin):
     exclude = [
         "slug",
     ]
+    ordering = ("order",)
     inlines = [CategoryChildInline]
-
+    form = MyModelAdminForm
+    
     @admin.display(description="Icon")
     def icon_tag(self, obj):
         return mark_safe(
