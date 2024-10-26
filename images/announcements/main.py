@@ -13,7 +13,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 
 app = FastAPI(
     title=settings.project_name,
-    docs_url="api/v1/announcements/openapi",
+    docs_url="/api/v1/announcements/openapi",
     openapi_url="/announcements/openapi.json",
     default_response_class=ORJSONResponse,
 )
