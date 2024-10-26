@@ -21,7 +21,8 @@ services:
       - announcements_postgres
       - users_postgres
     volumes:
-      - ./images/admin:/app:z
+      - ustoz_production_staticfiles:/app/staticfiles
+      - ustoz_production_media:app/apps/media
     env_file:
       - ./images/admin/.envs/.production/.admin
       - ./images/admin/.envs/.production/.postgres
@@ -39,8 +40,6 @@ services:
       - announcements_postgres
       - users_postgres
       - redis
-    volumes:
-      - ./images/announcements:/app:z
     env_file:
       - ./images/announcements/.envs/.production/.api
       - ./images/announcements/.envs/.production/.postgres
@@ -59,7 +58,7 @@ services:
       - announcements_postgres
       - redis
     volumes:
-      - ./images/users:/app:z
+      - ustoz_production_media:app/src/media
     env_file:
       - ./images/users/.envs/.production/.api
       - ./images/users/.envs/.production/.postgres
@@ -78,8 +77,6 @@ services:
       - users_postgres
       - redis
       - statistics_mongo
-    volumes:
-      - ./images/statistics:/app:z
     env_file:
       - ./images/statistics/.envs/.production/
     ports:
