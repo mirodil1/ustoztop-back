@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from mptt.admin import MPTTModelAdmin
 from mptt.forms import MPTTAdminForm
-from parler.admin import TranslatableAdmin
+from parler.admin import TranslatableAdmin, TranslatableStackedInline
 from parler.forms import TranslatableModelForm
 
 from .models import Announcement, Category
@@ -15,6 +15,18 @@ class MyModelAdminForm(MPTTAdminForm, TranslatableModelForm):
         self.fields["parent"].queryset = self.fields[
             "parent"
         ].queryset.prefetch_related("translations")
+
+
+class CategoryChildInline(TranslatableStackedInline):
+    model = Category
+    exclude = ["slug"]
+    fieldsets = (
+        (
+            _("General"),
+            {"fields": ("name", "parent")},
+        ),
+    )
+    extra = 10
 
 
 @admin.register(Category)
@@ -37,6 +49,7 @@ class CategoryAdmin(TranslatableAdmin, MPTTModelAdmin):
     exclude = [
         "slug",
     ]
+    inlines = [CategoryChildInline]
 
     @admin.display(description="Icon")
     def icon_tag(self, obj):

@@ -35,7 +35,7 @@ class CategoryTranslation(Base):
     category = relationship("Category", back_populates="translations")
 
     __table_args__ = (
-        UniqueConstraint('slug', 'language_code', name='uq_slug_language_code'),
+        UniqueConstraint("slug", "language_code", name="uq_slug_language_code"),
     )
 
     def __repr__(self):
