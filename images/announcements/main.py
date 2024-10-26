@@ -13,7 +13,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 
 app = FastAPI(
     title=settings.project_name,
-    docs_url="/announcements/openapi",
+    docs_url="api/v1/announcements/openapi",
     openapi_url="/announcements/openapi.json",
     default_response_class=ORJSONResponse,
 )
@@ -21,7 +21,7 @@ app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
 Base.metadata.create_all(bind=engine)
 
 
-app.include_router(categories.router, prefix="/api/v1/categories")
+app.include_router(categories.router, prefix="/api/v1/announcements/categories")
 app.include_router(announcements.router, prefix="/api/v1/announcements")
 
 if __name__ == "__main__":

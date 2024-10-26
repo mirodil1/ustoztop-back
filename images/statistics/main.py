@@ -11,7 +11,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 
 app = FastAPI(
     title=settings.project_name,
-    docs_url="/api/openapi",
+    docs_url="/api/v1/statistics/openapi",
     openapi_url="/api/openapi.json",
 )
 
