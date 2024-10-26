@@ -65,7 +65,7 @@ def update_user_account():
     return {"error": "no error", "detail": "Account updated successfully"}, 200
 
 
-@router.route("/get/users", methods=["GET"])
+@router.route("/get/idx", methods=["GET"])
 def get_accounts():
     gender = request.args.get("gender")
     role_name = request.args.get("role")

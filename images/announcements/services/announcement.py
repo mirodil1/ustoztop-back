@@ -69,7 +69,7 @@ class AnnouncementService:
         if user_gender or role_name:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    f"{settings.user_url}/api/v1/get/users?gender={user_gender if user_gender else ''}&role={role_name if user_gender else ''}",
+                    f"{settings.user_url}/api/v1/users/get/idx?gender={user_gender if user_gender else ''}&role={role_name if user_gender else ''}",
                 )
                 users = response.json()
                 user_ids = []

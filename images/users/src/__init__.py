@@ -46,7 +46,7 @@ def create_app(app_config):
     from src.routes.v1 import router as main_blueprint
 
     limiter.init_app(app)
-    app.register_blueprint(main_blueprint, url_prefix="/api/v1")
+    app.register_blueprint(main_blueprint, url_prefix="/api/v1/users")
 
     app.config.from_mapping(
         CELERY=dict(
