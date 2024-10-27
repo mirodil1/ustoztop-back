@@ -40,6 +40,7 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
     )
     list_display = [
         "name",
+        "children_count",
         "icon_tag",
         "order",
 
@@ -60,6 +61,11 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
             '<img src="%s" width="32" height="32" />'
             % (obj.icon.url if obj.icon else ""),
         )
+    
+    @admin.display(description="Children")
+    def children_count(self, obj):
+        count = obj.children.count()
+        return count
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
