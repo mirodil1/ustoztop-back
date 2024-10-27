@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.post("/announcement_views/create/{announcement_id}")
+@router.post("/announcement_views/create/{announcement_id}", include_in_schema=False)
 async def create_announcement_views(
     announcement_id: int,
     request: Request,
@@ -50,7 +50,7 @@ async def get_announcement_views(
     return result
 
 
-@router.post("/account_views/create/{user_id}")
+@router.post("/account_views/create/{user_id}", include_in_schema=False)
 async def create_account_views(
     user_id: int,
     request: Request,
