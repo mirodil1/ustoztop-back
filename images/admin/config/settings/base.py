@@ -48,7 +48,7 @@ PARLER_LANGUAGES = {
         },
     ),
     "default": {
-        "fallbacks": ["uz"],  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        "fallbacks": ["ru"],  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
         "hide_untranslated": True,  # the default; let .active_translations() return fallbacks too.
     },
 }
@@ -265,6 +265,7 @@ JAZZMIN_SETTINGS = {
 
     },
     "custom_css": "css/project.css",
+    "language_chooser": True,  
     # "language_chooser": {
     #     "languages": [
     #         {"code": "uz", "name": _("Ўзбекча"), "name_native": "Oʻzbekcha"},

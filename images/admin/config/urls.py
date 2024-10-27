@@ -8,11 +8,12 @@ from django.views import defaults as default_views
 from django.views.generic import RedirectView
 
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     # Django Admin, use {% url 'admin:index' %}
     path("", RedirectView.as_view(url=settings.ADMIN_URL), name="home"),
     path(settings.ADMIN_URL, admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("i18n/", include("django.conf.urls.i18n")),
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development
     urlpatterns += staticfiles_urlpatterns()
