@@ -48,7 +48,7 @@ PARLER_LANGUAGES = {
         },
     ),
     "default": {
-        "fallbacks": ["ru"],  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        "fallbacks": ["ru", "uz"],  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
         "hide_untranslated": True,  # the default; let .active_translations() return fallbacks too.
     },
 }
