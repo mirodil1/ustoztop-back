@@ -12,7 +12,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 app = FastAPI(
     title=settings.project_name,
     docs_url="/api/v1/statistics/openapi",
-    openapi_url="/api/openapi.json",
+    openapi_url="/api/v1/statistics/openapi.json",
 )
 
 app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
@@ -26,5 +26,4 @@ if __name__ == "__main__":
         port=8081,
         log_config=LOGGING,
         log_level=logging.DEBUG,
-        reload=True,
     )
