@@ -33,5 +33,5 @@ class CategoryOutputSchema(BaseModel):
     name: str
     slug: str
     order: int
-    icon: str
+    icon: str | None
     children: list["CategoryOutputSchema"] = []

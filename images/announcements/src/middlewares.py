@@ -1,3 +1,5 @@
+from contextvars import ContextVar
+
 import jwt
 from core.config import settings
 from jwt import PyJWTError
@@ -7,6 +9,9 @@ from starlette.authentication import (
     AuthenticationError,
     BaseUser,
 )
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import Response
 
 
 class User(BaseUser):
@@ -59,3 +64,14 @@ class JWTAuthBackend(AuthenticationBackend):
         permissions = "write"
 
         return AuthCredentials(permissions), User(user_id=jwt_decoded["sub"])
+
+
+
+request_object: ContextVar[Request] = ContextVar("request")
+
+
+class PaginationMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        request_object.set(request)
+        response = await call_next(request)
+        return response

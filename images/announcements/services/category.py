@@ -1,18 +1,18 @@
 from functools import lru_cache
-from typing import Optional
+
+from fastapi import Depends
+from sqlalchemy.orm import Session, joinedload
 
 from db.postgres import get_db
-from fastapi import Depends
+from src.paginator import paginate_per_page
 from models.category import Category
 from schemas.category import CategorySchema
-from sqlalchemy.orm import Session, joinedload
 
 
 class CategoryService:
     def __init__(self, db: Session) -> None:
         self.db = db
-
-    async def get_categories(self, language: str):
+    async def get_categories(self, language: str, page: int, per_page: int):
         categories = (
             self.db.query(Category)
                 .options(
@@ -21,11 +21,18 @@ class CategoryService:
                 )
                 .filter(Category.parent_id.is_(None))
         )
+        paginated_categories = await paginate_per_page(categories, page, per_page)
+
         translated_categories = [
             CategorySchema.model_validate(category).model_dump(language=language)
-            for category in categories
+            for category in paginated_categories["items"]
         ]
-        return translated_categories
+        return {
+            "categories": translated_categories,
+            "count": paginated_categories["count"],
+            "next_page": paginated_categories["next_page"],
+            "previous_page": paginated_categories["previous_page"],
+        }
 
     async def get_category_by_id(
             self, category_id: int, language: str

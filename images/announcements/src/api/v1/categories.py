@@ -1,12 +1,12 @@
-from typing import List
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 
-from fastapi import APIRouter, Depends, Header, HTTPException
 from starlette import status
-from starlette.responses import RedirectResponse
 
 from core.config import settings
 from schemas.category import CategoryOutputSchema
+from schemas.pagination import PaginatedPerPageResponse
 from services.category import CategoryService, get_category_service
+
 
 router = APIRouter(
     tags=["categories"],
@@ -14,50 +14,60 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[CategoryOutputSchema])
+@router.get("/", response_model=PaginatedPerPageResponse[CategoryOutputSchema])
 async def categories_list(
     category_service: CategoryService = Depends(get_category_service),
-    X_language: str = Header(...)
+    X_language: str = Header(...),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(100, ge=0),
 ):
     if X_language not in settings.languages["available"]:
         X_language = settings.languages["default"]
-        
-    categories = await category_service.get_categories(X_language)
-    return [
+
+    paginated_result = await category_service.get_categories(X_language, page, per_page)
+    categories = [
             CategoryOutputSchema(
                 id=category.get("id"),
                 name=category.get("name"),
                 slug=category.get("slug"),
                 order=category.get("order"),
-                icon=category.get("icon"),
-                children=category.get("children")
-            ) for category in categories
+                icon=f"{settings.base_url}/media/{category.get('icon')}" \
+                    if category.get("icon") else None,
+                children=category.get("children"),
+            ) for category in paginated_result["categories"]
         ]
+    return {
+        "count": paginated_result["count"],
+        "next_page": paginated_result["next_page"],
+        "previous_page": paginated_result["previous_page"],
+        "items": categories,
+    }
 
 
 @router.get("/{category_id}", response_model=CategoryOutputSchema)
 async def category_detail(
     category_id: int,
     category_service: CategoryService = Depends(get_category_service),
-    X_language: str = Header(...)
+    X_language: str = Header(...),
 ):
     if X_language not in settings.languages["available"]:
         X_language = settings.languages["default"]
-        
+
     category = await category_service.get_category_by_id(
         category_id=category_id,
-        language=X_language
+        language=X_language,
     )
     if not category:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not found"
+            detail="Not found",
         )
     return CategoryOutputSchema(
                 id=category.get("id"),
                 name=category.get("name"),
                 slug=category.get("slug"),
                 order=category.get("order"),
-                icon=category.get("icon"),
-                children=category.get("children")
+                icon=f"{settings.base_url}/media/{category.get('icon')}" \
+                    if category.get("icon") else None,
+                children=category.get("children"),
             )
