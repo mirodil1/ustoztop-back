@@ -8,8 +8,8 @@ from config import config_dict
 from src import create_app  # noqa: E402,F401
 
 # WARNING: Don't run with debug turned on in production!
-DEBUG = (os.getenv("DEBUG", "False") == "True")
-
+DEBUG = os.getenv("DEBUG", "True")
+print(DEBUG)
 get_config_mode = "Local" if DEBUG else "Production"
 
 try:
