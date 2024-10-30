@@ -13,6 +13,7 @@ class Tutor(TimeStampedModel):
     first_name = db.Column(db.String(length=64), nullable=True)
     last_name = db.Column(db.String(length=64), nullable=True)
     gender = db.Column(db.Enum(Gender), nullable=True)
+    description = db.Column(db.String, nullable=True)
     avatar = db.Column(db.String, nullable=True)
 
     user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"))
