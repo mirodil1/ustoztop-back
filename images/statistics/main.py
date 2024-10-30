@@ -26,4 +26,5 @@ if __name__ == "__main__":
         port=8081,
         log_config=LOGGING,
         log_level=logging.DEBUG,
+        reload=settings.debug,
     )
