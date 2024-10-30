@@ -13,7 +13,7 @@ jwt_refresh_token_expires_days = int(os.environ.get("JWT_REFRESH_TOKEN_EXPIRES_D
 class Config:
 
     basedir = os.path.abspath(os.path.dirname(__file__))
-
+    BASE_URL = os.environ.get("BASE_URL", "http://localhost:5000")
     # Assets Management
     ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/static/assets")
 

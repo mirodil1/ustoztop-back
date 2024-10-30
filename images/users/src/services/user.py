@@ -1,5 +1,7 @@
 import requests
 from flask import current_app as app
+from sqlalchemy import desc
+from sqlalchemy.orm import joinedload
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.db import db
@@ -26,13 +28,19 @@ class UserService:
         query = User.query
         if gender:
             query = query.join(User.tutor).filter(Tutor.gender == gender)
-            # query = query.filter_by(gender=gender)
         if role_name:
             query = query.join(User.roles).filter(Role.role_name == role_name)
         users = query.all()
         if not users:
             raise UnknownUser
         return users
+
+    @staticmethod
+    def get_premium_users():
+        premium_users = User.query.filter_by(is_premium=True) \
+            .options(joinedload(User.learning_center), joinedload(User.tutor)) \
+            .order_by(desc(User.premium_started)).all()
+        return premium_users
 
     @staticmethod
     def create_user(phone_number, password, role_name):

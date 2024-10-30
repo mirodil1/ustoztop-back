@@ -1,3 +1,4 @@
+from flask import current_app as app
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import ValidationError
@@ -65,8 +66,34 @@ def update_user_account():
     return {"error": "no error", "detail": "Account updated successfully"}, 200
 
 
+@router.route("/premium", methods=["GET"])
+def get_premium_accounts():
+    premium_users = UserService.get_premium_users()
+    users_data = []
+    for user in premium_users:
+        user_info = {
+            "id": user.id,
+            "role": ",".join([role.role_name for role in user.roles]),
+            "avatar": None,
+            "is_verified_by_admin": user.is_verified_by_admin,
+            "is_premium": user.is_premium,
+        }
+        if user.tutor:
+            user_info["avatar"] = f"{app.config['BASE_URL']}/media/avatar{user.tutor.avatar}"
+            user_info["first_name"] = user.tutor.first_name
+            user_info["last_name"] = user.tutor.last_name
+        elif user.learning_center:
+            user_info["name"] = user.learning_center.name
+            user_info["description"] = user.learning_center.description
+            user_info["avatar"] = f"{app.config['BASE_URL']}/media/avatar{user.learning_center.avatar}"
+
+        users_data.append(user_info)
+
+    return users_data, 200
+
+
 @router.route("/get/idx", methods=["GET"])
-def get_accounts():
+def get_accounts_ids():
     gender = request.args.get("gender")
     role_name = request.args.get("role")
 
@@ -76,3 +103,4 @@ def get_accounts():
             # Add any other fields you want to return
         } for user in users]
     return users_data, 200
+
