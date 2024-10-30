@@ -9,7 +9,7 @@ from gevent.pywsgi import WSGIServer
 from src import create_app  # noqa: E402,F401
 
 # WARNING: Don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True")
+DEBUG = os.getenv("DEBUG", "True") == "True"
 get_config_mode = "Local" if DEBUG else "Production"
 
 try:
@@ -27,7 +27,7 @@ celery_app = flask_app.extensions["celery"]
 
 if __name__ == "__main__":
     if DEBUG:
-        flask_app.run(host="0.0.0.0", debug=True)
+        flask_app.run(host="0.0.0.0", debug=DEBUG)
     else:
         http_server = WSGIServer(("0.0.0.0", 5000), flask_app)
         http_server.serve_forever()
