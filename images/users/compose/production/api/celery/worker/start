@@ -5,5 +5,5 @@ set -o nounset
 
 
 # exec watchfiles --filter python celery.__main__.main --args '-A wsgi_app.celery_app worker --loglevel INFO'
-# celery -A wsgi_app.celery_app worker --loglevel=info
-celery --app wsgi_app worker --loglevel=info
+celery -A wsgi_app.celery_app worker --loglevel=info -P gevent
+# celery --app wsgi_app worker --loglevel=info
