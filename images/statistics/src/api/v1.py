@@ -47,6 +47,7 @@ async def get_announcement_views(
     if not request.user:
         raise HTTPException(status_code=401, detail="Not authorized")
     result = await announc_statistic_service.get_announcement_views(announcement_id)
+
     return result
 
 
@@ -79,7 +80,6 @@ async def get_account_views(
     account_statistic_service: AccountViewsService = Depends(
         get_account_stat_service),
 ):
-    print(dir(request.user.display_name))
     if not request.user.is_authenticated:
         raise HTTPException(status_code=401, detail="Not authorized")
     result = await account_statistic_service.get_account_views(request.user.user_id)

@@ -4,11 +4,10 @@ from pydantic import BaseModel, validator
 
 
 class BaseViews(BaseModel):
-    id: str
-    user_data: str
-    created_at: date
+    count: int
+    date: date
 
-    @validator("created_at", pre=True)
+    @validator("date", pre=True)
     def string_to_date(cls, v: object) -> object:
         if isinstance(v, datetime):
             return v.date()
@@ -16,7 +15,7 @@ class BaseViews(BaseModel):
 
 
 class AnnouncementViews(BaseViews):
-    announcement_id: int
+    pass
 
 
 class ProfileViews(BaseViews):

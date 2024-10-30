@@ -60,15 +60,38 @@ class AnnouncementViewsService:
     async def get_announcement_views(announcement_id: int):
         announcement_views = []
         last_30 = datetime.now() - timedelta(days=30)
-        async for view in announcement_views_collection.find(
+        pipeline = [
             {
-                "announcement_id":announcement_id,
-                "created_at": {"$gte": last_30},
+                "$match": {
+                    "announcement_id": announcement_id,
+                    "created_at": {"$gte": last_30},
+                }
             },
+            {
+                "$group": {
+                    "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$created_at"}},
+                    "count": {"$sum": 1},
+                }
+            },
+            {
+                "$project": {
+                    "date": "$_id",
+                    "count": 1,
+                    "_id": 0,
+                }
+            },
+            {
+                "$sort": {"date": 1}  # Sort by date ascending
+            }
+        ]
+        print("Here")
+        async for view in announcement_views_collection.aggregate(
+            pipeline
         ):
             # Convert MongoDB ObjectId to string for serialization
-            view["id"] = str(view["_id"])
+            # view["id"] = str(view["_id"])
             announcement_views.append(view)
+        
         return announcement_views
 
 
