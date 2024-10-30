@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, current_app as app
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import ValidationError
 
@@ -16,6 +16,8 @@ def get_center(user_id):
     return {
         "name": learning_center.name,
         "description": learning_center.description,
+        "avatar": f"{app.config['BASE_URL']}/media/avatar{learning_center.avatar}",
+        "banner": f"{app.config['BASE_URL']}/media/banner{learning_center.avatar}",
         "branches": [
             {
                 "id": branch.id,
