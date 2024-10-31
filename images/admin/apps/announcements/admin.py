@@ -1,3 +1,4 @@
+from adminsortable2.admin import SortableAdminMixin
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -5,7 +6,6 @@ from mptt.admin import MPTTModelAdmin
 from mptt.forms import MPTTAdminForm
 from parler.admin import TranslatableAdmin, TranslatableStackedInline
 from parler.forms import TranslatableModelForm
-from adminsortable2.admin import SortableAdminMixin
 
 from .models import Announcement, Category
 
@@ -74,4 +74,8 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
 
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
-    list_display = ["name", "is_confirmed_by_admin"]
+    list_display = ["name", "status"]
+    exclude = [
+        "is_active",
+        "is_confirmed_by_admin",
+    ]
