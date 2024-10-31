@@ -82,5 +82,5 @@ def authorize_device(device_auth_id):
 def send_security_code():
     user_data = request.json
     phone_number = user_data.get("phone_number")
-    send_security_code_task.delay("phone_number")
+    send_security_code_task.delay(phone_number)
     return {"error": "no error", "detail": "code sent successfully"}, 200
