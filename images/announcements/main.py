@@ -4,6 +4,7 @@ import logging
 import uvicorn as uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from core.config import settings
 from core.logger import LOGGING
@@ -20,6 +21,13 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
 )
 app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(PaginationMiddleware)
 
 Base.metadata.create_all(bind=engine)

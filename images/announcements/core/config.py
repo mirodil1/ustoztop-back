@@ -22,4 +22,6 @@ class Settings(BaseSettings):
     stat_url: str = os.environ.get("FAST_STAT_URL")
     user_url: str = os.environ.get("FAST_USER_URL")
 
+    origins: list = os.environ.get("FAST_ORIGINS", "http://localhost:3000")
+
 settings = Settings()
