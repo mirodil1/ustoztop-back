@@ -1,12 +1,13 @@
-from typing import List
-
-from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Query
 from fastapi_filter import FilterDepends
+from starlette import status
+from starlette.requests import Request
+
+from schemas.pagination import PaginatedPerPageResponse
 from schemas.announcement import AnnouncementInputSchema, AnnouncementOutputSchema
 from services.announcement import AnnouncementService, get_announcement_service
 from services.announcement_filter import AnnouncementFilter
-from starlette import status
-from starlette.requests import Request
+
 
 router = APIRouter(
     tags=["announcements"],
@@ -14,14 +15,20 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[AnnouncementOutputSchema])
+@router.get("/", response_model=PaginatedPerPageResponse[AnnouncementOutputSchema])
 async def announcements_list(
     announcement_service: AnnouncementService = Depends(get_announcement_service),
     announcement_filter: AnnouncementFilter = FilterDepends(AnnouncementFilter),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(100, ge=0),
 ) -> list[AnnouncementOutputSchema]:
-    announcements_list = await announcement_service.get_announcements(announcement_filter)
+    paginated_result = await announcement_service.get_announcements(
+        announcement_filter,
+        page,
+        per_page,
+    )
 
-    filtered_list = [
+    announcement_list = [
         AnnouncementOutputSchema(
             id=announcement.id,
             name=announcement.name,
@@ -40,10 +47,14 @@ async def announcements_list(
             is_promoted=announcement.is_promoted,
             promotion_started=announcement.promotion_started,
             promotion_expired=announcement.promotion_expired,
-        ) for announcement in announcements_list
+        ) for announcement in paginated_result["announcements"]
     ]
-    return filtered_list
-
+    return {
+        "count": paginated_result["count"],
+        "next_page": paginated_result["next_page"],
+        "previous_page": paginated_result["previous_page"],
+        "items": announcement_list,
+    }
 
 @router.get("/{slug}/", response_model=AnnouncementOutputSchema)
 async def announcements_detail(

@@ -7,8 +7,8 @@ from fastapi import Depends
 from models.announcement import Announcement
 from schemas.announcement import AnnouncementSchema
 from slugify import slugify
-from sqlalchemy.future import select
 from sqlalchemy.orm import Session
+from src.paginator import paginate_per_page
 
 from services.announcement_filter import AnnouncementFilter
 
@@ -17,9 +17,21 @@ class AnnouncementService:
     def __init__(self, db: Session) -> None:
         self.db = db
 
-    async def get_announcements(self, filters: AnnouncementFilter) -> list[AnnouncementSchema]:
+    async def get_announcements(
+            self,
+            filters: AnnouncementFilter,
+            page: int,
+            per_page: int,
+    ) -> list[AnnouncementSchema]:
         announcements = await self._get_active_announcements(filters)
-        return announcements.all()
+        paginated_categories = await paginate_per_page(announcements, page, per_page)
+
+        return {
+            "announcements": paginated_categories["items"],
+            "count": paginated_categories["count"],
+            "next_page": paginated_categories["next_page"],
+            "previous_page": paginated_categories["previous_page"],
+        }
 
     async def get_announcement_by_slug(self, slug: str, user_agent: str) -> AnnouncementSchema:
         active = await self._get_active_announcements()
