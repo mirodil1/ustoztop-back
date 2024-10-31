@@ -28,6 +28,13 @@ class LessonAudienceEnum(enum.Enum):
     all = "all"
 
 
+class AnnouncementStatusEnum(enum.Enum):
+    active = "active"
+    inactive = "inactive"
+    rejected = "rejected"
+    waiting = "waiting"
+
+
 class AnnouncementSchema(BaseModel):
     id: int | None
     name: str
@@ -41,6 +48,7 @@ class AnnouncementSchema(BaseModel):
     lesson_place: LessonPlaceEnum
     lesson_language: LessonLanguageEnum
     lesson_audience: LessonAudienceEnum
+    status: AnnouncementStatusEnum
     description: str
     is_active: bool = False
     is_confirmed_by_admin: bool = False
@@ -79,7 +87,7 @@ class AnnouncementInputSchema(BaseModel):
     name: str = Field(max_length=128)
     category_id: int
     phone_number: str = Field(max_length=14)
-    price: Decimal = Field(lte=15_000_000)
+    price: Decimal = Field(lte=99_000_000)
     lessons_in_week: int = Field(gt=0, lt=8)
     lesson_duration_hours: Decimal = Field(lt=12)
     lesson_type: LessonTypeEnum

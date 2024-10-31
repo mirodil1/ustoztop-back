@@ -1,4 +1,5 @@
 from schemas.announcement import (
+    AnnouncementStatusEnum,
     LessonAudienceEnum,
     LessonLanguageEnum,
     LessonPlaceEnum,
@@ -36,6 +37,9 @@ class Announcement(TimeStampedModel):
     lesson_language = Column(Enum(LessonLanguageEnum), nullable=False)
     lesson_audience = Column(Enum(LessonAudienceEnum), nullable=True)
     description = Column(String, nullable=False)
+    status = Column(
+        Enum(AnnouncementStatusEnum), default=AnnouncementStatusEnum.waiting,
+    )
     is_active = Column(Boolean, default=False)
     is_confirmed_by_admin = Column(Boolean, default=False)
     is_promoted = Column(Boolean, default=False)

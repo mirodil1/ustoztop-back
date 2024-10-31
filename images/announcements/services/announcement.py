@@ -5,7 +5,7 @@ from core.config import settings
 from db.postgres import get_db
 from fastapi import Depends
 from models.announcement import Announcement
-from schemas.announcement import AnnouncementSchema
+from schemas.announcement import AnnouncementSchema, AnnouncementStatusEnum
 from slugify import slugify
 from sqlalchemy.orm import Session
 from src.paginator import paginate_per_page
@@ -62,12 +62,24 @@ class AnnouncementService:
 
         return announcement
 
+    async def get_user_announcement(
+            self, user_id: int, status: str | None = AnnouncementStatusEnum.active,
+    ):
+        announcements = (
+            self.db.query(Announcement)
+                .filter(
+                    Announcement.user_id==user_id,
+                    Announcement.status==status,
+                )
+        )
+        print(announcements)
+        return announcements
+
     async def _get_active_announcements(self, filters: AnnouncementFilter):
         announcements = (
             self.db.query(Announcement)
                 .filter(
-                    Announcement.is_active==True,
-                    Announcement.is_confirmed_by_admin==True,
+                    Announcement.status==AnnouncementStatusEnum.active,
                 )
         )
         user_gender = filters.gender
