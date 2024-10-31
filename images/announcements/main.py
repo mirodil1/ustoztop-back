@@ -5,13 +5,13 @@ import uvicorn as uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.authentication import AuthenticationMiddleware
 
 from core.config import settings
 from core.logger import LOGGING
 from db.postgres import Base, engine
 from src.api.v1 import announcements, categories
 from src.middlewares import JWTAuthBackend, PaginationMiddleware
-from starlette.middleware.authentication import AuthenticationMiddleware
 
 
 app = FastAPI(
@@ -23,8 +23,8 @@ app = FastAPI(
 app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    # allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
