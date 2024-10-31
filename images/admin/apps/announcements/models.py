@@ -79,6 +79,12 @@ class Announcement(TimeStampedModel):
         ADULTS = "adults", _("Adults")
         ALL = "all", _("All")
 
+    class AnnouncementStatus(models.TextChoices):
+        ACTIVE = "active", _("Active")
+        INACTICE = "inactive", _("Not active")
+        WAITING = "waiting", _("Waiting")
+        REJECTED = "rejected", _("Rejected")
+
     name = models.CharField(max_length=255, verbose_name=_("Name"))
     slug = models.SlugField(unique=True, verbose_name=_("Slug"))
     user_id = models.BigIntegerField(verbose_name=_("User ID"))
@@ -93,53 +99,59 @@ class Announcement(TimeStampedModel):
     lesson_type = models.CharField(
         max_length=10,
         choices=LessonType.choices,
-        verbose_name=_("Lesson type")
+        verbose_name=_("Lesson type"),
     )
     lesson_place = models.CharField(
         max_length=10,
         choices=LessonPlace.choices,
-        verbose_name=_("Lesson place")
+        verbose_name=_("Lesson place"),
     )
     lesson_language = models.CharField(
         max_length=2,
         choices=LessonLanguage.choices,
-        verbose_name=_("Lesson language")
+        verbose_name=_("Lesson language"),
     )
     lesson_audience = models.CharField(
         max_length=10,
         choices=LessonAudience.choices,
         null=True,
         blank=True,
-        verbose_name=_("Lesson audience")
+        verbose_name=_("Lesson audience"),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=AnnouncementStatus.choices,
+        default=AnnouncementStatus.WAITING,
+        verbose_name=_("Status"),
     )
     description = models.TextField(verbose_name=_("Description"))
     is_active = models.BooleanField(
         default=False,
-        verbose_name=_("Status")
+        verbose_name=_("Status"),
     )
     is_confirmed_by_admin = models.BooleanField(
         default=False,
-        verbose_name=_("Admin confirmation")
+        verbose_name=_("Admin confirmation"),
     )
     is_promoted = models.BooleanField(
         default=False,
-        verbose_name=_("Promotion status")
+        verbose_name=_("Promotion status"),
     )
     promotion_started = models.DateField(
         null=True,
         blank=True,
-        verbose_name=_("Promotion start date")
+        verbose_name=_("Promotion start date"),
     )
     promotion_expired = models.DateField(
         null=True,
         blank=True,
-        verbose_name=_("Promotion expire date")
+        verbose_name=_("Promotion expire date"),
     )
     category = models.ForeignKey(
         to=Category,
         related_name="announcements",
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
     )
 
     class Meta:
