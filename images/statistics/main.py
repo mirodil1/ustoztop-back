@@ -18,7 +18,6 @@ app = FastAPI(
 app.add_middleware(AuthenticationMiddleware, backend=JWTAuthBackend())
 app.include_router(v1.router, prefix="/api/v1/statistics")
 
-
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",

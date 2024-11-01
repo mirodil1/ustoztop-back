@@ -21,6 +21,6 @@ class Settings(BaseSettings):
     mongodb_db: str = os.getenv("MONGODB_DB", "statistics")
 
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    debug: bool = os.getenv("DEBUG", True)
+    debug: bool = os.getenv("DEBUG", "True") == "True"
 
 settings = Settings()
