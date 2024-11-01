@@ -43,5 +43,5 @@ if __name__ == "__main__":
         port=8080,
         log_config=LOGGING,
         log_level=logging.DEBUG,
-        reload=True,
+        reload=settings.debug,
     )

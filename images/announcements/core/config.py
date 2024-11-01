@@ -24,8 +24,9 @@ class Settings(BaseSettings):
 
     origins: list = [
         origin.strip() for origin in os.environ.get(
-            "FAST_ORIGINS", ["http://localhost:3000"]
+            "FAST_ORIGINS", "http://localhost:3000"
         ).split(",")
     ]
+    debug: bool = os.environ.get("FAST_DEBUG", "False") == "True"
 
 settings = Settings()
