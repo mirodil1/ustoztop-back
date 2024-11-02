@@ -91,7 +91,7 @@ class UserService:
     @staticmethod
     def add_account_views(user_id: int, user_agent:str):
         response = requests.post(
-            f"{app.config['STATISTICS_URL']}/v1/statistics/account_views/create/{user_id}",
+            f"{app.config['STATISTICS_URL']}/api/v1/statistics/account_views/create/{user_id}",
             headers={"user-agent": user_agent},
         )
         if response.status_code == 200:

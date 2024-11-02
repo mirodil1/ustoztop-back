@@ -52,8 +52,8 @@ class TokenService:
         raise InvalidRefreshToken
 
     @staticmethod
-    def remove_refresh_token(email, device_id):
-        user = UserService.get_user_by_email(email)
+    def remove_refresh_token(user_id, device_id):
+        user = UserService.get_user_by_id(user_id)
         for device in user.devices:
             if str(device.id) == device_id:
                 redis_db.delete(device_id)
@@ -61,7 +61,7 @@ class TokenService:
         raise UnknownDevice
 
     @staticmethod
-    def remove_all_refresh_tokens(email):
-        user = UserService.get_user_by_email(email)
+    def remove_all_refresh_tokens(user_id):
+        user = UserService.get_user_by_id(user_id)
         for device in user.devices:
             redis_db.delete(str(device.id))

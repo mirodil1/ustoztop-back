@@ -103,4 +103,3 @@ def get_accounts_ids():
             # Add any other fields you want to return
         } for user in users]
     return users_data, 200
-

@@ -1,4 +1,5 @@
 from flask import request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from src import schemas
 from src.routes.v1 import limiter, router
@@ -84,3 +85,21 @@ def send_security_code():
     phone_number = user_data.get("phone_number")
     send_security_code_task.delay(phone_number)
     return {"error": "no error", "detail": "code sent successfully"}, 200
+
+
+@router.route("/logout", methods=["POST"])
+@jwt_required(fresh=True)
+def logout():
+    user_data = request.json
+    schemas.DeviceIdSchema().load(user_data)
+    user_id = get_jwt_identity()
+    TokenService.remove_refresh_token(user_id, user_data["device_id"])
+    return {"error": "no error"}, 200
+
+
+@router.route("/logout_all", methods=["POST"])
+@jwt_required(fresh=True)
+def logout_all():
+    user_id = get_jwt_identity()
+    TokenService.remove_all_refresh_tokens(user_id)
+    return {"error": "no error"}, 200
