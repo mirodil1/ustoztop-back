@@ -1,15 +1,15 @@
 import uuid
 
 import httpx
-from core.config import settings
-from db.postgres import get_db
 from fastapi import Depends
-from models.announcement import Announcement
-from schemas.announcement import AnnouncementSchema, AnnouncementStatusEnum
 from slugify import slugify
 from sqlalchemy.orm import Session
-from src.paginator import paginate_per_page
 
+from core.config import settings
+from db.postgres import get_db
+from models.announcement import Announcement
+from schemas.announcement import AnnouncementSchema, AnnouncementStatusEnum
+from src.paginator import paginate_per_page
 from services.announcement_filter import AnnouncementFilter
 
 
@@ -72,7 +72,6 @@ class AnnouncementService:
                     Announcement.status==status,
                 )
         )
-        print(announcements)
         return announcements
 
     async def _get_active_announcements(self, filters: AnnouncementFilter):
@@ -108,7 +107,7 @@ class AnnouncementService:
         """
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                f"{settings.stat_url}/v1/statistics/announcement_views/create/{announcement_id}",
+                f"{settings.stat_url}/api/v1/statistics/announcement_views/create/{announcement_id}",
                 headers={"user-agent": user_agent}
             )
         return response
