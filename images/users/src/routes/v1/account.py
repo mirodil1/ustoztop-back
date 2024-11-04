@@ -1,7 +1,6 @@
 from flask import current_app as app
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from marshmallow import ValidationError
 
 from src import schemas
 from src.routes.v1 import router
@@ -25,6 +24,7 @@ def get_user_account(user_id):
         "is_verified_by_admin": user.is_verified_by_admin,
         "is_premium": user.is_premium,
         "roles": user_roles,
+        "joined_date": user.created_at,
     }, 200
 
 
@@ -47,6 +47,7 @@ def get_me():
             "id": user.wallets.id,
             "balance": user.wallets.balance,
         } if user.wallets else None,
+        "joined_date": user.created_at,
     }, 200
 
 
@@ -58,7 +59,6 @@ def update_user_account():
 
     schemas.UserUpdateSchema().load(user_data)
 
-    user = UserService.get_user_by_id(user_id=user_id)
     UserService.update_user(
         user_id=user_id,
         **user_data,
@@ -79,13 +79,19 @@ def get_premium_accounts():
             "is_premium": user.is_premium,
         }
         if user.tutor:
-            user_info["avatar"] = f"{app.config['BASE_URL']}/media/avatar{user.tutor.avatar}"
+            user_info["avatar"] = (
+                f"{app.config['BASE_URL']}/media/avatar/{user.tutor.avatar}"
+                if user.tutor.avatar else None
+            )
             user_info["first_name"] = user.tutor.first_name
             user_info["last_name"] = user.tutor.last_name
         elif user.learning_center:
             user_info["name"] = user.learning_center.name
             user_info["description"] = user.learning_center.description
-            user_info["avatar"] = f"{app.config['BASE_URL']}/media/avatar{user.learning_center.avatar}"
+            user_info["avatar"] = (
+                f"{app.config['BASE_URL']}/media/avatar/{user.learning_center.avatar}"
+                if user.learning_center.avatar else None
+            )
 
         users_data.append(user_info)
 
@@ -100,6 +106,5 @@ def get_accounts_ids():
     users = UserService.get_users(gender, role_name)
     users_data = [{
             "id": user.id,
-            # Add any other fields you want to return
         } for user in users]
     return users_data, 200
