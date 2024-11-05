@@ -1,10 +1,7 @@
-from schemas.announcement import (
-    AnnouncementStatusEnum,
-    LessonAudienceEnum,
-    LessonLanguageEnum,
-    LessonPlaceEnum,
-    LessonTypeEnum,
-)
+import uuid
+
+from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -15,10 +12,38 @@ from sqlalchemy import (
     Integer,
     Numeric,
     String,
+    Float,
+    String
 )
-from sqlalchemy.orm import relationship
 
+from schemas.announcement import (
+    AnnouncementStatusEnum,
+    LessonAudienceEnum,
+    LessonLanguageEnum,
+    LessonPlaceEnum,
+    LessonTypeEnum,
+)
+from db.postgres import Base
 from models.core import TimeStampedModel
+
+
+class Location(Base):
+    __tablename__ = "locations"
+
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
+    name = Column(String(length=255), nullable=False)
+    longitude = Column(Float, nullable=False)
+    latitude = Column(Float, nullable=False)
+
+    announcement = relationship(
+        "Announcement", uselist=False, back_populates="location",
+    )
 
 
 class Announcement(TimeStampedModel):
@@ -48,3 +73,6 @@ class Announcement(TimeStampedModel):
 
     category_id = Column(BigInteger, ForeignKey("category.id"), nullable=False)
     category = relationship("Category", back_populates="announcement")
+
+    location_id = Column(UUID, ForeignKey("locations.id"), nullable=False)
+    location = relationship("Location", back_populates="announcement")
