@@ -27,6 +27,6 @@ class Settings(BaseSettings):
             "FAST_ORIGINS", "http://localhost:3000"
         ).split(",")
     ]
-    debug: bool = os.environ.get("FAST_DEBUG", "False") == "True"
+    debug: bool = os.environ.get("FAST_DEBUG", "True") == "True"
 
 settings = Settings()
