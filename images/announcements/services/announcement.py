@@ -23,8 +23,27 @@ class AnnouncementService:
             page: int,
             per_page: int,
     ) -> list[AnnouncementSchema]:
-        announcements = await self._get_active_announcements(filters)
-        paginated_categories = await paginate_per_page(announcements, page, per_page)
+        announcements = await self._get_active_announcements()
+
+        user_gender = filters.gender
+        role_name = filters.role
+
+        filters.gender = None
+        filters.role = None
+
+        query = filters.filter(announcements)
+
+        if user_gender or role_name:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{settings.user_url}/api/v1/users/get/idx?gender={user_gender if user_gender else ''}&role={role_name if user_gender else ''}",
+                )
+                users = response.json()
+                user_ids = []
+                if response.status_code == 200:
+                    user_ids = [user["id"] for user in users]
+                query = query.filter(Announcement.user_id.in_(user_ids))
+        paginated_categories = await paginate_per_page(query, page, per_page)
 
         return {
             "announcements": paginated_categories["items"],
@@ -81,32 +100,14 @@ class AnnouncementService:
         )
         return announcements
 
-    async def _get_active_announcements(self, filters: AnnouncementFilter):
+    async def _get_active_announcements(self):
         announcements = (
             self.db.query(Announcement)
                 .filter(
                     Announcement.status==AnnouncementStatusEnum.active,
                 )
         )
-        user_gender = filters.gender
-        role_name = filters.role
-
-        filters.gender = None
-        filters.role = None
-
-        query = filters.filter(announcements)
-
-        if user_gender or role_name:
-            async with httpx.AsyncClient() as client:
-                response = await client.get(
-                    f"{settings.user_url}/api/v1/users/get/idx?gender={user_gender if user_gender else ''}&role={role_name if user_gender else ''}",
-                )
-                users = response.json()
-                user_ids = []
-                if response.status_code == 200:
-                    user_ids = [user["id"] for user in users]
-                query = query.filter(Announcement.user_id.in_(user_ids))
-        return query
+        return announcements
 
     async def _add_views(self, announcement_id: int, user_agent: str):
         """
