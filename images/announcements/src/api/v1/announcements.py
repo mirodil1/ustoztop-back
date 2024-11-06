@@ -7,6 +7,7 @@ from schemas.announcement import (
     AnnouncementInputSchema,
     AnnouncementOutputSchema,
     AnnouncementStatusEnum,
+    AnnouncementShortOutputSchema
 )
 from schemas.pagination import PaginatedPerPageResponse
 from services.announcement import AnnouncementService, get_announcement_service
@@ -19,13 +20,13 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=PaginatedPerPageResponse[AnnouncementOutputSchema])
+@router.get("/", response_model=PaginatedPerPageResponse[AnnouncementShortOutputSchema])
 async def announcements_list(
     announcement_service: AnnouncementService = Depends(get_announcement_service),
     announcement_filter: AnnouncementFilter = FilterDepends(AnnouncementFilter),
     page: int = Query(1, ge=1),
     per_page: int = Query(100, ge=0),
-) -> list[AnnouncementOutputSchema]:
+) -> list[AnnouncementShortOutputSchema]:
     paginated_result = await announcement_service.get_announcements(
         announcement_filter,
         page,
@@ -33,24 +34,16 @@ async def announcements_list(
     )
 
     announcement_list = [
-        AnnouncementOutputSchema(
+        AnnouncementShortOutputSchema(
             id=announcement.id,
             name=announcement.name,
             slug=announcement.slug,
             user_id=announcement.user_id,
-            category_id= announcement.category_id,
             phone_number=announcement.phone_number,
             price=announcement.price,
-            lessons_in_week=announcement.lessons_in_week,
-            lesson_duration_hours= announcement.lesson_duration_hours,
-            lesson_type= announcement.lesson_type,
-            lesson_place= announcement.lesson_place,
-            lesson_language=announcement.lesson_language,
-            lesson_audience=announcement.lesson_audience,
+            location=announcement.location if announcement.location else None,
             description=announcement.description,
-            is_promoted=announcement.is_promoted,
-            promotion_started=announcement.promotion_started,
-            promotion_expired=announcement.promotion_expired,
+            created_at=announcement.created_at.date(),
         ) for announcement in paginated_result["announcements"]
     ]
     return {
@@ -93,6 +86,13 @@ async def get_user_announcement(
             lesson_language=announcement.lesson_language,
             lesson_audience=announcement.lesson_audience,
             description=announcement.description,
+            location={
+                "name": announcement.location.name,
+                "coords": [
+                    announcement.location.latitude,
+                    announcement.location.longitude,
+                ],
+            },
             is_promoted=announcement.is_promoted,
             promotion_started=announcement.promotion_started,
             promotion_expired=announcement.promotion_expired,
@@ -129,6 +129,7 @@ async def announcements_detail(
             lesson_place= announcement.lesson_place,
             lesson_language=announcement.lesson_language,
             lesson_audience=announcement.lesson_audience,
+            location=announcement.location if announcement.location else None,
             description=announcement.description,
             is_promoted=announcement.is_promoted,
             promotion_started=announcement.promotion_started,

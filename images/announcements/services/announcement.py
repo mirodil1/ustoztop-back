@@ -1,15 +1,15 @@
 import uuid
 
 import httpx
-from fastapi import Depends
-from slugify import slugify
-from sqlalchemy.orm import Session
-
 from core.config import settings
 from db.postgres import get_db
-from models.announcement import Announcement
+from fastapi import Depends
+from models.announcement import Announcement, Location
 from schemas.announcement import AnnouncementSchema, AnnouncementStatusEnum
+from slugify import slugify
+from sqlalchemy.orm import Session
 from src.paginator import paginate_per_page
+
 from services.announcement_filter import AnnouncementFilter
 
 
@@ -52,8 +52,15 @@ class AnnouncementService:
         # TODO: check for category existence by its id
 
         slug = f"{slugify(data.get('name'))}-{uuid.uuid4().hex[:6]}"
+        location_data = data.pop("location")
+
+        location = Location(**location_data)
+        self.db.add(location)
+        self.db.commit()
+        self.db.refresh(location)
 
         announcement = Announcement(user_id=user_id, slug=slug)
+        announcement.location_id = location.id
         for key, value in data.items():
             if hasattr(announcement, key):
                 setattr(announcement, key, value)

@@ -1,3 +1,4 @@
+import uuid
 import enum
 from datetime import date
 from decimal import Decimal
@@ -33,6 +34,22 @@ class AnnouncementStatusEnum(enum.Enum):
     inactive = "inactive"
     rejected = "rejected"
     waiting = "waiting"
+
+
+class LocationOutputSchema(BaseModel):
+    id: uuid.UUID
+    name: str
+    latitude: float
+    longitude: float
+
+    class Config:
+        from_attributes = True
+
+
+class LocationInputSchema(BaseModel):
+    name: str
+    latitude: float
+    longitude: float
 
 
 class AnnouncementSchema(BaseModel):
@@ -78,9 +95,13 @@ class AnnouncementOutputSchema(BaseModel):
     lesson_language: LessonLanguageEnum
     lesson_audience: LessonAudienceEnum
     description: str
+    location: LocationOutputSchema | None
     is_promoted: bool = False
     promotion_started: date | None
     promotion_expired: date | None
+
+    class Config:
+        from_attributes = True
 
 
 class AnnouncementInputSchema(BaseModel):
@@ -95,3 +116,19 @@ class AnnouncementInputSchema(BaseModel):
     lesson_language: LessonLanguageEnum
     lesson_audience: LessonAudienceEnum
     description: str
+    location: LocationInputSchema
+
+
+class AnnouncementShortOutputSchema(BaseModel):
+    id: int
+    name: str
+    slug: str
+    user_id: int
+    price: Decimal
+    description: str
+    location: LocationOutputSchema | None
+    is_promoted: bool = False
+    created_at: date
+
+    class Config:
+        from_attributes = True
