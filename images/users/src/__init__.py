@@ -1,6 +1,7 @@
 from celery import Celery, Task
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 
 def celery_init(app: Flask) -> Celery:
@@ -19,6 +20,7 @@ def celery_init(app: Flask) -> Celery:
 def create_app(app_config):
     app = Flask(__name__, static_url_path="/media/", static_folder="/src/media/")
     app.config.from_object(app_config)
+    CORS(app)
     JWTManager(app)
 
     from src.db import db
