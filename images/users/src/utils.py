@@ -4,7 +4,7 @@ from flask import current_app as app
 
 
 def generate_security_code():
-    return "".join(str(secrets.choice(range(100000, 999999))))
+    return "".join(str(secrets.choice(range(1000, 9999))))
 
 
 def allowed_file(filename):
