@@ -78,7 +78,7 @@ def authorize_device(device_auth_id):
     return {"msg": "device activated"}, 200
 
 
-@router.route("/send-code", methods=["GET"])
+@router.route("/send-code", methods=["POST"])
 @limiter.limit("2/minute")
 def send_security_code():
     user_data = request.json
