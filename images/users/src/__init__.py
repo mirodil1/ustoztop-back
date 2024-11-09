@@ -1,6 +1,7 @@
 from celery import Celery, Task
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from flask_cors import CORS
 
 
@@ -20,11 +21,14 @@ def celery_init(app: Flask) -> Celery:
 def create_app(app_config):
     app = Flask(__name__, static_url_path="/media/", static_folder="/src/media/")
     app.config.from_object(app_config)
+    migrate = Migrate()
     CORS(app)
     JWTManager(app)
 
     from src.db import db
     db.init_app(app)
+    migrate.init_app(app, db)
+    
     from src import models
     with app.app_context():
         # db.drop_all()
