@@ -99,6 +99,25 @@ class Wallet(db.Model):
         return f"<Wallet(id={self.id}, user_id={self.user_id}, balance={self.balance})>"
 
 
+class Location(db.Model):
+    __tablename__ = "locations"
+
+    id = db.Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
+    name = db.Column(db.String(length=255), nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+
+    user = relationship(
+        "User", uselist=False, back_populates="location",
+    )
+
+
 class User(TimeStampedModel):
     __tablename__ = "users"
 
@@ -133,3 +152,6 @@ class User(TimeStampedModel):
         uselist=False,
         back_populates="user",
     )
+
+    location_id = db.Column(UUID, db.ForeignKey("locations.id"), nullable=True)
+    location = relationship("Location", back_populates="user")
