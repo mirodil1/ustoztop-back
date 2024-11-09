@@ -14,6 +14,12 @@ class UserAuthInfoSchema(Schema):
     device_id = fields.String(load_only=True)
 
 
+class UserLocationSchema(Schema):
+    name = fields.String(required=True)
+    latitude = fields.Float(required=True)
+    longitude = fields.Float(required=True)
+
+
 class UserUpdateSchema(Schema):
     phone_number = fields.String(required=False)
     avatar = fields.String(required=False)
@@ -21,3 +27,4 @@ class UserUpdateSchema(Schema):
     facebook_link = fields.String(required=False)
     insta_link = fields.String(required=False)
     telegram_link = fields.String(required=False)
+    location = fields.Nested(UserLocationSchema, required=False)

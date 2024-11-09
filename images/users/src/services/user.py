@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.db import db
 from src.exceptions import UnknownUser
-from src.models import Role, Tutor, User
+from src.models import Role, Tutor, User, Location
 
 
 class UserService:
@@ -65,6 +65,13 @@ class UserService:
     @classmethod
     def update_user(cls, user_id, **user_new_data):
         user = cls.get_user_by_id(user_id)
+        
+        location_data = user_new_data.pop("location", None)
+
+        if location_data:
+            location = Location(**location_data)
+            db.session.add(location)
+            user.location = location
 
         for key, value in user_new_data.items():
             if key == "password":
