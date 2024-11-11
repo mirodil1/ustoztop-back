@@ -19,21 +19,24 @@ class LearningCenter(models.Model):
     avatar = models.CharField(max_length=255, null=True, blank=True)
     banner = models.CharField(max_length=255, null=True, blank=True)
 
-    user = models.ForeignKey("members.User", on_delete=models.CASCADE, related_name="learning_center")
+    user = models.OneToOneField("members.User", on_delete=models.CASCADE, related_name="learning_center")
     
-    branch = models.ManyToManyField("Branch", related_name="learning_centers")
-    working_schedule = models.ManyToManyField("WorkingSchedule", related_name="learning_centers")
+    # branch = models.ManyToManyField("Branch", related_name="learning_centers")
+    # working_schedule = models.ManyToManyField("WorkingSchedule", related_name="learning_centers")
 
     class Meta:
-        unique_together = ("user",)  # Enforcing the unique user constraint
+        db_table = "learning_center"
 
 
 # Branch model
 class Branch(models.Model):
     id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
-
+    
     learning_center = models.ForeignKey(LearningCenter, on_delete=models.CASCADE, related_name="branches")
+
+    class Meta:
+        db_table = "branch"
 
 
 # WorkingSchedule model
@@ -48,3 +51,4 @@ class WorkingSchedule(models.Model):
 
     class Meta:
         unique_together = ("learning_center", "day_of_week")
+        db_table = "working_schedule"
