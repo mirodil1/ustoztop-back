@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, Tutor
+from .models import User, Tutor, LearningCenter
 
 
 class MultiDBModelAdmin(admin.ModelAdmin):
@@ -9,7 +9,6 @@ class MultiDBModelAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         # Tell Django to save objects to the 'members' database.
-        print("fmwjnwonwNUINQDUNDQ882u-4u-9u44-u")
         obj.save(using=self.using)
 
     def delete_model(self, request, obj):
@@ -18,7 +17,6 @@ class MultiDBModelAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         # Tell Django to look for objects on the 'members' database.
-        print("JWUIODNJDUIN")
         return super().get_queryset(request).using(self.using)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -36,7 +34,7 @@ class MultiDBModelAdmin(admin.ModelAdmin):
         )
 
 
-class MultiDBTabularInline(admin.TabularInline):
+class MultiDBTabularInline(admin.StackedInline):
     using = "members"
 
     def get_queryset(self, request):
@@ -60,6 +58,32 @@ class MultiDBTabularInline(admin.TabularInline):
 
 class TutorInline(MultiDBTabularInline):
     model = Tutor
+    readonly_fields = [
+        "id",
+        "first_name",
+        "last_name",
+        "description",
+        "avatar",
+        "gender"
+    ]
+    can_delete = False
+    verbose_name = "Tutor"
+    verbose_name_plural = "Tutor"
+
+
+class LearningCenterInline(MultiDBTabularInline):
+    model = LearningCenter
+    readonly_fields = [
+        "id",
+        "name",
+        "description",
+        "avatar",
+        "banner",
+    ]
+    can_delete = False
+    verbose_name = "Learning Center"
+    verbose_name_plural = "Learning Center"
+
 
 
 @admin.register(User)
@@ -71,7 +95,7 @@ class MemberAdmin(MultiDBModelAdmin):
         "is_verified_by_admin",
         "is_premium",
     ]
-    # inlines = [TutorInline]
+    inlines = [LearningCenterInline, TutorInline]
     readonly_fields = [
         "password",
         "id",
@@ -83,3 +107,11 @@ class MemberAdmin(MultiDBModelAdmin):
         "telegram_link",
         "location_id",
     ]
+
+    def get_inlines(self, request, obj):
+        for role in obj.roles.all():
+            if role.role_name == "learning_center":
+                return [LearningCenterInline]
+            elif role.role_name == "tutor":
+                return [TutorInline]
+        return []
