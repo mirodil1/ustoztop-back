@@ -64,7 +64,10 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {"default": env.db("DATABASE_URL")}
+DATABASES = {
+    "default": env.db("DATABASE_URL"),
+    "members": env.db("MEMBERS_DATABASE_URL"),
+}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -100,6 +103,7 @@ LOCAL_APPS = [
     "apps.users",
     "apps.announcements",
     "apps.core",
+    "apps.members",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -265,13 +269,5 @@ JAZZMIN_SETTINGS = {
 
     },
     "custom_css": "css/project.css",
-    "language_chooser": True,  
-    # "language_chooser": {
-    #     "languages": [
-    #         {"code": "uz", "name": _("Ўзбекча"), "name_native": "Oʻzbekcha"},
-    #         {"code": "uz-latn", "name": _("Oʻzbekcha"), "name_native": "Ўзбекча"},
-    #         {"code": "ru", "name": _("Русский"), "name_native": "Русский"},
-    #         {"code": "en", "name": _("English"), "name_native": "English"},
-    #     ],
-    # },
+    "language_chooser": True,
 }
