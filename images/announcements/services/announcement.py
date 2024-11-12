@@ -5,7 +5,11 @@ from core.config import settings
 from db.postgres import get_db
 from fastapi import Depends
 from models.announcement import Announcement, Location
-from schemas.announcement import AnnouncementSchema, AnnouncementStatusEnum
+from schemas.announcement import (
+    AnnouncementSchema,
+    AnnouncementShortOutputSchema,
+    AnnouncementStatusEnum,
+)
 from slugify import slugify
 from sqlalchemy.orm import Session
 from src.paginator import paginate_per_page
@@ -43,13 +47,28 @@ class AnnouncementService:
                 if response.status_code == 200:
                     user_ids = [user["id"] for user in users]
                 query = query.filter(Announcement.user_id.in_(user_ids))
-        paginated_categories = await paginate_per_page(query, page, per_page)
+        paginated_announce = await paginate_per_page(query, page, per_page)
+
+        announcement_list = [
+            AnnouncementShortOutputSchema(
+                id=announcement.id,
+                name=announcement.name,
+                slug=announcement.slug,
+                user_id=announcement.user_id,
+                phone_number=announcement.phone_number,
+                price=announcement.price,
+                number_of_views=await self._get_views_count(announcement.id),
+                location=announcement.location if announcement.location else None,
+                description=announcement.description,
+                created_at=announcement.created_at.date(),
+            ) for announcement in paginated_announce["items"]
+        ]
 
         return {
-            "announcements": paginated_categories["items"],
-            "count": paginated_categories["count"],
-            "next_page": paginated_categories["next_page"],
-            "previous_page": paginated_categories["previous_page"],
+            "announcements": announcement_list,
+            "count": paginated_announce["count"],
+            "next_page": paginated_announce["next_page"],
+            "previous_page": paginated_announce["previous_page"],
         }
 
     async def get_announcement_by_slug(self, slug: str, user_agent: str) -> AnnouncementSchema:
@@ -116,10 +135,22 @@ class AnnouncementService:
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 f"{settings.stat_url}/api/v1/statistics/announcement_views/create/{announcement_id}",
-                headers={"user-agent": user_agent}
+                headers={"user-agent": user_agent},
             )
         return response
 
+    async def _get_views_count(self, announcement_id: int):
+        """
+        Requesting to statistics service to retrieve views count
+        """
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{settings.stat_url}/api/v1/statistics/announcement_veiws_count/{announcement_id}",
+            )
+            if response.status_code == 200:
+                data = response.json()
+                return data["count"]
+            return None
 
 def get_announcement_service(db: Session = Depends(get_db)) -> AnnouncementService:
     return AnnouncementService(db)

@@ -33,24 +33,11 @@ async def announcements_list(
         per_page,
     )
 
-    announcement_list = [
-        AnnouncementShortOutputSchema(
-            id=announcement.id,
-            name=announcement.name,
-            slug=announcement.slug,
-            user_id=announcement.user_id,
-            phone_number=announcement.phone_number,
-            price=announcement.price,
-            location=announcement.location if announcement.location else None,
-            description=announcement.description,
-            created_at=announcement.created_at.date(),
-        ) for announcement in paginated_result["announcements"]
-    ]
     return {
         "count": paginated_result["count"],
         "next_page": paginated_result["next_page"],
         "previous_page": paginated_result["previous_page"],
-        "items": announcement_list,
+        "items": paginated_result["announcements"],
     }
 
 @router.get(

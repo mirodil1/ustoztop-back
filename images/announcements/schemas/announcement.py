@@ -1,5 +1,5 @@
-import uuid
 import enum
+import uuid
 from datetime import date
 from decimal import Decimal
 
@@ -126,6 +126,7 @@ class AnnouncementShortOutputSchema(BaseModel):
     user_id: int
     price: Decimal
     description: str
+    number_of_views: int
     location: LocationOutputSchema | None
     is_promoted: bool = False
     created_at: date
