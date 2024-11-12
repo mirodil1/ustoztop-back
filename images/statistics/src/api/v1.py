@@ -35,6 +35,19 @@ async def create_announcement_views(
 
 
 @router.get(
+    "/announcement_veiws_count/{announcement_id}",
+    include_in_schema=False,
+)
+async def get_announcement_veiws_count_by_id(
+    announcement_id: int,
+    announc_statistic_service: AnnouncementViewsService = Depends(
+        get_announcement_stat_service),
+):
+    result = await announc_statistic_service.get_views_count_by_id(announcement_id)
+    return result
+
+
+@router.get(
     "/announcement_views/{announcement_id}",
     response_model=list[AnnouncementViews],
 )
@@ -46,7 +59,7 @@ async def get_announcement_views(
 ):
     if not request.user:
         raise HTTPException(status_code=401, detail="Not authorized")
-    result = await announc_statistic_service.get_announcement_views(announcement_id)
+    result = await announc_statistic_service.get_last_views(announcement_id)
 
     return result
 

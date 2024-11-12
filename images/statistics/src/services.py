@@ -57,7 +57,36 @@ class AnnouncementViewsService:
         return result
 
     @staticmethod
-    async def get_announcement_views(announcement_id: int):
+    async def get_views_count_by_id(announcement_id: int):
+        pipeline = [
+            {
+                "$match": {
+                    "announcement_id": announcement_id,
+                },
+            },
+            {
+                "$group": {
+                    "_id": "$announcement_id",
+                    "count": {"$sum": 1},
+                },
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "count": 1,
+                },
+            },
+        ]
+        count = (
+            await announcement_views_collection.aggregate(pipeline).to_list(length=None)
+        )
+        if not count:
+            return {"count": 0}
+        return count[0]
+
+
+    @staticmethod
+    async def get_last_views(announcement_id: int):
         announcement_views = []
         last_30 = datetime.now() - timedelta(days=30)
         pipeline = [
