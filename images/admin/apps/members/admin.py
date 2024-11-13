@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, Tutor, LearningCenter
+from .models import User, Tutor, LearningCenter, LoginHistoryRecord
 
 
 class MultiDBModelAdmin(admin.ModelAdmin):
@@ -64,7 +64,7 @@ class TutorInline(MultiDBTabularInline):
         "last_name",
         "description",
         "avatar",
-        "gender"
+        "gender",
     ]
     can_delete = False
     verbose_name = "Tutor"
@@ -85,6 +85,19 @@ class LearningCenterInline(MultiDBTabularInline):
     verbose_name_plural = "Learning Center"
 
 
+class LoginHistoryInline(MultiDBTabularInline):
+    model = LoginHistoryRecord
+    readonly_fields = [
+        "id",
+        "device",
+        "login_date",
+        "device_type",
+    ]
+    can_delete = False
+    verbose_name = "Login history"
+    verbose_name_plural = "Login history"
+
+
 
 @admin.register(User)
 class MemberAdmin(MultiDBModelAdmin):
@@ -95,7 +108,7 @@ class MemberAdmin(MultiDBModelAdmin):
         "is_verified_by_admin",
         "is_premium",
     ]
-    inlines = [LearningCenterInline, TutorInline]
+    inlines = [LoginHistoryInline]
     readonly_fields = [
         "password",
         "id",
@@ -109,9 +122,10 @@ class MemberAdmin(MultiDBModelAdmin):
     ]
 
     def get_inlines(self, request, obj):
+        inlines = super().get_inlines(request, obj)
         for role in obj.roles.all():
             if role.role_name == "learning_center":
-                return [LearningCenterInline]
+                inlines.append(LearningCenterInline)
             elif role.role_name == "tutor":
-                return [TutorInline]
-        return []
+                inlines.append(TutorInline)
+        return inlines

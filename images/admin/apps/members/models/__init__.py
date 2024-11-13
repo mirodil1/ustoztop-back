@@ -1,3 +1,3 @@
-from .members import User
+from .members import User, LoginHistoryRecord
 from .tutor import Tutor
 from .learning_center import LearningCenter
