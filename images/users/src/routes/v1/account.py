@@ -85,6 +85,7 @@ def get_premium_accounts():
             )
             user_info["first_name"] = user.tutor.first_name
             user_info["last_name"] = user.tutor.last_name
+            user_info["description"] = user.tutor.description
         elif user.learning_center:
             user_info["name"] = user.learning_center.name
             user_info["description"] = user.learning_center.description

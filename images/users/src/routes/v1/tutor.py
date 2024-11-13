@@ -18,6 +18,7 @@ def get_tutor(user_id):
             "last_name": tutor.last_name,
             "avatar": tutor.avatar,
             "gender": tutor.gender.name if tutor.gender else None,
+            "description": tutor.description,
             "education": [
                 {
                     "id": education.id,
