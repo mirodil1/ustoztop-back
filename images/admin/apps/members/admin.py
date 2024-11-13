@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, Tutor, LearningCenter, LoginHistoryRecord
+from .models import LearningCenter, LoginHistoryRecord, Tutor, User
 
 
 class MultiDBModelAdmin(admin.ModelAdmin):
@@ -55,17 +55,13 @@ class MultiDBTabularInline(admin.StackedInline):
             db_field, request, using=self.using, **kwargs
         )
 
+    def has_change_permission(self, request, obj = ...):
+        return False
+
 
 class TutorInline(MultiDBTabularInline):
     model = Tutor
-    readonly_fields = [
-        "id",
-        "first_name",
-        "last_name",
-        "description",
-        "avatar",
-        "gender",
-    ]
+
     can_delete = False
     verbose_name = "Tutor"
     verbose_name_plural = "Tutor"
@@ -73,13 +69,7 @@ class TutorInline(MultiDBTabularInline):
 
 class LearningCenterInline(MultiDBTabularInline):
     model = LearningCenter
-    readonly_fields = [
-        "id",
-        "name",
-        "description",
-        "avatar",
-        "banner",
-    ]
+
     can_delete = False
     verbose_name = "Learning Center"
     verbose_name_plural = "Learning Center"
