@@ -17,6 +17,7 @@ def get_user_account(user_id):
 
     return {
         "phone_number": user.phone_number,
+        "username": user.username,
         "web_link": user.web_link,
         "facebook_link": user.facebook_link,
         "insta_link": user.insta_link,
@@ -36,6 +37,7 @@ def get_me():
 
     return {
         "phone_number": user.phone_number,
+        "username": user.username,
         "web_link": user.web_link,
         "facebook_link": user.facebook_link,
         "insta_link": user.insta_link,
@@ -74,6 +76,7 @@ def get_premium_accounts():
         user_info = {
             "id": user.id,
             "role": ",".join([role.role_name for role in user.roles]),
+            "username": user.username,
             "avatar": None,
             "is_verified_by_admin": user.is_verified_by_admin,
             "is_premium": user.is_premium,

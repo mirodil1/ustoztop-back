@@ -27,3 +27,7 @@ class DeviceAlreadyExists(Exception):
 
 class RoleAlreadyExists(Exception):
     pass
+
+
+class UsernameAlreadyExists(Exception):
+    pass

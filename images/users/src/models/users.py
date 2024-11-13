@@ -124,6 +124,7 @@ class User(TimeStampedModel):
     id = db.Column(db.BigInteger, primary_key=True)
     phone_number = db.Column(db.String(length=14), unique=True, nullable=False)
     email = db.Column(db.String(length=255), unique=True, nullable=True)
+    username = db.Column(db.String(length=255), unique=True, nullable=True)
     password = db.Column("password", db.String(length=255), nullable=False)
     web_link = db.Column(db.String(length=255), nullable=True)
     insta_link = db.Column(db.String(length=255), nullable=True)

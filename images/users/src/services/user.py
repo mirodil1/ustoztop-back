@@ -5,8 +5,9 @@ from sqlalchemy.orm import joinedload
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.db import db
-from src.exceptions import UnknownUser
+from src.exceptions import UnknownUser, UsernameAlreadyExists
 from src.models import Role, Tutor, User, Location
+from src.utils import generate_username
 
 
 class UserService:
@@ -44,7 +45,8 @@ class UserService:
 
     @staticmethod
     def create_user(phone_number, password, role_name):
-        user = User(phone_number=phone_number, password=password)
+        username = generate_username()
+        user = User(phone_number=phone_number, password=password, username=username)
         user.password = generate_password_hash(
             user.password, method="pbkdf2:sha256:5", salt_length=8,
         )
@@ -65,7 +67,7 @@ class UserService:
     @classmethod
     def update_user(cls, user_id, **user_new_data):
         user = cls.get_user_by_id(user_id)
-        
+
         location_data = user_new_data.pop("location", None)
 
         if location_data:
@@ -81,6 +83,12 @@ class UserService:
                     generate_password_hash(user_new_data[key],
                     method="pbkdf2:sha256:5", salt_length=8),
                 )
+            if key == "username":
+                exist = User.query.filter_by(username=user_new_data[key]).filter(
+                    User.id != user.id
+                ).first()
+                if exist:
+                    raise UsernameAlreadyExists
             elif key not in ["id", "is_premium"]:
                 setattr(user, key, value)
             else:

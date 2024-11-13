@@ -3,7 +3,7 @@ from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 
 from src.exceptions import (DeviceAlreadyExists, InvalidEmail, InvalidRefreshToken,
-                      RoleAlreadyExists, UnknownDevice, UnknownUser)
+                      RoleAlreadyExists, UnknownDevice, UnknownUser, UsernameAlreadyExists)
 
 from . import router
 
@@ -48,6 +48,11 @@ def handle_unknown_user(e):
     return {"error": "unknown user"}, 422
 
 
+@router.errorhandler(UsernameAlreadyExists)
+def handle_username_already_exists(e):
+    return {"error": "username already exists"}, 422
+
+
 @router.errorhandler(429)
-def handle_unknown_user(e):
+def handle_rate_limit(e):
     return {"error": "too many requests, try again later"}, 429
