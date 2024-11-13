@@ -122,7 +122,7 @@ class MemberAdmin(MultiDBModelAdmin):
     ]
 
     def get_inlines(self, request, obj):
-        inlines = self.inlines
+        inlines = [LoginHistoryInline]
         for role in obj.roles.all():
             if role.role_name == "learning_center":
                 inlines.append(LearningCenterInline)
