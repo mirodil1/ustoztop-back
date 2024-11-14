@@ -109,13 +109,23 @@ class Location(db.Model):
         unique=True,
         nullable=False,
     )
-    name = db.Column(db.String(length=255), nullable=False)
+    uz = db.Column(db.String(length=255), nullable=False)
+    ru = db.Column(db.String(length=255), nullable=True)
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
 
     user = relationship(
         "User", uselist=False, back_populates="location",
     )
+
+
+class UserTag(db.Model):
+    __tablename__ = "user_tags"
+
+    user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"), primary_key=True)
+    category_id = db.Column(db.BigInteger, primary_key=True)
+
+    user = relationship("User", back_populates="tags")
 
 
 class User(TimeStampedModel):
@@ -153,6 +163,12 @@ class User(TimeStampedModel):
         uselist=False,
         back_populates="user",
     )
+    tags = relationship(
+        "UserTag",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
     location_id = db.Column(UUID, db.ForeignKey("locations.id"), nullable=True)
     location = relationship("Location", back_populates="user")
+

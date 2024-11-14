@@ -49,6 +49,15 @@ def get_me():
             "id": user.wallets.id,
             "balance": user.wallets.balance,
         } if user.wallets else None,
+        "location": {
+                "uz": user.location.uz,
+                "ru": user.location.ru,
+                "latitude": user.location.latitude,
+                "longitude": user.location.latitude,
+            } if user.location else None,
+        "tags": [
+            tag.category_id for tag in user.tags
+        ],
         "joined_date": user.created_at,
     }, 200
 
@@ -79,7 +88,16 @@ def get_premium_accounts():
             "username": user.username,
             "avatar": None,
             "is_verified_by_admin": user.is_verified_by_admin,
+            "location": {
+                "uz": user.location.uz,
+                "ru": user.location.ru,
+                "latitude": user.location.latitude,
+                "longitude": user.location.latitude,
+            } if user.location else None,
             "is_premium": user.is_premium,
+            "tags": [
+                tag.category_id for tag in user.tags
+            ],
         }
         if user.tutor:
             user_info["avatar"] = (

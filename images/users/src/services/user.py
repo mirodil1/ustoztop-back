@@ -1,12 +1,12 @@
 import requests
 from flask import current_app as app
 from sqlalchemy import desc
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.db import db
 from src.exceptions import UnknownUser, UsernameAlreadyExists
-from src.models import Role, Tutor, User, Location
+from src.models import Role, Tutor, User, Location, UserTag
 from src.utils import generate_username
 
 
@@ -39,7 +39,12 @@ class UserService:
     @staticmethod
     def get_premium_users():
         premium_users = User.query.filter_by(is_premium=True) \
-            .options(joinedload(User.learning_center), joinedload(User.tutor)) \
+            .options(
+                joinedload(User.learning_center),
+                joinedload(User.tutor),
+                joinedload(User.location),
+                selectinload(User.tags),
+            ) \
             .order_by(desc(User.premium_started)).all()
         return premium_users
 
@@ -69,11 +74,18 @@ class UserService:
         user = cls.get_user_by_id(user_id)
 
         location_data = user_new_data.pop("location", None)
+        tags_data = user_new_data.pop("tags", None)
 
         if location_data:
             location = Location(**location_data)
             db.session.add(location)
             user.location = location
+
+        if tags_data:
+            db.session.query(UserTag).filter_by(user_id=user.id).delete()
+            for tag in tags_data:
+                user_tag = UserTag(user_id=user.id, category_id=tag)
+                db.session.add(user_tag)
 
         for key, value in user_new_data.items():
             if key == "password":
@@ -89,6 +101,7 @@ class UserService:
                 ).first()
                 if exist:
                     raise UsernameAlreadyExists
+
             elif key not in ["id", "is_premium"]:
                 setattr(user, key, value)
             else:

@@ -15,7 +15,8 @@ class UserAuthInfoSchema(Schema):
 
 
 class UserLocationSchema(Schema):
-    name = fields.String(required=True)
+    uz = fields.String(required=True)
+    ru = fields.String(required=True)
     latitude = fields.Float(required=True)
     longitude = fields.Float(required=True)
 
@@ -28,3 +29,4 @@ class UserUpdateSchema(Schema):
     insta_link = fields.String(required=False)
     telegram_link = fields.String(required=False)
     location = fields.Nested(UserLocationSchema, required=False)
+    tags = fields.List(fields.Integer, required=False)
