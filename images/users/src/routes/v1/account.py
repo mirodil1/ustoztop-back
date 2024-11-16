@@ -34,8 +34,7 @@ def get_user_account(user_id):
 def get_me():
     user = UserService.get_user_by_id(user_id=get_jwt_identity())
     user_roles = ",".join([role.role_name for role in user.roles])
-
-    return {
+    user_data = {
         "phone_number": user.phone_number,
         "username": user.username,
         "web_link": user.web_link,
@@ -59,7 +58,25 @@ def get_me():
             tag.category_id for tag in user.tags
         ],
         "joined_date": user.created_at,
-    }, 200
+    }
+    if user.tutor:
+        user_data["avatar"] = (
+            f"{app.config['BASE_URL']}/media/avatar/{user.tutor.avatar}"
+            if user.tutor.avatar else None
+        )
+        user_data["first_name"] = user.tutor.first_name
+        user_data["last_name"] = user.tutor.last_name
+        user_data["description"] = user.tutor.description
+        user_data["gender"] = user.tutor.gender.name if user.tutor.gender else None
+    elif user.learning_center:
+        user_data["name"] = user.learning_center.name
+        user_data["description"] = user.learning_center.description
+        user_data["avatar"] = (
+            f"{app.config['BASE_URL']}/media/avatar/{user.learning_center.avatar}"
+            if user.learning_center.avatar else None
+        )
+
+    return user_data, 200
 
 
 @router.route("/update", methods=["PUT"])
