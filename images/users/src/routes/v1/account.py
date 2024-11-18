@@ -35,6 +35,7 @@ def get_me():
     user = UserService.get_user_by_id(user_id=get_jwt_identity())
     user_roles = ",".join([role.role_name for role in user.roles])
     user_data = {
+        "id": user.id,
         "phone_number": user.phone_number,
         "username": user.username,
         "web_link": user.web_link,
