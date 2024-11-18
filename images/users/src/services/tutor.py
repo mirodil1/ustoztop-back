@@ -51,7 +51,7 @@ class TutorService:
                     file_path = folder_path / file_name
                     file.save(file_path )
 
-                    old_file = tutor.avatar
+                    old_file = tutor.avatar or ""
                     tutor.avatar = str(file_name)
                     Path(folder_path / old_file).unlink(missing_ok=True)
         db.session.add(tutor)

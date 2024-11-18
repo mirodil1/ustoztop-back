@@ -51,7 +51,7 @@ class LearningCenterService:
                         folder_path = Path(app.config["UPLOAD_FOLDER"]) / "avatar"
                         learning_center.avatar = str(file_name)
                     elif field_name == "banner":
-                        old_file = learning_center.banner
+                        old_file = learning_center.banner or ""
                         folder_path = Path(app.config["UPLOAD_FOLDER"]) / "banner"
                         learning_center.banner = str(file_name)
 
