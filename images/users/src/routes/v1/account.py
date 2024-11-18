@@ -62,7 +62,7 @@ def get_me():
     }
     if user.tutor:
         user_data["avatar"] = (
-            f"{app.config['BASE_URL']}/media/avatar/{user.tutor.avatar}"
+            f"{app.config['BASE_URL']}/media/uploads/avatar/{user.tutor.avatar}"
             if user.tutor.avatar else None
         )
         user_data["first_name"] = user.tutor.first_name
@@ -73,7 +73,7 @@ def get_me():
         user_data["name"] = user.learning_center.name
         user_data["description"] = user.learning_center.description
         user_data["avatar"] = (
-            f"{app.config['BASE_URL']}/media/avatar/{user.learning_center.avatar}"
+            f"{app.config['BASE_URL']}/media/uploads/avatar/{user.learning_center.avatar}"
             if user.learning_center.avatar else None
         )
 
@@ -119,7 +119,7 @@ def get_premium_accounts():
         }
         if user.tutor:
             user_info["avatar"] = (
-                f"{app.config['BASE_URL']}/media/avatar/{user.tutor.avatar}"
+                f"{app.config['BASE_URL']}/media/uploads/avatar/{user.tutor.avatar}"
                 if user.tutor.avatar else None
             )
             user_info["first_name"] = user.tutor.first_name
@@ -129,7 +129,7 @@ def get_premium_accounts():
             user_info["name"] = user.learning_center.name
             user_info["description"] = user.learning_center.description
             user_info["avatar"] = (
-                f"{app.config['BASE_URL']}/media/avatar/{user.learning_center.avatar}"
+                f"{app.config['BASE_URL']}/media/uploads/avatar/{user.learning_center.avatar}"
                 if user.learning_center.avatar else None
             )
 

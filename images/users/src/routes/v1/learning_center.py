@@ -16,8 +16,8 @@ def get_center(user_id):
     return {
         "name": learning_center.name,
         "description": learning_center.description,
-        "avatar": f"{app.config['BASE_URL']}/media/avatar{learning_center.avatar}",
-        "banner": f"{app.config['BASE_URL']}/media/banner{learning_center.avatar}",
+        "avatar": f"{app.config['BASE_URL']}/media/uploads/avatar{learning_center.avatar}",
+        "banner": f"{app.config['BASE_URL']}/media/uploads/banner{learning_center.avatar}",
         "branches": [
             {
                 "id": branch.id,

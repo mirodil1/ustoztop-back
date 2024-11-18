@@ -1,8 +1,7 @@
+from flask import request, current_app as app
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from marshmallow import ValidationError
 
-from src import schemas
 from src.routes.v1 import router
 from src.services.tutor import TutorService
 
@@ -16,7 +15,7 @@ def get_tutor(user_id):
     return {
             "first_name": tutor.first_name,
             "last_name": tutor.last_name,
-            "avatar": tutor.avatar,
+            "avatar": f"{app.config['BASE_URL']}/media/uploads/avatar{tutor.avatar}",
             "gender": tutor.gender.name if tutor.gender else None,
             "description": tutor.description,
             "education": [
