@@ -101,6 +101,7 @@ class UserService:
                 ).first()
                 if exist:
                     raise UsernameAlreadyExists
+                setattr(user, key, value)
 
             elif key not in ["id", "is_premium"]:
                 setattr(user, key, value)
