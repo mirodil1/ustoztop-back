@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from src.db import db
 from src.models import Branch, LearningCenter, WorkingSchedule
 from src.utils import allowed_file
+from src.exceptions import UnknownUser
 
 
 class LearningCenterService:
@@ -22,7 +23,7 @@ class LearningCenterService:
     def get_center_by_user_id(user_id):
         learning_center = LearningCenter.query.filter_by(user_id=user_id).first()
         if not learning_center:
-            return None
+            raise UnknownUser
         return learning_center
 
     @classmethod

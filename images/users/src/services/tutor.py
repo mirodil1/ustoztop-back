@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from src.db import db
 from src.models import Education, Experience, Language, Tutor
 from src.utils import allowed_file
-
+from src.exceptions import UnknownUser
 
 class TutorService:
 
@@ -22,7 +22,7 @@ class TutorService:
     def get_tutor_by_user_id(user_id):
         tutor = Tutor.query.filter_by(user_id=user_id).first()
         if not tutor:
-            return None
+            raise UnknownUser
         return tutor
 
     @classmethod
