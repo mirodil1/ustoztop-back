@@ -1,9 +1,8 @@
-from flask import current_app as app
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from src.routes.v1 import router
-from src.schemas import PaymentGateway, TransactionStatus, TransactionType
+from src.schemas import PaymentGateway, TransactionStatus
 from src.services.transaction import TransactionService
 
 
@@ -23,7 +22,7 @@ def fill_balance():
     return {"success": str(_id)}, 200
 
 
-@router.route("/get", methods=["GET"])
+@router.route("/history", methods=["GET"])
 @jwt_required(fresh=True)
 def get_transactions():
     user_id=get_jwt_identity()
