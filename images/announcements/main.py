@@ -2,17 +2,15 @@
 import logging
 
 import uvicorn as uvicorn
-from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.authentication import AuthenticationMiddleware
-
 from core.config import settings
 from core.logger import LOGGING
 from db.postgres import Base, engine
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import ORJSONResponse
 from src.api.v1 import announcements, categories, services
 from src.middlewares import JWTAuthBackend, PaginationMiddleware
-
+from starlette.middleware.authentication import AuthenticationMiddleware
 
 app = FastAPI(
     title=settings.project_name,
@@ -32,10 +30,9 @@ app.add_middleware(PaginationMiddleware)
 
 Base.metadata.create_all(bind=engine)
 
-
-app.include_router(categories.router, prefix="/api/v1/announcements/categories")
 app.include_router(announcements.router, prefix="/api/v1/announcements")
-app.include_router(services.router, prefix="/api/v1/services")
+app.include_router(categories.router, prefix="/api/v1/announcements/categories")
+app.include_router(services.router, prefix="/api/v1/announcements/services")
 
 if __name__ == "__main__":
     uvicorn.run(
