@@ -1,17 +1,17 @@
 from functools import lru_cache
 
-from fastapi import Depends
-from sqlalchemy.orm import Session, joinedload
-
 from db.postgres import get_db
-from src.paginator import paginate_per_page
+from fastapi import Depends
 from models.category import Category
 from schemas.category import CategorySchema
+from sqlalchemy.orm import Session, joinedload
+from src.paginator import paginate_per_page
 
 
 class CategoryService:
     def __init__(self, db: Session) -> None:
         self.db = db
+
     async def get_categories(self, language: str, page: int, per_page: int):
         categories = (
             self.db.query(Category)
@@ -35,7 +35,9 @@ class CategoryService:
         }
 
     async def get_category_by_id(
-            self, category_id: int, language: str
+            self,
+            category_id: int,
+            language: str,
     ) -> CategorySchema | None:
         category = self.db.query(Category).filter(Category.id==category_id).scalar()
         if category:

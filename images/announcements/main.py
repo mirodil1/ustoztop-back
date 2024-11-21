@@ -10,7 +10,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from core.config import settings
 from core.logger import LOGGING
 from db.postgres import Base, engine
-from src.api.v1 import announcements, categories
+from src.api.v1 import announcements, categories, services
 from src.middlewares import JWTAuthBackend, PaginationMiddleware
 
 
@@ -35,6 +35,7 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(categories.router, prefix="/api/v1/announcements/categories")
 app.include_router(announcements.router, prefix="/api/v1/announcements")
+app.include_router(services.router, prefix="/api/v1/services")
 
 if __name__ == "__main__":
     uvicorn.run(
