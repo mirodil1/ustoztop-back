@@ -31,3 +31,11 @@ class RoleAlreadyExists(Exception):
 
 class UsernameAlreadyExists(Exception):
     pass
+
+
+class InsufficientFunds(Exception):
+    pass
+
+
+class InvalidAmount(Exception):
+    pass
