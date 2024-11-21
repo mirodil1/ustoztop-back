@@ -143,8 +143,8 @@ class User(TimeStampedModel):
     is_active = db.Column(db.Boolean, default=True)
     is_verified_by_admin = db.Column(db.Boolean, default=False)
     is_premium = db.Column(db.Boolean, default=False)
-    premium_started = db.Column(db.Date, nullable=True)
-    premium_expired = db.Column(db.Date, nullable=True)
+    premium_started = db.Column(db.DateTime, nullable=True)
+    premium_expired = db.Column(db.DateTime, nullable=True)
 
     devices = relationship("Device", backref=backref("user", uselist=False))
     roles = relationship(
