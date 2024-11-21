@@ -2,9 +2,17 @@ from flask import jsonify
 from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 
-from src.exceptions import (DeviceAlreadyExists, InvalidEmail, InvalidRefreshToken,
-                      RoleAlreadyExists, UnknownDevice, UnknownUser, UsernameAlreadyExists)
-
+from src.exceptions import (
+    DeviceAlreadyExists,
+    InvalidEmail,
+    InvalidRefreshToken,
+    RoleAlreadyExists,
+    UnknownDevice,
+    UnknownUser,
+    UsernameAlreadyExists, 
+    InsufficientFunds,
+    InvalidAmount
+)
 from . import router
 
 
@@ -56,3 +64,13 @@ def handle_username_already_exists(e):
 @router.errorhandler(429)
 def handle_rate_limit(e):
     return {"error": "too many requests, try again later"}, 429
+
+
+@router.errorhandler(InsufficientFunds)
+def handle_insufficient_funds(e):
+    return {"error": "insufficient funds"}, 400
+
+
+@router.errorhandler(InvalidAmount)
+def handle_invalid_amount(e):
+    return {"error": "invalid amount"}, 400
