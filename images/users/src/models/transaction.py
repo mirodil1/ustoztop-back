@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import ENUM, UUID
 
 from src.db import db
 from src.models.core import TimeStampedModel
-from src.schemas.transaction import TransactionType, PaymentGateway, TransactionStatus
+from src.schemas.transaction import PaymentGateway, TransactionStatus, TransactionType
 
 
 class ContentType(db.Model):
@@ -19,7 +19,7 @@ class ContentType(db.Model):
 class Transaction(TimeStampedModel):
     __tablename__ = "transactions"
 
-    id = db.Column(UUID(as_uuid=True), primary_key=True)
+    id = db.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id", ondelete="NO ACTION"),
@@ -42,12 +42,12 @@ class Transaction(TimeStampedModel):
     content_type_id = db.Column(
         UUID(as_uuid=True),
         db.ForeignKey("content_types.id", ondelete="NO ACTION"),
+        nullable=True,
     )
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Foreign key relationships
     user = db.relationship("User", backref=db.backref("transactions"))
-    wallet = db.relationship("Wallet", backref=db.backref("transactions"))
     content_type = db.relationship("ContentType", backref="transactions")
 
     def __repr__(self):
