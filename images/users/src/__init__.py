@@ -1,8 +1,8 @@
 from celery import Celery, Task
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
-from flask_cors import CORS
 
 
 def celery_init(app: Flask) -> Celery:
@@ -53,7 +53,7 @@ def create_app(app_config):
 
     limiter.init_app(app)
     app.register_blueprint(main_blueprint, url_prefix="/api/v1/users", name="users")
-    app.register_blueprint(main_blueprint, url_prefix="/api/v1/transaction", name="transactions")
+    app.register_blueprint(main_blueprint, url_prefix="/api/v1/transactions", name="transactions")
 
     app.config.from_mapping(
         CELERY=dict(
