@@ -1,18 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi_filter import FilterDepends
-from starlette import status
-from starlette.requests import Request
-
 from schemas.announcement import (
     AnnouncementInputSchema,
     AnnouncementOutputSchema,
+    AnnouncementShortOutputSchema,
     AnnouncementStatusEnum,
-    AnnouncementShortOutputSchema
 )
 from schemas.pagination import PaginatedPerPageResponse
 from services.announcement import AnnouncementService, get_announcement_service
 from services.announcement_filter import AnnouncementFilter
-
+from starlette import status
+from starlette.requests import Request
 
 router = APIRouter(
     tags=["announcements"],
@@ -27,6 +25,7 @@ async def announcements_list(
     page: int = Query(1, ge=1),
     per_page: int = Query(100, ge=0),
 ) -> list[AnnouncementShortOutputSchema]:
+
     paginated_result = await announcement_service.get_announcements(
         announcement_filter,
         page,
@@ -39,6 +38,7 @@ async def announcements_list(
         "previous_page": paginated_result["previous_page"],
         "items": paginated_result["announcements"],
     }
+
 
 @router.get(
     "/user-announcement/",
@@ -86,6 +86,7 @@ async def get_user_announcement(
         ) for announcement in announcements
     ]
     return filtered_list
+
 
 @router.get("/{slug}/", response_model=AnnouncementOutputSchema)
 async def announcements_detail(

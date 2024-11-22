@@ -21,6 +21,7 @@ async def categories_list(
     page: int = Query(1, ge=1),
     per_page: int = Query(100, ge=0),
 ):
+    print("CATEGORY")
     if X_language not in settings.languages["available"]:
         X_language = settings.languages["default"]
 
