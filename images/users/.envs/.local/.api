@@ -1,2 +1,3 @@
 DEBUG=True
 STATISTICS_URL=http://statistics_api:8081
+ANNOUNCEMENTS_URL=http://announcements_api:8080

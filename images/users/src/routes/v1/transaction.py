@@ -49,12 +49,10 @@ def buy_premium():
     user_id=get_jwt_identity()
     data = request.json
 
-    amount = data.get("amount")
     service_id = data.get("service_id")
 
     _id = TransactionService.get_premium(
         user_id=user_id,
-        amount=amount,
         service_id=service_id,
     )
 

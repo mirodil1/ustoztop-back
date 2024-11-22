@@ -1,8 +1,11 @@
 import datetime
 import uuid
+import requests
+
+from flask import current_app as app
 
 from src.db import db
-from src.exceptions import InsufficientFunds, InvalidAmount
+from src.exceptions import InsufficientFunds, InvalidAmount, RequestFailed
 from src.models import ContentType, Transaction
 from src.schemas import PaymentGateway, TransactionStatus, TransactionType
 from src.services import UserService
@@ -51,10 +54,13 @@ class TransactionService:
         return transaction_id
 
     @classmethod
-    def get_premium(cls, user_id: int, amount: float, service_id: uuid.UUID):
+    def get_premium(cls, user_id: int, service_id: uuid.UUID):
         user = UserService.get_user_by_id(user_id)
         start = datetime.datetime.now()
         expire = start + datetime.timedelta(days=30)
+
+        service = cls._get_service(service_id)
+        amount = service.get("price")
 
         if amount <= 0:
             raise InvalidAmount
@@ -85,6 +91,38 @@ class TransactionService:
         )
         return transaction_id
 
+    @classmethod
+    def promote_announcement(
+        cls,
+        user_id: int,
+        service_id: uuid.UUID,
+        announcement_id: int,
+    ):
+        user = UserService.get_user_by_id(user_id)
+
+        service = cls._get_service(service_id)
+        amount = service.get("price")
+
+        if amount <= 0:
+            raise InvalidAmount
+
+        if user.wallets.balance < amount:
+            raise InsufficientFunds
+
+        content_type = cls._create_content_type(
+            name="top",
+            obj_id=announcement_id,
+            service_id=service_id,
+        )
+
+        transaction_id = cls.create_transaction(
+            user_id=user_id,
+            amount=amount,
+            transaction_type=TransactionType.OUTCOME,
+            transaction_status=TransactionStatus.COMPLETED,
+            content_type=content_type,
+        )
+        return transaction_id
 
     @staticmethod
     def _create_content_type(name: str, obj_id: int, service_id: uuid.UUID):
@@ -96,3 +134,21 @@ class TransactionService:
         db.session.add(content_type)
 
         return content_type
+
+    @staticmethod
+    def _get_service(service_id: uuid.UUID):
+        response = requests.get(
+            f"{app.config['ANNOUNCEMENTS_URL']}/api/v1/plans/{service_id}",
+        )
+        if response.status_code == 200:
+            return response.json()
+        raise RequestFailed
+
+    @staticmethod
+    def _get_announcement(announcements_id: int):
+        response = requests.get(
+            f"{app.config['ANNOUNCEMENTS_URL']}/api/v1/announcements/{announcements_id}",
+        )
+        if response.status_code == 200:
+            return response.json()
+        raise RequestFailed

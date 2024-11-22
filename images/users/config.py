@@ -38,8 +38,9 @@ class Config:
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
     MAX_CONTENT_LENGTH = 10 * 1000 * 1000
 
-    # statistics service
+    # Services url
     STATISTICS_URL = os.environ.get("STATISTICS_URL")
+    ANNOUNCEMENTS_URL = os.environ.get("ANNOUNCEMENTS_URL")
 
     # Database configs
     SQLALCHEMY_TRACK_MODIFICATIONS = False
