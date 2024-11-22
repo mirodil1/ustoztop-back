@@ -20,7 +20,7 @@ class LoginHistoryRecord(db.Model):
         UUID(as_uuid=True), db.ForeignKey("devices.id"), nullable=False,
     )
     login_date = db.Column(db.DateTime, default=datetime.datetime.now(), nullable=False)
-    device_type = db.Column(db.String, primary_key=True, default="web", nullable=False)
+    device_type = db.Column(db.String, default="web", nullable=False)
 
     UniqueConstraint("id", "device_type", name="id_device_type_pk")
 
