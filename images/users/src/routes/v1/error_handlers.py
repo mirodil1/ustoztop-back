@@ -11,7 +11,8 @@ from src.exceptions import (
     UnknownUser,
     UsernameAlreadyExists, 
     InsufficientFunds,
-    InvalidAmount
+    InvalidAmount,
+    RequestFailed
 )
 from . import router
 
@@ -74,3 +75,7 @@ def handle_insufficient_funds(e):
 @router.errorhandler(InvalidAmount)
 def handle_invalid_amount(e):
     return {"error": "invalid amount"}, 400
+
+@router.errorhandler(RequestFailed)
+def handle_request_failed(e):
+    return {"error": "request failed"}, 500
