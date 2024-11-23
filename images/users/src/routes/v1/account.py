@@ -102,7 +102,7 @@ def get_premium_accounts():
     for user in premium_users:
         user_info = {
             "id": user.id,
-            "role": ",".join([role.role_name for role in user.roles]),
+            "roles": ",".join([role.role_name for role in user.roles]),
             "username": user.username,
             "avatar": None,
             "is_verified_by_admin": user.is_verified_by_admin,
