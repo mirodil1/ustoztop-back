@@ -59,6 +59,7 @@ class AnnouncementService:
                 price=announcement.price,
                 number_of_views=await self._get_views_count(announcement.id),
                 location=announcement.location if announcement.location else None,
+                is_promoted=announcement.is_promoted,
                 description=announcement.description,
                 created_at=announcement.created_at.date(),
             ) for announcement in paginated_announce["items"]

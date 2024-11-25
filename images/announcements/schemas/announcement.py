@@ -128,7 +128,7 @@ class AnnouncementShortOutputSchema(BaseModel):
     description: str
     number_of_views: int
     location: LocationOutputSchema | None
-    is_promoted: bool = False
+    is_promoted: bool
     created_at: date
 
     class Config:
