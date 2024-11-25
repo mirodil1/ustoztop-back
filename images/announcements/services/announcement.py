@@ -47,6 +47,7 @@ class AnnouncementService:
                 if response.status_code == 200:
                     user_ids = [user["id"] for user in users]
                 query = query.filter(Announcement.user_id.in_(user_ids))
+
         paginated_announce = await paginate_per_page(query, page, per_page)
 
         announcement_list = [
@@ -125,6 +126,9 @@ class AnnouncementService:
             self.db.query(Announcement)
                 .filter(
                     Announcement.status==AnnouncementStatusEnum.active,
+                ).order_by(
+                    Announcement.is_promoted.desc(),
+                    Announcement.created_at.desc(),
                 )
         )
         return announcements
