@@ -1,4 +1,7 @@
+import enum
+
 from fastapi_filter.contrib.sqlalchemy import Filter
+
 from models.announcement import (
     Announcement,
     LessonAudienceEnum,
@@ -7,9 +10,16 @@ from models.announcement import (
     LessonTypeEnum,
 )
 
+class OrderEnum(enum.Enum):
+    CREATED_AT_ASC = "created_at"
+    CREATED_AT_DESC = "-created_at"
+    PRICE_ASC = "price"
+    PRICE_DESC = "-price"
+
 
 class AnnouncementFilter(Filter):
     search: str | None = None
+    ordering: OrderEnum = OrderEnum.CREATED_AT_DESC
     price__gte: int | None = None
     price__lte: int | None = None
     lesson_type: LessonTypeEnum | None = None

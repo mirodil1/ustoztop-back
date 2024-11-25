@@ -31,9 +31,11 @@ class AnnouncementService:
 
         user_gender = filters.gender
         role_name = filters.role
+        ordering = filters.ordering
 
         filters.gender = None
         filters.role = None
+        filters.ordering = None
 
         query = filters.filter(announcements)
 
@@ -48,6 +50,22 @@ class AnnouncementService:
                     user_ids = [user["id"] for user in users]
                 query = query.filter(Announcement.user_id.in_(user_ids))
 
+        if ordering.value == "-created_at":
+            query=query.order_by(
+                Announcement.created_at.desc(),
+            )
+        elif ordering.value == "price":
+            query=query.order_by(
+                Announcement.price.asc(),
+            )
+        elif ordering.value == "created_at":
+            query=query.order_by(
+                Announcement.created_at.asc(),
+            )
+        elif ordering.value == "-price":
+            query=query.order_by(
+                Announcement.price.desc(),
+            )
         paginated_announce = await paginate_per_page(query, page, per_page)
 
         announcement_list = [
@@ -117,6 +135,9 @@ class AnnouncementService:
                 .filter(
                     Announcement.user_id==user_id,
                     Announcement.status==status,
+                ).order_by(
+                    Announcement.is_promoted.desc(),
+                    Announcement.created_at.desc(),
                 )
         )
         return announcements
@@ -128,7 +149,6 @@ class AnnouncementService:
                     Announcement.status==AnnouncementStatusEnum.active,
                 ).order_by(
                     Announcement.is_promoted.desc(),
-                    Announcement.created_at.desc(),
                 )
         )
         return announcements
