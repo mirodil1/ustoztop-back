@@ -8,7 +8,49 @@ from src.db import (
 
 
 class PhoneNumberViewsService:
-    pass
+
+    @staticmethod
+    async def create_phone_number_views(announcment_id: int, data: str | None):
+        result = await phone_views_collection.insert_one(
+            {
+                "announcement_id": announcment_id,
+                "user_data": data,
+                "created_at": datetime.now(),
+            },
+        )
+        return result
+
+    @staticmethod
+    async def get_phone_number_count(announcement_id: int):
+        pipeline = [
+            {
+                "$match": {
+                    "announcement_id": announcement_id,
+                },
+            },
+            {
+                "$group": {
+                    "_id": "$announcement_id",
+                    "count": {"$sum": 1},
+                },
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "count": 1,
+                },
+            },
+        ]
+        count = (
+            await phone_views_collection.aggregate(pipeline).to_list(length=None)
+        )
+        if not count:
+            return {"count": 0}
+        return count[0]
+
+
+async def get_phone_number_stat_service() -> PhoneNumberViewsService:
+    return PhoneNumberViewsService()
 
 
 class AccountViewsService:

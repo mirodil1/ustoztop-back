@@ -22,6 +22,5 @@ class ProfileViews(BaseViews):
     user_id: int
 
 
-class PhoneNumberViews(BaseViews):
-    announcement_id: int
-    phone_number: str
+class PhoneNumberViews(BaseModel):
+    count: int

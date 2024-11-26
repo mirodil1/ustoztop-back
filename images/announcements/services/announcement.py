@@ -74,7 +74,6 @@ class AnnouncementService:
                 name=announcement.name,
                 slug=announcement.slug,
                 user_id=announcement.user_id,
-                phone_number=announcement.phone_number,
                 price=announcement.price,
                 number_of_views=await self._get_views_count(announcement.id),
                 location=announcement.location if announcement.location else None,
@@ -142,6 +141,14 @@ class AnnouncementService:
         )
         return announcements
 
+    async def get_announcement_phone_number(self, announcement_id: int, user_agent: str):
+        active = await self._get_active_announcements()
+        announcement = active.filter(Announcement.id==announcement_id).scalar()
+        if announcement:
+            await self._add_phone_number_views(announcement_id, user_agent)
+            return announcement.phone_number
+        return None
+
     async def _get_active_announcements(self):
         announcements = (
             self.db.query(Announcement)
@@ -176,6 +183,17 @@ class AnnouncementService:
                 data = response.json()
                 return data["count"]
             return None
+
+    async def _add_phone_number_views(self, announcement_id: int, user_agent: str):
+        """
+        Requesting to statistics service to add phone number views
+        """
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{settings.stat_url}/api/v1/statistics/phone_number_views/create/{announcement_id}",
+                headers={"user-agent": user_agent},
+            )
+            return response
 
 def get_announcement_service(db: Session = Depends(get_db)) -> AnnouncementService:
     return AnnouncementService(db)

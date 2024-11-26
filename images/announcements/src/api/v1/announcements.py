@@ -111,7 +111,6 @@ async def announcements_detail(
             slug=announcement.slug,
             user_id=announcement.user_id,
             category_id= announcement.category_id,
-            phone_number=announcement.phone_number,
             price=announcement.price,
             lessons_in_week=announcement.lessons_in_week,
             lesson_duration_hours= announcement.lesson_duration_hours,
@@ -158,6 +157,23 @@ async def announcements_by_category(
         ) for announcement in announcements
     ]
     return filtered_list
+
+
+@router.get("/phone_number/{announcement_id}", status_code=200)
+async def get_phone_number(
+    request: Request,
+    announcement_id: int,
+    annoincement_service: AnnouncementService = Depends(get_announcement_service),
+):
+    phone_number = await annoincement_service.get_announcement_phone_number(
+        announcement_id=announcement_id,
+        user_agent = request.headers.get("user-agent", "unknown"),
+    )
+    if not phone_number:
+        raise HTTPException(
+        status_code=404, detail="not found",
+    )
+    return {"phone_number": phone_number}
 
 
 @router.post("/announcement/create/", status_code=201)

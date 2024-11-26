@@ -86,7 +86,6 @@ class AnnouncementOutputSchema(BaseModel):
     slug: str
     user_id: int
     category_id: int
-    phone_number: str
     price: Decimal
     lessons_in_week: int
     lesson_duration_hours: int
