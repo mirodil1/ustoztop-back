@@ -148,3 +148,20 @@ def get_accounts_ids():
             "id": user.id,
         } for user in users]
     return users_data, 200
+
+
+@router.route("/get/info/<int:user_id>", methods=["GET"])
+def get_accounts_info(user_id):
+    user = UserService.get_user_by_id(user_id)
+    user_roles = ",".join([role.role_name for role in user.roles])
+    user_info = {
+        "roles": user_roles,
+    }
+
+    if user.tutor:
+        user_info["first_name"] = user.tutor.first_name
+        user_info["last_name"] = user.tutor.last_name
+    elif user.learning_center:
+        user_info["name"] = user.learning_center.name
+
+    return user_info, 200

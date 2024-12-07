@@ -74,6 +74,7 @@ class AnnouncementService:
                 name=announcement.name,
                 slug=announcement.slug,
                 user_id=announcement.user_id,
+                user_info=await self._get_user_info(announcement.user_id),
                 price=announcement.price,
                 number_of_views=await self._get_views_count(announcement.id),
                 location=announcement.location if announcement.location else None,
@@ -194,6 +195,18 @@ class AnnouncementService:
                 headers={"user-agent": user_agent},
             )
             return response
+
+    async def _get_user_info(self, user_id: int):
+        """
+        Requesting to users service to get user info
+        """
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{settings.user_url}/api/v1/users/get/info/{user_id}"
+            )
+            if response.status_code == 200:
+                return response.json()
+            return None
 
 def get_announcement_service(db: Session = Depends(get_db)) -> AnnouncementService:
     return AnnouncementService(db)
