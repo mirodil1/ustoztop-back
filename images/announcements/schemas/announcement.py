@@ -38,7 +38,8 @@ class AnnouncementStatusEnum(enum.Enum):
 
 class LocationOutputSchema(BaseModel):
     id: uuid.UUID
-    name: str
+    uz: str
+    ru: str
     latitude: float
     longitude: float
 
@@ -47,7 +48,8 @@ class LocationOutputSchema(BaseModel):
 
 
 class LocationInputSchema(BaseModel):
-    name: str
+    uz: str
+    ru: str
     latitude: float
     longitude: float
 
@@ -123,6 +125,7 @@ class AnnouncementShortOutputSchema(BaseModel):
     name: str
     slug: str
     user_id: int
+    user_info: dict
     price: Decimal
     description: str
     number_of_views: int

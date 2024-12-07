@@ -1,21 +1,21 @@
 import uuid
 
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import (
     BigInteger,
     Boolean,
     Column,
     Date,
     Enum,
+    Float,
     ForeignKey,
     Integer,
     Numeric,
     String,
-    Float,
-    String
 )
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
+from db.postgres import Base
 from schemas.announcement import (
     AnnouncementStatusEnum,
     LessonAudienceEnum,
@@ -23,7 +23,6 @@ from schemas.announcement import (
     LessonPlaceEnum,
     LessonTypeEnum,
 )
-from db.postgres import Base
 from models.core import TimeStampedModel
 
 
@@ -37,7 +36,8 @@ class Location(Base):
         unique=True,
         nullable=False,
     )
-    name = Column(String(length=255), nullable=False)
+    uz = Column(String(length=255), nullable=False)
+    ru = Column(String(length=255), nullable=False)
     longitude = Column(Float, nullable=False)
     latitude = Column(Float, nullable=False)
 

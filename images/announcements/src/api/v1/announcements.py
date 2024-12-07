@@ -76,7 +76,8 @@ async def get_user_announcement(
             lesson_audience=announcement.lesson_audience,
             description=announcement.description,
             location={
-                "name": announcement.location.name,
+                "uz": announcement.location.uz,
+                "ru": announcement.location.ru,
                 "coords": [
                     announcement.location.latitude,
                     announcement.location.longitude,
