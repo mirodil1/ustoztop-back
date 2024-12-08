@@ -60,6 +60,8 @@ USE_I18N = True
 USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
+# https://docs.djangoproject.com/en/dev/ref/settings/#silenced-system-checks
+SILENCED_SYSTEM_CHECKS = ["models.E028"]
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -262,6 +264,9 @@ JAZZMIN_SETTINGS = {
     #     "django_celery_beat",
     #     "push_notifications",
     # ],
+    "hide_models": [
+        "announcements.location"
+    ],
     "usermenu_links": [
         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
         {"model": "auth.user"},
