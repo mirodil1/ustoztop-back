@@ -7,7 +7,7 @@ from mptt.forms import MPTTAdminForm
 from parler.admin import TranslatableAdmin, TranslatableStackedInline
 from parler.forms import TranslatableModelForm
 
-from .models import Announcement, Category
+from .models import Announcement, Category, Location
 
 
 class MyModelAdminForm(MPTTAdminForm, TranslatableModelForm):
@@ -71,6 +71,10 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
         qs = super().get_queryset(request)
         return qs.filter(parent=None)
 
+@admin.register(Location)
+class LocationInline(admin.ModelAdmin):
+    pass
+
 
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
@@ -79,3 +83,4 @@ class AnnouncementAdmin(admin.ModelAdmin):
         "is_active",
         "is_confirmed_by_admin",
     ]
+    # inlines = [LocationInline]

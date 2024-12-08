@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.template import defaultfilters
@@ -58,6 +60,17 @@ class Category(TimeStampedModel, MPTTModel, TranslatableModel):
 
     def __str__(self) -> str:
         return self.name
+
+
+class Location(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uz = models.CharField(max_length=255)
+    ru = models.CharField(max_length=255)
+    longitude = models.FloatField()
+    latitude = models.FloatField()
+    
+    class Meta:
+        db_table = "locations"
 
 
 class Announcement(TimeStampedModel):
@@ -153,6 +166,12 @@ class Announcement(TimeStampedModel):
         null=True,
         on_delete=models.SET_NULL,
     )
+    location = models.OneToOneField(
+        to=Location,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
 
     class Meta:
         verbose_name = _("Announcement")
