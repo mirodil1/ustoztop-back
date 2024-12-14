@@ -28,6 +28,11 @@ async def services_list(
                 name=plan.get("name"),
                 description=plan.get("description"),
                 price=plan.get("price"),
+                discount_price=plan.get("discount_price"),
+                plan_type=plan.get("service_type"),
+                plan_audience=plan.get("service_audience"),
+                duration=plan.get("duration"),
+                is_discount=plan.get("is_discount"),
                 image=f"{settings.base_url}/media/{plan.get('image')}" \
                     if plan.get("image") else None,
                 children=plan.get("children"),

@@ -1,9 +1,21 @@
+import enum
 import uuid
 
 import orjson
 from pydantic import BaseModel
 
 from schemas.mixins import TranslatedBaseModel
+
+
+class PlanAudienceEnum(enum.Enum):
+    all = "all"
+    tutor = "tutor"
+    learning_center = "learning_center"
+
+
+class PlanTypeEnum(enum.Enum):
+    top = "top"
+    premium = "premuim"
 
 
 class PlanTranslationSchema(BaseModel):
@@ -20,6 +32,11 @@ class PlanTranslationSchema(BaseModel):
 class PlanSchema(TranslatedBaseModel):
     id: uuid.UUID
     price: int
+    discount_price: int
+    service_type: str
+    service_audience: str
+    duration: int
+    is_discount: bool
     image: str
     translations: list[PlanTranslationSchema]
 
@@ -35,6 +52,11 @@ class PlanOutputSchema(BaseModel):
     name: str
     description: str
     price: int
+    discount_price: int
+    plan_type: str
+    plan_audience: str
+    duration: int
+    is_discount: bool
     image: str
 
 
