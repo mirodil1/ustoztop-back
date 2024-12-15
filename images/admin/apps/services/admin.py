@@ -26,6 +26,8 @@ class ServiceAdmin(TranslatableAdmin):
     )
     list_display = [
         "name",
+        "duration",
+        "service_type",
         "is_discount",
         "is_active",
     ]
