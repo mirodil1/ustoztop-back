@@ -14,35 +14,46 @@ class Config:
 
     basedir = os.path.abspath(os.path.dirname(__file__))
     BASE_URL = os.environ.get("BASE_URL", "http://localhost:5000")
-    # Assets Management
+
+    # Assets Management ================================================================
     ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/static/assets")
 
-    # Set up the App SECRET_KEY
+    # Set up the App SECRET_KEY ========================================================
     SECRET_KEY  = os.getenv("SECRET_KEY", None)
     if not SECRET_KEY:
         SECRET_KEY = "".join(random.choice(string.ascii_lowercase) for i in range( 32 ))
 
-    # JWT config
+    # JWT config =======================================================================
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=jwt_access_token_expires_days)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=jwt_refresh_token_expires_days)
     JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "RS256")
     JWT_PUBLIC_KEY = open("public.pem").read()
     JWT_PRIVATE_KEY = open("private.pem").read()
 
-    # Redis
+    # Redis ============================================================================
     REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
     REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
 
-    # Media upload
+    # Media upload =====================================================================
     UPLOAD_FOLDER = "./src/media/uploads"
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
     MAX_CONTENT_LENGTH = 10 * 1000 * 1000
 
-    # Services url
+    # Services url =====================================================================
     STATISTICS_URL = os.environ.get("STATISTICS_URL")
     ANNOUNCEMENTS_URL = os.environ.get("ANNOUNCEMENTS_URL")
 
-    # Database configs
+    # Eskiz ============================================================================
+    ESKIZ_EMAIL = os.environ.get("ESKIZ_EMAIL")
+    ESKIZ_PASSWORD = os.environ.get("ESKIZ_PASSWORD")
+
+    # Payme ============================================================================
+    PAYME_MIN_AMOUNT = os.environ.get("PAYME_MIN_AMOUNT")
+    PAYME_SECRET_KEY = os.environ.get("PAYME_SECRET_KEY")
+    PAYME_TRANSACTION_TIMEOUT = os.environ.get("PAYME_TRANSACTION_TIMEOUT")
+    PAYME_MERCHANT_ID = os.environ.get("PAYME_MERCHANT_ID")
+
+    # Database configs =================================================================
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     POSTGRES_ENGINE   = os.getenv("POSTGRES_ENGINE"   , None)
@@ -77,5 +88,5 @@ class LocalConfig(Config):
 # Load all possible configurations
 config_dict = {
     "Production": ProductionConfig,
-    "Local"     : LocalConfig
+    "Local"     : LocalConfig,
 }
