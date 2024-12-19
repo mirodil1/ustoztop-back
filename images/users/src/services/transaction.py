@@ -1,17 +1,43 @@
 import datetime
 import uuid
-import requests
 
+import requests
 from flask import current_app as app
 
 from src.db import db
-from src.exceptions import InsufficientFunds, InvalidAmount, RequestFailed
+from src.exceptions import (
+    InsufficientFunds,
+    InvalidAmount,
+    OrderCompleted,
+    RequestFailed,
+)
 from src.models import ContentType, Transaction
 from src.schemas import PaymentGateway, TransactionStatus, TransactionType
 from src.services import UserService
 
 
 class TransactionService:
+
+    @staticmethod
+    def get_transaction_by_id(transaction_id: str):
+        transaction = Transaction.query.filter_by(id=transaction_id)
+        if not transaction:
+            return None
+        return transaction
+
+    @staticmethod
+    def get_transaction_by_gateway_id(transaction_id: str):
+        transaction = Transaction.query.filter_by(payment_gateway_id=transaction_id)
+        if not transaction:
+            return None
+        return transaction
+
+    @staticmethod
+    def get_transactions(from_date, to_date):
+        transactions = Transaction.query.filter(
+            Transaction.created_at.between(from_date, to_date),
+        )
+        return transactions
 
     @staticmethod
     def create_transaction(**transaction_data):
@@ -32,26 +58,35 @@ class TransactionService:
     @classmethod
     def fill_balance(
         cls,
+        transaction_id: uuid.UUID,
         user_id: int,
         amount: float,
-        payment_gateway: PaymentGateway,
-        transaction_status: TransactionStatus,
+        perform_time: int,
     ):
-        if not isinstance(amount, int) or amount <= 0:
-            raise InvalidAmount
         user = UserService.get_user_by_id(user_id)
+        transaction = cls.get_transaction_by_id(transaction_id)
+
         user.wallets.balance += amount
 
-        transaction_id = cls.create_transaction(
-            user_id=user_id,
-            amount=amount,
-            transaction_type=TransactionType.INCOME,
-            payment_gateway=payment_gateway,
-            transaction_status=transaction_status,
-        )
-
+        transaction.state = 2
+        transaction.status = TransactionStatus.COMPLETED
+        transaction.perform_time = perform_time
         db.session.commit()
         return transaction_id
+
+    @classmethod
+    def withdraw_from_balance(
+        cls,
+        user_id: int,
+        amount: int,
+    ):
+        user = UserService.get_user_by_id(user_id)
+
+        if user.wallets.balance >= amount:
+            user.wallets.balance -= amount
+            db.session.commit()
+            return True
+        raise OrderCompleted
 
     @classmethod
     def get_premium(cls, user_id: int, service_id: uuid.UUID):

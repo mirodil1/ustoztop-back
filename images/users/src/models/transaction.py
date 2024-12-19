@@ -16,7 +16,7 @@ class ContentType(db.Model):
     service_id = db.Column(UUID(as_uuid=True), nullable=False)
 
 
-class Transaction(TimeStampedModel):
+class Transaction(db.Model):
     __tablename__ = "transactions"
 
     id = db.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
@@ -34,6 +34,8 @@ class Transaction(TimeStampedModel):
         ENUM(PaymentGateway, name="payment_gateway_enum"),
         nullable=True,
     )
+    payment_gateway_id = db.Column(db.String, nullable=True)
+    payment_gateway_time = db.Column(db.BigInteger, nullable=True)
     transaction_status = db.Column(
         db.Enum(TransactionStatus,name="transaction_status_enum"),
         default=TransactionStatus.PENDING,
@@ -44,7 +46,11 @@ class Transaction(TimeStampedModel):
         db.ForeignKey("content_types.id", ondelete="NO ACTION"),
         nullable=True,
     )
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    state = db.Column(db.Integer, nullable=True)
+    reason = db.Column(db.Integer, nullable=True)
+    canceled_at = db.Column(db.BigInteger(default=0), nullable=True)
+    performed_at = db.Column(db.BigInteger, nullable=True)
+    created_at = db.Column(db.BigInteger, nullable=False)
 
     # Foreign key relationships
     user = db.relationship("User", backref=db.backref("transactions"))
