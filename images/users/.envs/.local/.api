@@ -1,3 +1,14 @@
 DEBUG=True
+
+# Services
 STATISTICS_URL=http://statistics_api:8081
 ANNOUNCEMENTS_URL=http://announcements_api:8080
+
+# Eskiz
+ESKIZ_EMAIL=lidorim@yandex.com
+ESKIZ_PASSWORD=dIkAfSL5zU8huFBLn2vwaIU7gB98mDKXtcIYoYM9
+
+# Payme
+PAYME_MIN_AMOUNT=1000000
+PAYME_MERCHANT_ID=834y7389247
+PAYME_SECRET_KEY=dnui23929034fik

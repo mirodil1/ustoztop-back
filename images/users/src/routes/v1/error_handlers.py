@@ -4,16 +4,24 @@ from werkzeug.exceptions import BadRequest
 
 from src.exceptions import (
     DeviceAlreadyExists,
-    InvalidEmail,
-    InvalidRefreshToken,
-    RoleAlreadyExists,
-    UnknownDevice,
-    UnknownUser,
-    UsernameAlreadyExists, 
+    IncorrectAmount,
     InsufficientFunds,
     InvalidAmount,
-    RequestFailed
+    InvalidEmail,
+    InvalidRefreshToken,
+    MethodNotFound,
+    PermissionDenied,
+    PhoneNumberNotFound,
+    RequestFailed,
+    RoleAlreadyExists,
+    TransactionNotFound,
+    TransactionStateDisallowed,
+    UnknownDevice,
+    UnknownUser,
+    UsernameAlreadyExists,
+    OrderCompleted,
 )
+
 from . import router
 
 
@@ -79,3 +87,105 @@ def handle_invalid_amount(e):
 @router.errorhandler(RequestFailed)
 def handle_request_failed(e):
     return {"error": "request failed"}, 500
+
+# PAYME error handler
+
+@router.errorhandler(PhoneNumberNotFound)
+def handle_payme_phone_number(e):
+    return {
+        "error" : {
+            "code" : -31050,
+            "message" : {
+                "ru" : "Номер телефона не найден",
+                "uz" : "Raqam ro'yhatda yo'q",
+                "en" : "Phone number not found",
+            },
+        },
+    }, 200
+
+
+@router.errorhandler(PermissionDenied)
+def handle_payme_permission(e):
+    return {
+        "error" : {
+            "code" : -32504,
+            "message" : {
+                "ru" : "Недостаточно привилегий для выполнения метода",
+                "uz" : "Amaliyotni bajarish uchun yetarli imtiyozlar mavjud emas",
+                "en" : "Insufficient privileges to perform the method",
+            },
+        },
+    }, 200
+
+
+@router.errorhandler(TransactionNotFound)
+def handle_payme_transaction_not_found(e):
+    return {
+        "error" : {
+            "code" : -31003,
+            "message" : {
+                "ru" : "Транзакция не найдена",
+                "uz" : "Tranzaksiya topilamdi",
+                "en" : "Transaction not found",
+            },
+        },
+    }, 200
+
+
+@router.errorhandler(IncorrectAmount)
+def handle_payme_incorrect_amount(e):
+    return {
+        "error" : {
+            "code" : -31001,
+            "message" : {
+                "ru" : "Неверная сумма",
+                "uz" : "Noto'g'ri qiymat",
+                "en" : "Invalid amount",
+            },
+        },
+    }, 200
+
+
+@router.errorhandler(MethodNotFound)
+def handle_payme_method(e):
+    return {
+        "error" : {
+            "code" : -32601,
+            "message" : {
+                "ru" : "Запрашиваемый метод не найден",
+                "uz" : "Amaliyot topilmadi",
+                "en" : "Requested method not found",
+            },
+        },
+    }, 200
+
+
+@router.errorhandler(TransactionStateDisallowed)
+def handle_payme_transaction_disaalowed(e):
+    return {
+        "error" : {
+            "code" : -31008,
+            "message" : {
+                "ru" : "Невозможно выполнить операцию",
+                "uz" : "Amaliyotni bajarish mumkin emas",
+                "en" : "Unable to perform operation",
+            },
+        },
+    }, 200
+
+
+@router.errorhandler(OrderCompleted)
+def handle_payme_order_completed(e):
+    return {
+        "error" : {
+            "code" : -31007,
+            "message" : {
+                "ru" : "Заказ выполнен. Невозможно отменить транзакцию. \
+                        Товар или услуга предоставлена покупателю в полном объеме",
+                "uz" : "Buyurtma bajarildi. Bitimni bekor qilish mumkin emas. \
+                        Tovar yoki xizmat xaridorga to'liq hajmda taqdim etilgan",
+                "en" : "The order is completed. It is not possible to cancel the transaction.\
+                        The product or service is provided to the buyer in full",
+            },
+        },
+    }, 200

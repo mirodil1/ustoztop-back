@@ -1,6 +1,7 @@
 class InvalidEmail(Exception):
     pass
 
+
 class InvalidPhoneNumber(Exception):
     pass
 
@@ -39,6 +40,7 @@ class InsufficientFunds(Exception):
 
 class InvalidAmount(Exception):
     pass
+
 
 class RequestFailed(Exception):
     pass
