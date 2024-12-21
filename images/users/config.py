@@ -53,6 +53,13 @@ class Config:
     PAYME_TRANSACTION_TIMEOUT = os.environ.get("PAYME_TRANSACTION_TIMEOUT")
     PAYME_MERCHANT_ID = os.environ.get("PAYME_MERCHANT_ID")
 
+    # Click ============================================================================
+    CLICK_MIN_AMOUNT = os.environ.get("CLICK_MIN_AMOUNT")
+    CLICK_SECRET_KEY = os.environ.get("CLICK_SECRET_KEY")
+    CLICK_MERCHANT_ID = os.environ.get("CLICK_MERCHANT_ID")
+    CLICK_SERVICE_ID = os.environ.get("CLICK_SERVICE_ID")
+    CLICK_MERCHANT_USER_ID = os.environ.get("CLICK_MERCHANT_USER_ID")
+
     # Database configs =================================================================
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
