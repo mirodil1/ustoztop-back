@@ -60,7 +60,7 @@ class PaymeService:
         amount = params.get("amount")
         phone_number = params.get("phone_number")
 
-        if amount < app.config["PAYME_MIN_AMOUNT"]:
+        if amount * 100 < app.config["PAYME_MIN_AMOUNT"]:
             raise IncorrectAmount
 
         user = UserService.get_user_by_phone_number(phone_number)
@@ -82,7 +82,7 @@ class PaymeService:
         phone_number = params.get("account").get("phone_number")
         transaction_timeout = app.config["PAYME_TRANSACTION_TIMEOUT"]
 
-        if amount < app.config["PAYME_MIN_AMOUNT"]:
+        if amount * 100 < app.config["PAYME_MIN_AMOUNT"]:
             raise IncorrectAmount
         user = UserService.get_user_by_phone_number(phone_number)
         if not user:
@@ -228,7 +228,7 @@ class PaymeService:
                     {
                         "id" : transaction.payment_gateway_id,
                         "time" : transaction.payment_gateway_time,
-                        "amount" : transaction.amount,
+                        "amount" : transaction.amount * 100,
                         "account" : {
                             "phone_number" : transaction.user.phone_number,
                         },
