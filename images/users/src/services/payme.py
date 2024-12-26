@@ -25,9 +25,9 @@ class PaymeService:
     CHECK_TRANSACTION = "CheckTransaction"
     GET_STATEMENT = "GetStatement"
 
-    MIN_AMOUNT = app.config["PAYME_MIN_AMOUNT"]
-    TRANSACTION_TIMEOUT = app.config["PAYME_TRANSACTION_TIMEOUT"]
-    MERCHANT_ID = app.config["PAYME_MERCHANT_ID"]
+    # MIN_AMOUNT = app.config["PAYME_MIN_AMOUNT"]
+    # TRANSACTION_TIMEOUT = app.config["PAYME_TRANSACTION_TIMEOUT"]
+    # MERCHANT_ID = app.config["PAYME_MERCHANT_ID"]
     PAYME_CHECKOUT_URL = "https://checkout.paycom.uz"
 
     @classmethod
@@ -60,7 +60,7 @@ class PaymeService:
         amount = params.get("amount")
         phone_number = params.get("phone_number")
 
-        if amount < cls.MIN_AMOUNT:
+        if amount < app.config["PAYME_MIN_AMOUNT"]:
             raise IncorrectAmount
 
         user = UserService.get_user_by_phone_number(phone_number)
@@ -80,8 +80,9 @@ class PaymeService:
         transaction_id = params.get("id")
         time = params.get("time")
         phone_number = params.get("account").get("phone_number")
+        transaction_timeout = app.config["PAYME_TRANSACTION_TIMEOUT"]
 
-        if amount < cls.MIN_AMOUNT:
+        if amount < app.config["PAYME_MIN_AMOUNT"]:
             raise IncorrectAmount
         user = UserService.get_user_by_phone_number(phone_number)
         if not user:
@@ -95,7 +96,7 @@ class PaymeService:
             if transaction.state != 1:
                 raise TransactionStateDisallowed
 
-            if timestamp - transaction.created_at > cls.TRANSACTION_TIMEOUT:
+            if timestamp - transaction.created_at > transaction_timeout:
                 transaction.state = -1
                 transaction.reason = 4
                 raise TransactionStateDisallowed
@@ -141,6 +142,7 @@ class PaymeService:
     @classmethod
     def _perform_transaction(cls, params: dict):
         transaction_id = params.get("id")
+        transaction_timeout = app.config["PAYME_TRANSACTION_TIMEOUT"]
 
         transaction = TransactionService.get_transaction_by_gateway_id(transaction_id)
         if not transaction:
@@ -159,7 +161,7 @@ class PaymeService:
         date_time = datetime.now()
         timestamp = date_time.timestamp()
 
-        if timestamp - transaction.created_at > cls.TRANSACTION_TIMEOUT:
+        if timestamp - transaction.created_at > transaction_timeout:
             transaction.state = -1
             transaction.reason = 4
             raise TransactionStateDisallowed
@@ -265,12 +267,13 @@ class PaymeService:
         return is_authorized
 
     @classmethod
-    def generate_url(cls, phone_number: str, amount: int):
-        merchant_id = cls.MERCHANT_ID
+    def generate_url(cls, user_id: int, amount: int):
+        merchant_id = app.config["PAYME_MERCHANT_ID"]
         amount = amount * 100
+        phone_number = UserService.get_user_by_id(user_id).phone_number
 
-        encoded_path = base64.b64encode(
-            f"m={merchant_id};ac.phone_number={phone_number};a={amount}",
+        text = (
+            f"m={merchant_id};ac.phone_number={phone_number};a={amount}"
         )
+        encoded_path = base64.b64encode(text.encode("utf-8")).decode("utf-8")
         return f"{cls.PAYME_CHECKOUT_URL}/{encoded_path}"
-
