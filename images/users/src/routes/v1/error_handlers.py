@@ -10,6 +10,7 @@ from src.exceptions import (
     InvalidEmail,
     InvalidRefreshToken,
     MethodNotFound,
+    OrderCompleted,
     PermissionDenied,
     PhoneNumberNotFound,
     RequestFailed,
@@ -19,7 +20,6 @@ from src.exceptions import (
     UnknownDevice,
     UnknownUser,
     UsernameAlreadyExists,
-    OrderCompleted,
 )
 
 from . import router
