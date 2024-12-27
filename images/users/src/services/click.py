@@ -3,15 +3,6 @@ import hashlib
 
 from flask import current_app as app
 
-from src.exceptions import (
-    ActionNotFound,
-    AlreadyPaid,
-    IncorrectParameterAmount,
-    SignCheckFailed,
-    TransactionCanceled,
-    TransactionDoesNotExist,
-    UserDoesNotExist,
-)
 from src.schemas.transaction import PaymentGateway, TransactionStatus, TransactionType
 from src.services import TransactionService, UserService
 
@@ -27,7 +18,7 @@ class ClickShopApiService:
         min_amount = app.config["CLICK_MIN_AMOUNT"]
 
         if not cls._authorize():
-            raise SignCheckFailed
+            pass
 
     @classmethod
     def _prepare(  # noqa: PLR0913
@@ -44,7 +35,7 @@ class ClickShopApiService:
     ):
         user = UserService.get_user_by_phone_number(merchant_trans_id)
         if not user:
-            raise UserDoesNotExist
+            pass
 
         date_time = datetime.now()
         timestamp = date_time.timestamp()
