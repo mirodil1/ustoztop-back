@@ -15,7 +15,7 @@ def get_tutor(user_id):
     return {
             "first_name": tutor.first_name,
             "last_name": tutor.last_name,
-            "avatar": f"{app.config['BASE_URL']}/media/uploads/avatar{tutor.avatar}",
+            "avatar": f"{app.config['BASE_URL']}/media/uploads/avatar/{tutor.avatar}",
             "gender": tutor.gender.name if tutor.gender else None,
             "description": tutor.description,
             "education": [
