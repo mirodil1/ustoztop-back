@@ -48,7 +48,7 @@ class Transaction(db.Model):
     )
     state = db.Column(db.Integer, nullable=True)
     reason = db.Column(db.Integer, nullable=True)
-    canceled_at = db.Column(db.BigInteger(default=0), nullable=True)
+    canceled_at = db.Column(db.BigInteger(), default=0, nullable=True)
     performed_at = db.Column(db.BigInteger, nullable=True)
     created_at = db.Column(db.BigInteger, nullable=False)
 
