@@ -1,6 +1,12 @@
 from marshmallow import Schema, fields
 
 
+class RefreshTokenSchema(Schema):
+    device_id = fields.UUID(required=True)
+    refresh_token = fields.String(required=True)
+    phone_number = fields.String(required=True)
+
+
 class UserSchema(Schema):
     phone_number = fields.String(required=True)
     password = fields.String(required=True, load_only=True)

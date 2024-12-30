@@ -38,16 +38,16 @@ class TokenService:
                                            fresh=True)
         refresh_token = create_refresh_token(identity=user.id)
 
-        redis_db.setex(device_id, 60 * 60 * 24 * 30, refresh_token)
+        redis_db.setex(device_id, 60 * 60 * 24 * 60, refresh_token)
 
         return access_token, refresh_token
 
     @classmethod
-    def refresh_token_pair(cls, email, device_id, refresh_token):
+    def refresh_token_pair(cls, phone_number, device_id, refresh_token):
         stored_refresh_token = redis_db.get(device_id)
 
         if stored_refresh_token and stored_refresh_token == refresh_token:
-            access_token, refresh_token = cls.create_token_pair(email, device_id)
+            access_token, refresh_token = cls.create_token_pair(phone_number, device_id)
             return access_token, refresh_token
         raise InvalidRefreshToken
 
