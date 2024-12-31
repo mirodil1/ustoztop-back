@@ -13,20 +13,92 @@ def get_user_account(user_id):
 
     user = UserService.get_user_by_id(user_id=user_id)
     user_roles = ",".join([role.role_name for role in user.roles])
-    UserService.add_account_views(user.id, user_agent)
 
-    return {
-        "phone_number": user.phone_number,
-        "username": user.username,
-        "web_link": user.web_link,
-        "facebook_link": user.facebook_link,
-        "insta_link": user.insta_link,
-        "telegram_link": user.telegram_link,
+    response = {
+        "roles": user_roles,
         "is_verified_by_admin": user.is_verified_by_admin,
         "is_premium": user.is_premium,
-        "roles": user_roles,
         "joined_date": user.created_at,
-    }, 200
+    }
+    print(user.tutor)
+    if user.tutor:
+        response["avatar"] = (
+            f"{app.config['BASE_URL']}/media/uploads/avatar/{user.tutor.avatar}"
+            if user.tutor.avatar else None
+        )
+        response["first_name"] = user.tutor.first_name
+        response["last_name"] = user.tutor.last_name
+
+        if user.is_premium:
+            response.update(
+                {
+                    "description": user.tutor.description,
+                    "gender": user.tutor.gender.name if user.tutor.gender else None,
+                    "education": [
+                        {
+                            "id": education.id,
+                            "name": education.name,
+                            "degree": education.degree.name,
+                            "start_year": education.start_year,
+                            "finish_year": education.finish_year,
+                        }
+                        for education in user.tutor.education
+                    ],
+                    "language": [
+                        {
+                            "id": language.id,
+                            "name": language.name,
+                            "level": language.level.name,
+                        }
+                        for language in user.tutor.language
+                    ],
+                    "experience": [
+                        {
+                            "id": experience.id,
+                            "organization": experience.organization,
+                            "position": experience.position,
+                            "start_year": experience.start_year,
+                            "finish_year": experience.finish_year,
+                            "is_working": experience.is_working,
+                        }
+                        for experience in user.tutor.experience
+                    ],
+                }
+            )
+            UserService.add_account_views(user.id, user_agent)
+    elif user.learning_center:
+        response["name"] = user.learning_center.name
+        response["avatar"] = (
+            f"{app.config['BASE_URL']}/media/uploads/avatar/{user.learning_center.avatar}"
+            if user.learning_center.avatar else None
+        )
+        if user.is_premium:
+            response.update(
+                {
+                    "description": user.learning_center.description,
+                    "banner": (
+                        f"{app.config['BASE_URL']}/media/uploads/banner/{user.learning_center.avatar}"
+                        if user.learning_center.avatar else None
+                    ),
+                    "branches": [
+                        {
+                            "id": branch.id,
+                            "name": branch.name,
+                        } for branch in user.learning_center.branch
+                    ],
+                    "schedule": [
+                        {
+                            "id": schedule.id,
+                            "day_of_week": schedule.day_of_week.name,
+                            "opening_time": schedule.opening_time.strftime("%H:%M"),
+                            "closing_time": schedule.closing_time.strftime("%H:%M"),
+                            "is_closed": schedule.is_closed,
+                        } for schedule in user.learning_center.working_schedule
+                    ],
+                }
+            )
+            UserService.add_account_views(user.id, user_agent)
+    return response, 200
 
 
 @router.route("/me", methods=["GET"])
