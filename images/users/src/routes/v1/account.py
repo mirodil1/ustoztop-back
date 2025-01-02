@@ -20,7 +20,6 @@ def get_user_account(user_id):
         "is_premium": user.is_premium,
         "joined_date": user.created_at,
     }
-    print(user.tutor)
     if user.tutor:
         response["avatar"] = (
             f"{app.config['BASE_URL']}/media/uploads/avatar/{user.tutor.avatar}"
