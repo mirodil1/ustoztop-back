@@ -74,12 +74,12 @@ async def get_user_announcement(
             lesson_audience=announcement.lesson_audience,
             description=announcement.description,
             location={
+                "id": announcement.location.id,
                 "uz": announcement.location.uz,
                 "ru": announcement.location.ru,
-                "coords": [
-                    announcement.location.latitude,
-                    announcement.location.longitude,
-                ],
+                "latitude": announcement.location.latitude,
+                "longitude": announcement.location.longitude,
+
             } if announcement.location else None,
             is_promoted=announcement.is_promoted,
             promotion_started=announcement.promotion_started,
@@ -118,12 +118,11 @@ async def announcements_detail(
             lesson_language=announcement.lesson_language,
             lesson_audience=announcement.lesson_audience,
             location={
+                "id": announcement.location.id,
                 "uz": announcement.location.uz,
                 "ru": announcement.location.ru,
-                "coords": [
-                    announcement.location.latitude,
-                    announcement.location.longitude,
-                ],
+                "latitude": announcement.location.latitude,
+                "longitude": announcement.location.longitude,
             } if announcement.location else None,
             description=announcement.description,
             is_promoted=announcement.is_promoted,
