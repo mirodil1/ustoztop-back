@@ -1,11 +1,9 @@
 import requests
-
 import telebot
 from flask import current_app as app
 
 from src.cache import redis_db
 from src.utils import generate_security_code
-
 
 bot = telebot.TeleBot(
     "5393375054:AAFCLPFARn3GLIyZp_eI1c8YIWOvnpwda7s",
@@ -21,7 +19,7 @@ class SMSService:
         code = generate_security_code()
         redis_db.setex(phone_number, 60, str(code))
         bot.send_message(
-            chat_id=-1001541588192,
+            chat_id=-1001842149584,
             text=f"Используйте код <strong>{code}</strong> для авторизации",
         )
 
