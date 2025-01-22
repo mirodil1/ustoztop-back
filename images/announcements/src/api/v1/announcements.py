@@ -1,8 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi_filter import FilterDepends
-from starlette import status
-from starlette.requests import Request
-
 from schemas.announcement import (
     AnnouncementInputSchema,
     AnnouncementOutputSchema,
@@ -12,7 +9,8 @@ from schemas.announcement import (
 from schemas.pagination import PaginatedPerPageResponse
 from services.announcement import AnnouncementService, get_announcement_service
 from services.announcement_filter import AnnouncementFilter
-
+from starlette import status
+from starlette.requests import Request
 
 router = APIRouter(
     tags=["announcements"],
@@ -82,7 +80,7 @@ async def get_user_announcement(
                     announcement.location.latitude,
                     announcement.location.longitude,
                 ],
-            },
+            } if announcement.location else None,
             is_promoted=announcement.is_promoted,
             promotion_started=announcement.promotion_started,
             promotion_expired=announcement.promotion_expired,
@@ -119,7 +117,14 @@ async def announcements_detail(
             lesson_place= announcement.lesson_place,
             lesson_language=announcement.lesson_language,
             lesson_audience=announcement.lesson_audience,
-            location=announcement.location if announcement.location else None,
+            location={
+                "uz": announcement.location.uz,
+                "ru": announcement.location.ru,
+                "coords": [
+                    announcement.location.latitude,
+                    announcement.location.longitude,
+                ],
+            } if announcement.location else None,
             description=announcement.description,
             is_promoted=announcement.is_promoted,
             promotion_started=announcement.promotion_started,
