@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi_filter import FilterDepends
+from starlette import status
+from starlette.requests import Request
+
 from schemas.announcement import (
     AnnouncementInputSchema,
     AnnouncementOutputSchema,
@@ -9,8 +12,7 @@ from schemas.announcement import (
 from schemas.pagination import PaginatedPerPageResponse
 from services.announcement import AnnouncementService, get_announcement_service
 from services.announcement_filter import AnnouncementFilter
-from starlette import status
-from starlette.requests import Request
+
 
 router = APIRouter(
     tags=["announcements"],
@@ -24,12 +26,13 @@ async def announcements_list(
     announcement_filter: AnnouncementFilter = FilterDepends(AnnouncementFilter),
     page: int = Query(1, ge=1),
     per_page: int = Query(100, ge=0),
+    coords: list[float] | None = Query(None, description="Coordinates"),
 ) -> list[AnnouncementShortOutputSchema]:
-
     paginated_result = await announcement_service.get_announcements(
         announcement_filter,
         page,
         per_page,
+        coords,
     )
 
     return {

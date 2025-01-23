@@ -1,19 +1,20 @@
 import uuid
 
 import httpx
-from core.config import settings
-from db.postgres import get_db
+from sqlalchemy.orm import Session
 from fastapi import Depends
+from geopy.distance import geodesic
+from slugify import slugify
+
+from core.config import settings
 from models.announcement import Announcement, Location
 from schemas.announcement import (
     AnnouncementSchema,
     AnnouncementShortOutputSchema,
     AnnouncementStatusEnum,
 )
-from slugify import slugify
-from sqlalchemy.orm import Session
 from src.paginator import paginate_per_page
-
+from db.postgres import get_db
 from services.announcement_filter import AnnouncementFilter
 
 
@@ -26,6 +27,7 @@ class AnnouncementService:
             filters: AnnouncementFilter,
             page: int,
             per_page: int,
+            coords: list,
     ) -> list[AnnouncementSchema]:
         announcements = await self._get_active_announcements()
 
@@ -67,6 +69,18 @@ class AnnouncementService:
                 Announcement.price.desc(),
             )
         paginated_announce = await paginate_per_page(query, page, per_page)
+
+        if coords and len(coords)==2:
+            lat, lng = coords[0], coords[1]
+            radius = 10
+            paginated_announce["items"] = [
+                announcement for announcement in paginated_announce["items"]
+                if announcement.location
+                and geodesic(
+                    (lat, lng),
+                    (announcement.location.latitude, announcement.location.longitude),
+                ).kilometers <= radius
+            ]
 
         announcement_list = [
             AnnouncementShortOutputSchema(
