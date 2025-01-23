@@ -7,6 +7,7 @@ Unidecode==1.3.7 # https://pypi.org/project/Unidecode
 uvicorn==0.30.1 # https://www.uvicorn.org
 PyJWT[crypto]==2.9.0 # https://github.com/jpadilla/pyjwt
 httpx==0.27.2 # https://github.com/encode/httpx
+geopy==2.4.1 # https://github.com/geopy/geopy
 
 # FastApi
 # -------------------------------------------------------------------------------------------
