@@ -1,6 +1,7 @@
 import uuid
 
 import httpx
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from geopy.distance import geodesic
@@ -68,19 +69,28 @@ class AnnouncementService:
             query=query.order_by(
                 Announcement.price.desc(),
             )
-        paginated_announce = await paginate_per_page(query, page, per_page)
 
-        if coords and len(coords)==2:
+        if coords and len(coords) == 2:
             lat, lng = coords[0], coords[1]
             radius = 10
-            paginated_announce["items"] = [
-                announcement for announcement in paginated_announce["items"]
-                if announcement.location
-                and geodesic(
-                    (lat, lng),
-                    (announcement.location.latitude, announcement.location.longitude),
-                ).kilometers <= radius
-            ]
+            earth_radius_km = 6371
+
+            haversine_distance = (
+                earth_radius_km
+                * func.acos(
+                    func.cos(func.radians(lat)) * func.cos(
+                        func.radians(Location.latitude),
+                    )
+                    * func.cos(func.radians(Location.longitude) - func.radians(lng))
+                    + func.sin(func.radians(lat)) * func.sin(
+                        func.radians(Location.latitude),
+                    ),
+                )
+            )
+            query = query.filter(haversine_distance <= radius)
+            query = query.order_by(haversine_distance)
+
+        paginated_announce = await paginate_per_page(query, page, per_page)
 
         announcement_list = [
             AnnouncementShortOutputSchema(
