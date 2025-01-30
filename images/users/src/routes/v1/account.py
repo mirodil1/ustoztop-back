@@ -140,6 +140,35 @@ def get_me():
         user_data["last_name"] = user.tutor.last_name
         user_data["description"] = user.tutor.description
         user_data["gender"] = user.tutor.gender.name if user.tutor.gender else None
+        user_data["education"] = [
+            {
+                "id": education.id,
+                "name": education.name,
+                "degree": education.degree.name,
+                "start_year": education.start_year,
+                "finish_year": education.finish_year,
+            }
+            for education in user.tutor.education
+        ]
+        user_data["language"] = [
+            {
+                "id": language.id,
+                "name": language.name,
+                "level": language.level.name,
+            }
+            for language in user.tutor.language
+        ]
+        user_data["experience"] = [
+            {
+                "id": experience.id,
+                "organization": experience.organization,
+                "position": experience.position,
+                "start_year": experience.start_year,
+                "finish_year": experience.finish_year,
+                "is_working": experience.is_working,
+            }
+            for experience in user.tutor.experience
+        ]
     elif user.learning_center:
         user_data["name"] = user.learning_center.name
         user_data["description"] = user.learning_center.description
@@ -147,7 +176,21 @@ def get_me():
             f"{app.config['BASE_URL']}/media/uploads/avatar/{user.learning_center.avatar}"
             if user.learning_center.avatar else None
         )
-
+        user_data["branches"] = [
+            {
+                "id": branch.id,
+                "name": branch.name,
+            } for branch in user.learning_center.branch
+        ]
+        user_data["schedule"] = [
+            {
+                "id": schedule.id,
+                "day_of_week": schedule.day_of_week.name,
+                "opening_time": schedule.opening_time.strftime("%H:%M"),
+                "closing_time": schedule.closing_time.strftime("%H:%M"),
+                "is_closed": schedule.is_closed,
+            } for schedule in user.learning_center.working_schedule
+        ]
     return user_data, 200
 
 
