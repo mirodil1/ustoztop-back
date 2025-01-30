@@ -38,6 +38,7 @@ def get_user_account(user_id):
                             "id": education.id,
                             "name": education.name,
                             "degree": education.degree.name,
+                            "field_of_study": education.field_of_study,
                             "start_year": education.start_year,
                             "finish_year": education.finish_year,
                         }
