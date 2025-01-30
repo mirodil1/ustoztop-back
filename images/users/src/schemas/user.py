@@ -31,6 +31,7 @@ class UserUpdateSchema(Schema):
     username = fields.String(required=False)
     phone_number = fields.String(required=False)
     avatar = fields.String(required=False)
+    password = fields.String(required=False)
     web_link = fields.String(required=False)
     facebook_link = fields.String(required=False)
     insta_link = fields.String(required=False)
