@@ -77,8 +77,8 @@ def get_user_account(user_id):
                 {
                     "description": user.learning_center.description,
                     "banner": (
-                        f"{app.config['BASE_URL']}/media/uploads/banner/{user.learning_center.avatar}"
-                        if user.learning_center.avatar else None
+                        f"{app.config['BASE_URL']}/media/uploads/banner/{user.learning_center.banner}"
+                        if user.learning_center.banner else None
                     ),
                     "branches": [
                         {
@@ -177,6 +177,10 @@ def get_me():
         user_data["avatar"] = (
             f"{app.config['BASE_URL']}/media/uploads/avatar/{user.learning_center.avatar}"
             if user.learning_center.avatar else None
+        )
+        user_data["banner"] = (
+            f"{app.config['BASE_URL']}/media/uploads/banner/{user.learning_center.banner}"
+            if user.learning_center.banner else None
         )
         user_data["branches"] = [
             {
