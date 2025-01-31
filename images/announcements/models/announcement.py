@@ -40,11 +40,12 @@ class Location(Base):
     ru = Column(String(length=255), nullable=False)
     longitude = Column(Float, nullable=False)
     latitude = Column(Float, nullable=False)
+    region_id = Column(BigInteger, ForeignKey("regions.id"), nullable=False)
 
+    region = relationship("Region", back_populates="location")
     announcement = relationship(
         "Announcement", uselist=False, back_populates="location",
     )
-
 
 class Announcement(TimeStampedModel):
     __tablename__ = "announcement"
