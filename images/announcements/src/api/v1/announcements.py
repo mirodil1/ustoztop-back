@@ -80,6 +80,7 @@ async def get_user_announcement(
                 "id": announcement.location.id,
                 "uz": announcement.location.uz,
                 "ru": announcement.location.ru,
+                "region_id": announcement.location.region_id,
                 "latitude": announcement.location.latitude,
                 "longitude": announcement.location.longitude,
 
@@ -124,6 +125,7 @@ async def announcements_detail(
                 "id": announcement.location.id,
                 "uz": announcement.location.uz,
                 "ru": announcement.location.ru,
+                "region_id": announcement.location.region_id,
                 "latitude": announcement.location.latitude,
                 "longitude": announcement.location.longitude,
             } if announcement.location else None,

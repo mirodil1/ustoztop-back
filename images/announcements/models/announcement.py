@@ -40,7 +40,7 @@ class Location(Base):
     ru = Column(String(length=255), nullable=False)
     longitude = Column(Float, nullable=False)
     latitude = Column(Float, nullable=False)
-    region_id = Column(BigInteger, ForeignKey("regions.id"), nullable=False)
+    region_id = Column(BigInteger, ForeignKey("regions.id"), nullable=True)
 
     region = relationship("Region", back_populates="location")
     announcement = relationship(

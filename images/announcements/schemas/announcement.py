@@ -40,6 +40,7 @@ class LocationOutputSchema(BaseModel):
     id: uuid.UUID
     uz: str
     ru: str
+    region_id: int
     latitude: float
     longitude: float
 
@@ -50,6 +51,7 @@ class LocationOutputSchema(BaseModel):
 class LocationInputSchema(BaseModel):
     uz: str
     ru: str
+    region_id: int
     latitude: float
     longitude: float
 
