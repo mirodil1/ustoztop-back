@@ -23,6 +23,7 @@ class UserAuthInfoSchema(Schema):
 class UserLocationSchema(Schema):
     uz = fields.String(required=True)
     ru = fields.String(required=True)
+    region_id = fields.Integer(required=True)
     latitude = fields.Float(required=True)
     longitude = fields.Float(required=True)
 

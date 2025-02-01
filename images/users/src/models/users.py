@@ -111,6 +111,7 @@ class Location(db.Model):
     )
     uz = db.Column(db.String(length=255), nullable=False)
     ru = db.Column(db.String(length=255), nullable=True)
+    region_id = db.Column(db.Integer, nullable=True)
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
 
@@ -171,4 +172,3 @@ class User(TimeStampedModel):
 
     location_id = db.Column(UUID, db.ForeignKey("locations.id"), nullable=True)
     location = relationship("Location", back_populates="user")
-
