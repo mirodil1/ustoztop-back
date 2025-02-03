@@ -78,14 +78,14 @@ def authorize_device(device_auth_id):
     return {"msg": "device activated"}, 200
 
 
-@router.route('/refresh', methods=['POST'])
+@router.route("/refresh", methods=["POST"])
 def refresh():
     user_data = request.json
     schemas.RefreshTokenSchema().load(user_data)
     access_token, refresh_token = TokenService.refresh_token_pair(
         user_data["phone_number"],
         user_data["device_id"],
-        user_data["refresh_token"]
+        user_data["refresh_token"],
     )
     return {"access_token": access_token, "refresh_token": refresh_token}, 200
 
@@ -93,9 +93,10 @@ def refresh():
 @router.route("/send-code", methods=["POST"])
 @limiter.limit("2/minute")
 def send_security_code():
+    lang = request.headers.get("X-Language", "uz")
     user_data = request.json
     phone_number = user_data.get("phone_number")
-    send_security_code_task.delay(phone_number)
+    send_security_code_task.delay(phone_number, lang)
     return {"error": "no error", "detail": "code sent successfully"}, 200
 
 

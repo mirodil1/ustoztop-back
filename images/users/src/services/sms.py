@@ -38,14 +38,14 @@ class SMSService:
             "headers": data.get("headers"),
             "data": data.get("payload"),
         }
+        response_data = {"error": True}
         try:
             response = requests.request(timeout=15, **request_data)
             if response.status_code == 200:
                 response_data = response.json()
                 response_data["error"] = False
         except Exception as err:
-            response_data["error"] = True
-
+            print(f"SMS API request failed: {err}")
         return response_data
 
     @classmethod
@@ -70,6 +70,9 @@ class SMSService:
     @classmethod
     def send_sms(cls, phone_number, message):
         token = cls._authorize()
+        code = generate_security_code()
+        redis_db.setex(phone_number, 60, str(code))
+        message = f"{message} {code}"
 
         data = {
             "method": "POST",
