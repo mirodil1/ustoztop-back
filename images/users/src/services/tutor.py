@@ -60,7 +60,7 @@ class TutorService:
 
     @classmethod
     def create_or_update_tutor_language(cls, user_id, *language_data):
-        return cls.create_or_update_tutor_items(user_id, "experience", *language_data)
+        return cls.create_or_update_tutor_items(user_id, "language", *language_data)
 
     @classmethod
     def create_or_update_tutor_experience(cls, user_id, *experience_data):
