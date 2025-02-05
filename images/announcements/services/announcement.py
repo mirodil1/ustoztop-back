@@ -150,6 +150,17 @@ class AnnouncementService:
         self.db.commit()
 
         return announcement
+    
+    async def update_announcement(self, user_id: int, announcement_id: int, data: dict):
+        active = await self._get_active_announcements()
+        announcement = active.filter(Announcement.id==announcement_id).scalar()
+        for key, value in data.items():
+            if hasattr(announcement, key):
+                setattr(announcement, key, value)
+        self.db.add(announcement)
+        self.db.commit()
+
+        return announcement
 
     async def get_user_announcement(
             self, user_id: int, status: str | None = AnnouncementStatusEnum.active,
