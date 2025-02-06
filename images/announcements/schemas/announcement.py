@@ -137,3 +137,18 @@ class AnnouncementShortOutputSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class AnnouncementUpdateSchema(BaseModel):
+    name: str
+    price: Decimal
+    description: str
+    lessons_in_week: int = Field(gt=0, lt=8)
+    lesson_duration_hours: Decimal = Field(lt=12)
+    lesson_type: LessonTypeEnum
+    lesson_place: LessonPlaceEnum
+    lesson_language: LessonLanguageEnum
+    lesson_audience: LessonAudienceEnum
+
+    class Config:
+        from_attributes = True
