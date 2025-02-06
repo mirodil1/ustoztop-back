@@ -1,3 +1,5 @@
+import base64
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi_filter import FilterDepends
 from starlette import status
@@ -206,19 +208,21 @@ async def create_new_announcement(
     )
 
 
-@router.post("/announcement/promote/", status_code=200)
+@router.post("/promote/", status_code=200)
 async def top_announcement_request(
-    request: Request,
-    data: str = Query(),
+    data = Query(),
     annoincement_service: AnnouncementService = Depends(get_announcement_service),
 ):
-    if not request.user:
-        raise HTTPException(status_code=401, detail="Not authorized")
+    decoded_data = base64.urlsafe_b64decode(data).decode("utf-8")
+    data_pairs = decoded_data.split(";")
+    data_dict = {
+        key: int(value) for key, value in (pair.split("=") for pair in data_pairs)
+    }
     announcement = await annoincement_service.promote_announcement(
-        data=data,
+        data=data_dict,
     )
     if announcement:
-        return {"message": "created"}
+        return {"message": "success"}
     raise HTTPException(
         status_code=400, detail="Something went wrong, please try again"
     )

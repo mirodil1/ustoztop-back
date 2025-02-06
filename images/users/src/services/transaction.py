@@ -1,3 +1,4 @@
+import base64
 import datetime
 import uuid
 
@@ -136,7 +137,9 @@ class TransactionService:
         user = UserService.get_user_by_id(user_id)
 
         service = cls._get_service(service_id)
+
         amount = service.get("price")
+        duration = service.get("duration")
 
         if amount <= 0:
             raise InvalidAmount
@@ -157,6 +160,9 @@ class TransactionService:
             transaction_status=TransactionStatus.COMPLETED,
             content_type=content_type,
         )
+        data = f"user_id={user_id};ann_id={announcement_id};duration={duration}"
+        encoded_data = base64.urlsafe_b64encode(data.encode("utf-8"))
+        cls._top_announcement_request(encoded_data)
         return transaction_id
 
     @staticmethod
@@ -183,6 +189,16 @@ class TransactionService:
     def _get_announcement(announcements_id: int):
         response = requests.get(
             f"{app.config['ANNOUNCEMENTS_URL']}/api/v1/announcements/{announcements_id}",
+        )
+        if response.status_code == 200:
+            return response.json()
+        raise RequestFailed
+
+    @staticmethod
+    def _top_announcement_request(data):
+        response = requests.post(
+            url=f"{app.config['ANNOUNCEMENTS_URL']}/api/v1/announcements/promote",
+            params={"data": data},
         )
         if response.status_code == 200:
             return response.json()

@@ -245,24 +245,26 @@ class AnnouncementService:
                 return response.json()
             return None
 
-    async def promote_announcement(self, data):
-        print(data)
-        decoded_bytes = base64.b64decode(data)
-        decoded_data = decoded_bytes.decode("utf-8")
-        print(decoded_bytes)
-        # announcement = self.db.query(Announcement).filter(
-        #     Announcement.id==announcement_id,
-        # ).scalar()
-        # start = datetime.datetime.now()
-        # expire = start + datetime.timedelta(days=30)
-        # if not announcement.is_promoted:
-        #     announcement.is_promoted = True
-        #     announcement.promotion_started = start
-        #     announcement.promotion_expired = expire
-        # else:
-        #     announcement.promotion_expired = expire
-        # self.db.commit()
-        # return announcement
+    async def promote_announcement(self, data: str):
+        announcement_id = data.get("ann_id")
+        user_id = data.get("user_id")
+        duration = data.get("duration")
+
+        announcement = self.db.query(Announcement).filter(
+            Announcement.id==announcement_id,
+            Announcement.user_id==user_id,
+        ).scalar()
+        if announcement:
+            start = datetime.datetime.now()
+            expire = start + datetime.timedelta(days=duration)
+            if not announcement.is_promoted:
+                announcement.is_promoted = True
+                announcement.promotion_started = start
+                announcement.promotion_expired = expire
+            else:
+                announcement.promotion_expired = expire
+            self.db.commit()
+        return announcement
 
 def get_announcement_service(db: Session = Depends(get_db)) -> AnnouncementService:
     return AnnouncementService(db)

@@ -61,6 +61,23 @@ def buy_premium():
     return {"success": str(_id)}, 200
 
 
+@router.route("/promote", methods=["POST"])
+@jwt_required(fresh=True)
+def promote_announcement():
+    user_id=get_jwt_identity()
+    data = request.json
+
+    service_id = data.get("service_id")
+    announcement_id = data.get("announcement_id")
+    _id = TransactionService.promote_announcement(
+        user_id=user_id,
+        service_id=service_id,
+        announcement_id=announcement_id,
+    )
+
+    return {"success": str(_id)}, 200
+
+
 @router.route("/payme/url", methods=["POST"])
 @jwt_required()
 def get_payme_url():

@@ -63,3 +63,6 @@ class PlanOutputSchema(BaseModel):
 class PlanOutputShortSchema(BaseModel):
     id: uuid.UUID
     price: int
+    plan_type: str
+    plan_audience: str
+    duration: int
