@@ -42,7 +42,7 @@ async def services_list(
 
 
 @router.get("/{plan_id}")
-async def category_detail(
+async def service_detail(
     plan_id: uuid.UUID,
     plan_service: PlanService = Depends(get_service),
 ):
@@ -52,4 +52,10 @@ async def category_detail(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Not found",
         )
-    return PlanOutputShortSchema(id=plan.id, price=plan.price)
+    return PlanOutputShortSchema(
+        id=plan.id,
+        price=plan.price,
+        plan_type=plan.service_type,
+        plan_audience=plan.service_audience,
+        duration=plan.duration,
+    )
