@@ -204,3 +204,21 @@ async def create_new_announcement(
     raise HTTPException(
         status_code=400, detail="Something went wrong, please try again"
     )
+
+
+@router.post("/announcement/promote/", status_code=200)
+async def top_announcement_request(
+    request: Request,
+    data: str = Query(),
+    annoincement_service: AnnouncementService = Depends(get_announcement_service),
+):
+    if not request.user:
+        raise HTTPException(status_code=401, detail="Not authorized")
+    announcement = await annoincement_service.promote_announcement(
+        data=data,
+    )
+    if announcement:
+        return {"message": "created"}
+    raise HTTPException(
+        status_code=400, detail="Something went wrong, please try again"
+    )
