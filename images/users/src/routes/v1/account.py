@@ -20,6 +20,26 @@ def get_user_account(user_id):
         "is_premium": user.is_premium,
         "joined_date": user.created_at,
     }
+    if user.is_premium:
+        response.update(
+            {
+                "phone_number": user.phone_number,
+                "username": user.username,
+                "web_link": user.web_link,
+                "facebook_link": user.facebook_link,
+                "insta_link": user.insta_link,
+                "telegram_link": user.telegram_link,
+                "location": {
+                    "uz": user.location.uz,
+                    "ru": user.location.ru,
+                    "latitude": user.location.latitude,
+                    "longitude": user.location.longitude,
+                } if user.location else None,
+                "tags": [
+                    tag.category_id for tag in user.tags
+                ],
+            },
+        )
     if user.tutor:
         response["avatar"] = (
             f"{app.config['BASE_URL']}/media/uploads/avatar/{user.tutor.avatar}"
@@ -125,7 +145,7 @@ def get_me():
                 "uz": user.location.uz,
                 "ru": user.location.ru,
                 "latitude": user.location.latitude,
-                "longitude": user.location.latitude,
+                "longitude": user.location.longitude,
             } if user.location else None,
         "tags": [
             tag.category_id for tag in user.tags
