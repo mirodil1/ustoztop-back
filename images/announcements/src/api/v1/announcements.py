@@ -10,6 +10,7 @@ from schemas.announcement import (
     AnnouncementOutputSchema,
     AnnouncementShortOutputSchema,
     AnnouncementStatusEnum,
+    AnnouncementUpdateSchema
 )
 from schemas.pagination import PaginatedPerPageResponse
 from services.announcement import AnnouncementService, get_announcement_service
@@ -194,7 +195,7 @@ async def create_new_announcement(
     announcement: AnnouncementInputSchema,
     annoincement_service: AnnouncementService = Depends(get_announcement_service),
 ):
-    if not request.user:
+    if not request.user.is_authenticated:
         raise HTTPException(status_code=401, detail="Not authorized")
     announcement_data = announcement.dict()
     announcement = await annoincement_service.create_announcement(
@@ -208,7 +209,30 @@ async def create_new_announcement(
     )
 
 
-@router.post("/promote/", status_code=200)
+@router.put("/announcement/{announcement_id}/update", status_code=201)
+async def update_announcement(
+    request: Request,
+    announcement_id: int,
+    announcement: AnnouncementUpdateSchema,
+    annoincement_service: AnnouncementService = Depends(get_announcement_service),
+):
+    if not request.user.is_authenticated:
+        raise HTTPException(status_code=401, detail="Not authorized")
+    announcement_data = announcement.dict()
+    announcement = await annoincement_service.update_announcement(
+        user_id=request.user.user_id,
+        announcement_id=announcement_id,
+        data=announcement_data,
+    )
+    if announcement:
+        return {"message": "updated"}
+    raise HTTPException(
+        status_code=400, detail="Something went wrong, please try again"
+    )
+
+
+
+@router.post("/promote/", include_in_schema=False, status_code=200)
 async def top_announcement_request(
     data = Query(),
     annoincement_service: AnnouncementService = Depends(get_announcement_service),

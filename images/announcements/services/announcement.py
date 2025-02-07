@@ -6,7 +6,6 @@ import httpx
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from geopy.distance import geodesic
 from slugify import slugify
 
 from core.config import settings
@@ -154,14 +153,16 @@ class AnnouncementService:
         return announcement
     
     async def update_announcement(self, user_id: int, announcement_id: int, data: dict):
-        active = await self._get_active_announcements()
-        announcement = active.filter(Announcement.id==announcement_id).scalar()
-        for key, value in data.items():
-            if hasattr(announcement, key):
-                setattr(announcement, key, value)
-        self.db.add(announcement)
-        self.db.commit()
-
+        announcement = self.db.query(Announcement).filter(
+            Announcement.id==announcement_id,
+            Announcement.user_id==user_id
+        ).scalar()
+        if announcement:
+            for key, value in data.items():
+                if hasattr(announcement, key):
+                    setattr(announcement, key, value)
+            self.db.add(announcement)
+            self.db.commit()
         return announcement
 
     async def get_user_announcement(

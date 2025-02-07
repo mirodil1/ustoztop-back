@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 from starlette.middleware.authentication import AuthenticationMiddleware
-from debug_toolbar.middleware import DebugToolbarMiddleware
+# from debug_toolbar.middleware import DebugToolbarMiddleware
 
 from core.config import settings
 from core.logger import LOGGING
@@ -32,11 +32,11 @@ app.add_middleware(
 )
 app.add_middleware(PaginationMiddleware)
 
-if settings.debug:
-    app.add_middleware(
-        DebugToolbarMiddleware,
-        panels=["db.postgres.SQLAlchemyPanel"],
-    )
+# if settings.debug:
+#     app.add_middleware(
+#         DebugToolbarMiddleware,
+#         panels=["db.postgres.SQLAlchemyPanel"],
+#     )
 
 Base.metadata.create_all(bind=engine)
 
