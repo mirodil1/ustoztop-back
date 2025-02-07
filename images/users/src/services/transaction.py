@@ -15,6 +15,7 @@ from src.exceptions import (
 from src.models import ContentType, Transaction
 from src.schemas import PaymentGateway, TransactionStatus, TransactionType
 from src.services import UserService
+from src.utils import timestamp
 
 
 class TransactionService:
@@ -91,12 +92,13 @@ class TransactionService:
 
     @classmethod
     def get_premium(cls, user_id: int, service_id: uuid.UUID):
-        user = UserService.get_user_by_id(user_id)
-        start = datetime.datetime.now()
-        expire = start + datetime.timedelta(days=30)
-
         service = cls._get_service(service_id)
         amount = service.get("price")
+        duration = service.get("duration")
+
+        user = UserService.get_user_by_id(user_id)
+        start = datetime.datetime.now()
+        expire = start + datetime.timedelta(days=duration)
 
         if amount <= 0:
             raise InvalidAmount
@@ -124,6 +126,7 @@ class TransactionService:
             transaction_type=TransactionType.OUTCOME,
             transaction_status=TransactionStatus.COMPLETED,
             content_type=content_type,
+            created_at=timestamp(),
         )
         return transaction_id
 
@@ -159,6 +162,7 @@ class TransactionService:
             transaction_type=TransactionType.OUTCOME,
             transaction_status=TransactionStatus.COMPLETED,
             content_type=content_type,
+            created_at=timestamp(),
         )
         data = f"user_id={user_id};ann_id={announcement_id};duration={duration}"
         encoded_data = base64.urlsafe_b64encode(data.encode("utf-8"))
