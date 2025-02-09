@@ -116,11 +116,17 @@ class AnnouncementService:
             "previous_page": paginated_announce["previous_page"],
         }
 
-    async def get_announcement_by_slug(self, slug: str, user_agent: str) -> AnnouncementSchema:
+    async def get_announcement_by_slug(
+            self, slug: str, user_agent: str, user_id: int | None = None
+    ) -> AnnouncementSchema:
         active = await self._get_active_announcements()
         announcement = active.filter(Announcement.slug==slug).scalar()
         if announcement:
             await self._add_views(announcement.id, user_agent)
+        if not announcement:
+            announcement = await self.db.query(Announcement).filter(Announcement.slug == slug).scalar()
+            if announcement and announcement.user_id == user_id:
+                return announcement
         return announcement
 
     async def get_announcement_by_category(
