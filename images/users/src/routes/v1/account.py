@@ -144,6 +144,7 @@ def get_me():
         "location": {
                 "uz": user.location.uz,
                 "ru": user.location.ru,
+                "region_id": user.location.region_id,
                 "latitude": user.location.latitude,
                 "longitude": user.location.longitude,
             } if user.location else None,
