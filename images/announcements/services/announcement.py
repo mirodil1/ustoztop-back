@@ -29,7 +29,6 @@ class AnnouncementService:
             filters: AnnouncementFilter,
             page: int,
             per_page: int,
-            coords: list,
     ) -> list[AnnouncementSchema]:
         announcements = await self._get_active_announcements()
 
@@ -71,26 +70,6 @@ class AnnouncementService:
                 Announcement.price.desc(),
             )
 
-        if coords and len(coords) == 2:
-            lat, lng = coords[0], coords[1]
-            radius = 10
-            earth_radius_km = 6371
-
-            haversine_distance = (
-                earth_radius_km
-                * func.acos(
-                    func.cos(func.radians(lat)) * func.cos(
-                        func.radians(Location.latitude),
-                    )
-                    * func.cos(func.radians(Location.longitude) - func.radians(lng))
-                    + func.sin(func.radians(lat)) * func.sin(
-                        func.radians(Location.latitude),
-                    ),
-                )
-            )
-            query = query.filter(haversine_distance <= radius)
-            query = query.order_by(haversine_distance)
-
         paginated_announce = await paginate_per_page(query, page, per_page)
 
         announcement_list = [
@@ -130,7 +109,7 @@ class AnnouncementService:
             ).scalar()
             return announcement
         return announcement
-    
+
     async def get_announcement_by_category(
         self,
         category_id: int,

@@ -30,13 +30,11 @@ async def announcements_list(
     announcement_filter: AnnouncementFilter = FilterDepends(AnnouncementFilter),
     page: int = Query(1, ge=1),
     per_page: int = Query(100, ge=0),
-    coords: list[float] | None = Query(None, description="Coordinates"),
 ) -> list[AnnouncementShortOutputSchema]:
     paginated_result = await announcement_service.get_announcements(
         announcement_filter,
         page,
         per_page,
-        coords,
     )
 
     return {

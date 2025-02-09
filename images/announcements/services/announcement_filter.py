@@ -1,9 +1,11 @@
 import enum
 
 from fastapi_filter.contrib.sqlalchemy import Filter
+from fastapi_filter import FilterDepends, with_prefix
 
 from models.announcement import (
     Announcement,
+    Location,
     LessonAudienceEnum,
     LessonLanguageEnum,
     LessonPlaceEnum,
@@ -15,6 +17,13 @@ class OrderEnum(enum.Enum):
     CREATED_AT_DESC = "-created_at"
     PRICE_ASC = "price"
     PRICE_DESC = "-price"
+
+
+class LocationFilter(Filter):
+    region_id: int | None = None
+
+    class Constants(Filter.Constants):
+        model = Location
 
 
 class AnnouncementFilter(Filter):
@@ -29,6 +38,7 @@ class AnnouncementFilter(Filter):
     category_id: int | None = None
     gender: str | None = None
     role: str | None = None
+    region: LocationFilter | None = FilterDepends(with_prefix("location", LocationFilter))
 
     class Constants(Filter.Constants):
         model = Announcement
