@@ -61,22 +61,10 @@ class AnnouncementSchema(BaseModel):
     name: str
     slug: str
     user_id: int
-    phone_number: str
     price: Decimal
-    lessons_in_week: int
-    lesson_duration_hours: int
-    lesson_type: LessonTypeEnum
-    lesson_place: LessonPlaceEnum
-    lesson_language: LessonLanguageEnum
-    lesson_audience: LessonAudienceEnum
-    status: AnnouncementStatusEnum
+    location: LocationOutputSchema | None
     description: str
     is_active: bool = False
-    is_confirmed_by_admin: bool = False
-    is_promoted: bool = False
-    promotion_started: date | None
-    promotion_expired: date | None
-    category_id: int
 
     class Config:
         orm_mode = True
@@ -84,27 +72,39 @@ class AnnouncementSchema(BaseModel):
         json_dumps = orjson.dumps
 
 
-class AnnouncementOutputSchema(BaseModel):
-    id: int
-    name: str
-    slug: str
-    user_id: int
+class AnnouncementShortOutputSchema(AnnouncementSchema):
+    user_info: dict
+    is_promoted: bool = False
+    number_of_views: int
+    created_at: date
+
+    class Config:
+        from_attributes = True
+
+
+class AnnouncementOutputSchema(AnnouncementSchema):
     category_id: int
-    price: Decimal
     lessons_in_week: int
     lesson_duration_hours: int
     lesson_type: LessonTypeEnum
     lesson_place: LessonPlaceEnum
     lesson_language: LessonLanguageEnum
     lesson_audience: LessonAudienceEnum
-    description: str
     location: LocationOutputSchema | None
     is_promoted: bool = False
     promotion_started: date | None
     promotion_expired: date | None
 
+
     class Config:
         from_attributes = True
+
+
+class AnnouncementShortUserOutputSchema(AnnouncementSchema):
+    phone_number_views: int
+    number_of_views: int
+    created_at: date
+    is_promoted: bool = False
 
 
 class AnnouncementInputSchema(BaseModel):
@@ -120,23 +120,6 @@ class AnnouncementInputSchema(BaseModel):
     lesson_audience: LessonAudienceEnum
     description: str
     location: LocationInputSchema
-
-
-class AnnouncementShortOutputSchema(BaseModel):
-    id: int
-    name: str
-    slug: str
-    user_id: int
-    user_info: dict
-    price: Decimal
-    description: str
-    number_of_views: int
-    location: LocationOutputSchema | None
-    is_promoted: bool
-    created_at: date
-
-    class Config:
-        from_attributes = True
 
 
 class AnnouncementUpdateSchema(BaseModel):

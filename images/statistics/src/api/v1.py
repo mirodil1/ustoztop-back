@@ -124,6 +124,7 @@ async def create_phone_number_views(
 @router.get(
     "/phone_number_views/get/{announcement_id}",
     response_model=PhoneNumberViews,
+    include_in_schema=False
 )
 async def get_phone_number_views(
     request: Request,
@@ -131,7 +132,5 @@ async def get_phone_number_views(
     phone_number_statistic_service: PhoneNumberViewsService = Depends(
         get_phone_number_stat_service),
 ):
-    if not request.user.is_authenticated:
-        raise HTTPException(status_code=401, detail="Not authorized")
     result = await phone_number_statistic_service.get_phone_number_count(announcement_id)
     return result

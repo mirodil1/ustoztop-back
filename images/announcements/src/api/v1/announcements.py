@@ -10,7 +10,8 @@ from schemas.announcement import (
     AnnouncementOutputSchema,
     AnnouncementShortOutputSchema,
     AnnouncementStatusEnum,
-    AnnouncementUpdateSchema
+    AnnouncementUpdateSchema,
+    AnnouncementShortUserOutputSchema
 )
 from schemas.pagination import PaginatedPerPageResponse
 from services.announcement import AnnouncementService, get_announcement_service
@@ -49,7 +50,7 @@ async def announcements_list(
 @router.get(
     "/user-announcement/",
     status_code=200,
-    response_model=list[AnnouncementOutputSchema],
+    response_model=list[AnnouncementShortUserOutputSchema],
 )
 async def get_user_announcement(
     request: Request,
@@ -64,34 +65,19 @@ async def get_user_announcement(
     )
 
     filtered_list = [
-        AnnouncementOutputSchema(
-            id=announcement.id,
-            name=announcement.name,
-            slug=announcement.slug,
-            user_id=announcement.user_id,
-            category_id= announcement.category_id,
-            phone_number=announcement.phone_number,
-            price=announcement.price,
-            lessons_in_week=announcement.lessons_in_week,
-            lesson_duration_hours= announcement.lesson_duration_hours,
-            lesson_type= announcement.lesson_type,
-            lesson_place= announcement.lesson_place,
-            lesson_language=announcement.lesson_language,
-            lesson_audience=announcement.lesson_audience,
-            description=announcement.description,
-            location={
-                "id": announcement.location.id,
-                "uz": announcement.location.uz,
-                "ru": announcement.location.ru,
-                "region_id": announcement.location.region_id,
-                "latitude": announcement.location.latitude,
-                "longitude": announcement.location.longitude,
-
-            } if announcement.location else None,
-            is_promoted=announcement.is_promoted,
-            promotion_started=announcement.promotion_started,
-            promotion_expired=announcement.promotion_expired,
-        ) for announcement in announcements
+        AnnouncementShortUserOutputSchema(
+                id=announcement.id,
+                name=announcement.name,
+                slug=announcement.slug,
+                user_id=announcement.user_id,
+                price=announcement.price,
+                number_of_views=await annoincement_service._get_views_count(announcement.id),
+                phone_number_views=await annoincement_service._get_phone_number_views_count(announcement.id),
+                location=announcement.location if announcement.location else None,
+                is_promoted=announcement.is_promoted,
+                description=announcement.description,
+                created_at=announcement.created_at.date(),
+            ) for announcement in announcements
     ]
     return filtered_list
 

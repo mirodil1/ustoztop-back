@@ -222,6 +222,19 @@ class AnnouncementService:
                 data = response.json()
                 return data["count"]
             return None
+    
+    async def _get_phone_number_views_count(self, announcement_id: int):
+        """
+        Requesting to statistics service to retrieve views count
+        """
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{settings.stat_url}/api/v1/statistics/phone_number_views/get/{announcement_id}",
+            )
+            if response.status_code == 200:
+                data = response.json()
+                return data["count"]
+            return None
 
     async def _add_phone_number_views(self, announcement_id: int, user_agent: str):
         """
