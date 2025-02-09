@@ -124,7 +124,7 @@ class AnnouncementService:
         if announcement:
             await self._add_views(announcement.id, user_agent)
         if not announcement:
-            announcement = await self.db.query(Announcement).filter(Announcement.slug == slug).scalar()
+            announcement = self.db.query(Announcement).filter(Announcement.slug == slug).scalar()
             if announcement and announcement.user_id == user_id:
                 return announcement
         return announcement
