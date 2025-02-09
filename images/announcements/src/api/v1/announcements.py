@@ -89,6 +89,7 @@ async def announcements_detail(
     announcement_service: AnnouncementService = Depends(get_announcement_service),
 ) -> AnnouncementOutputSchema:
     user_agent = request.headers.get("user-agent", "unknown")
+    user_id=None
 
     if request.user.is_authenticated:
         user_id = request.user.user_id
