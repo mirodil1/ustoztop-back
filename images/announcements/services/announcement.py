@@ -123,12 +123,14 @@ class AnnouncementService:
         announcement = active.filter(Announcement.slug==slug).scalar()
         if announcement:
             await self._add_views(announcement.id, user_agent)
-        if not announcement:
-            announcement = self.db.query(Announcement).filter(Announcement.slug == slug).scalar()
-            if announcement and announcement.user_id == user_id:
-                return announcement
+        if not announcement and user_id:
+            announcement = self.db.query(Announcement).filter(
+                Announcement.slug==slug,
+                Announcement.user_id==user_id,
+            ).scalar()
+            return announcement
         return announcement
-
+    
     async def get_announcement_by_category(
         self,
         category_id: int,
