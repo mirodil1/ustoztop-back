@@ -149,6 +149,7 @@ class TransactionService:
 
         if user.wallets.balance < amount:
             raise InsufficientFunds
+        user.wallets.balance-= amount
 
         content_type = cls._create_content_type(
             name="top",
