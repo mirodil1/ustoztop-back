@@ -151,7 +151,7 @@ class AnnouncementViewsService:
     @staticmethod
     async def get_last_views(announcement_id: int):
         announcement_views = []
-        last_30 = datetime.now() - timedelta(days=365)
+        last_30 = datetime.now() - timedelta(days=30)
         pipeline = [
             {
                 "$match": {
