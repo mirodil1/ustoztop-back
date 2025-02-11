@@ -23,4 +23,6 @@ class Settings(BaseSettings):
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     debug: bool = os.getenv("DEBUG", "True") == "True"
 
+    origins: str = os.environ.get("ORIGINS")
+
 settings = Settings()
