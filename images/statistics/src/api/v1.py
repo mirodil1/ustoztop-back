@@ -98,6 +98,7 @@ async def get_account_views(
     if not request.user.is_authenticated:
         raise HTTPException(status_code=401, detail="Not authorized")
     result = await account_statistic_service.get_account_views(request.user.user_id)
+    
     return result
 
 

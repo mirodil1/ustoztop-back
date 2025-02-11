@@ -19,7 +19,7 @@ class AnnouncementViews(BaseViews):
 
 
 class ProfileViews(BaseViews):
-    user_id: int
+    pass
 
 
 class PhoneNumberViews(BaseModel):
