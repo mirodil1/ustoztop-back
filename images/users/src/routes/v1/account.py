@@ -22,6 +22,7 @@ def get_user_account(user_id):
     }
     if user.is_premium:
         announcements = UserService.get_premium_user_announcement(user_id)
+        UserService.add_account_views(user.id, user_agent)
         response.update(
             {
                 "phone_number": user.phone_number,
@@ -87,7 +88,6 @@ def get_user_account(user_id):
                     ],
                 }
             )
-            UserService.add_account_views(user.id, user_agent)
     elif user.learning_center:
         response["name"] = user.learning_center.name
         response["avatar"] = (
@@ -119,7 +119,6 @@ def get_user_account(user_id):
                     ],
                 }
             )
-            UserService.add_account_views(user.id, user_agent)
     return response, 200
 
 
