@@ -60,22 +60,22 @@ class AnnouncementSchema(BaseModel):
     id: int | None
     name: str
     slug: str
-    user_id: int
+    user_id: int | None = None
     price: Decimal
     location: LocationOutputSchema | None
     description: str
-    is_active: bool = False
+    is_active: bool | None = None
 
     class Config:
         orm_mode = True
         json_loads = orjson.loads
         json_dumps = orjson.dumps
-
+    
 
 class AnnouncementShortOutputSchema(AnnouncementSchema):
-    user_info: dict
+    user_info: dict | None = None
     is_promoted: bool = False
-    number_of_views: int
+    number_of_views: int | None = None
     created_at: date
 
     class Config:

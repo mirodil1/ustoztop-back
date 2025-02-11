@@ -21,6 +21,7 @@ def get_user_account(user_id):
         "joined_date": user.created_at,
     }
     if user.is_premium:
+        announcements = UserService.get_premium_user_announcement(user_id)
         response.update(
             {
                 "phone_number": user.phone_number,
@@ -38,6 +39,7 @@ def get_user_account(user_id):
                 "tags": [
                     tag.category_id for tag in user.tags
                 ],
+                "announcements": announcements
             },
         )
     if user.tutor:

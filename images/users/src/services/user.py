@@ -125,3 +125,12 @@ class UserService:
         )
         if response.status_code == 200:
             return response.status_code
+
+    @staticmethod
+    def get_premium_user_announcement(user_id: int):
+        response = requests.get(
+            f"{app.config['ANNOUNCEMENTS_URL']}/api/v1/announcements/premium-user/{user_id}",
+        )
+        if response.status_code == 200:
+            return response.json()
+        return None

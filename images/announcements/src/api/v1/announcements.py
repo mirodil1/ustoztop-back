@@ -80,6 +80,36 @@ async def get_user_announcement(
     return filtered_list
 
 
+@router.get(
+    "/premium-user/{user_id}",
+    status_code=200,
+    response_model=list[AnnouncementShortOutputSchema],
+    include_in_schema=False,
+    response_model_exclude_none=True
+)
+async def get_premium_user_announcements(
+    user_id: int,
+    annoincement_service: AnnouncementService = Depends(get_announcement_service),
+):   
+    announcements = await annoincement_service.get_premium_user_announcement(
+        user_id=user_id,
+    )
+
+    filtered_list = [
+        AnnouncementShortOutputSchema(
+                id=announcement.id,
+                name=announcement.name,
+                slug=announcement.slug,
+                price=announcement.price,
+                location=announcement.location if announcement.location else None,
+                is_promoted=announcement.is_promoted,
+                description=announcement.description,
+                created_at=announcement.created_at.date(),
+            ) for announcement in announcements
+    ]
+    return filtered_list
+
+
 @router.get("/{slug}/", response_model=AnnouncementOutputSchema)
 async def announcements_detail(
     request: Request,

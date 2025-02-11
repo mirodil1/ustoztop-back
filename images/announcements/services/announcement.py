@@ -166,6 +166,21 @@ class AnnouncementService:
                 )
         )
         return announcements
+    
+    async def get_premium_user_announcement(
+            self, user_id: int,
+    ):
+        announcements = (
+            self.db.query(Announcement)
+                .filter(
+                    Announcement.user_id==user_id,
+                    Announcement.status=="active",
+                ).order_by(
+                    Announcement.is_promoted.desc(),
+                    Announcement.created_at.desc(),
+                )
+        )
+        return announcements
 
     async def get_announcement_phone_number(self, announcement_id: int, user_agent: str):
         active = await self._get_active_announcements()
