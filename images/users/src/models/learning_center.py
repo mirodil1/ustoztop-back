@@ -1,5 +1,6 @@
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
 
 from src.db import db
 from src.models.core import TimeStampedModel
@@ -29,6 +30,10 @@ class Branch(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(length=255), nullable=False)
+    phone_number = db.Column(db.String(length=14), nullable=False)
+
+    location_id = db.Column(UUID, db.ForeignKey("locations.id"), nullable=True)
+    location = relationship("Location", back_populates="branch")
 
     learning_center_id = db.Column(db.BigInteger, db.ForeignKey("learning_center.id"))
     learning_center = relationship("LearningCenter", back_populates="branch")

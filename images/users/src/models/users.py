@@ -118,6 +118,9 @@ class Location(db.Model):
     user = relationship(
         "User", uselist=False, back_populates="location",
     )
+    branch = relationship(
+        "Branch", uselist=False, back_populates="location",
+    )
 
 
 class UserTag(db.Model):

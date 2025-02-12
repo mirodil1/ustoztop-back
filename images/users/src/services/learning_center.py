@@ -6,7 +6,7 @@ from flask import current_app as app
 from werkzeug.utils import secure_filename
 
 from src.db import db
-from src.models import Branch, LearningCenter, WorkingSchedule
+from src.models import Branch, LearningCenter, WorkingSchedule, Location
 from src.utils import allowed_file
 from src.exceptions import UnknownUser
 
@@ -85,6 +85,12 @@ class LearningCenterService:
                 # Update existing item
                 existing_item = item_mapping.get(item["id"])
                 if existing_item:
+                    if item_type=="branch":
+                        location_data = item.pop("location", None)
+                        if location_data:
+                            location = Location(**location_data)
+                            db.session.add(location)
+                            new_item.location = location
                     for key, value in item.items():
                         if hasattr(existing_item, key):
                             setattr(existing_item, key, value)
@@ -92,7 +98,13 @@ class LearningCenterService:
                 # Add new item
                 new_item = None
                 if item_type == "branch":
+                    location_data = item.pop("location", None)
+                    if location_data:
+                        location = Location(**location_data)
+                        db.session.add(location)
                     new_item = Branch(learning_center_id=learning_center.id, **item)
+                    new_item.location = location
+
                 elif item_type == "working_schedule":
                     new_item = WorkingSchedule(
                         learning_center_id=learning_center.id,
