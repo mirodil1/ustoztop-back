@@ -27,6 +27,7 @@ class LocationFilter(Filter):
 
 
 class AnnouncementFilter(Filter):
+    id__in: list | None = None
     search: str | None = None
     ordering: OrderEnum = OrderEnum.CREATED_AT_DESC
     price__gte: int | None = None
