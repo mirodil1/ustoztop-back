@@ -102,7 +102,6 @@ class MemberAdmin(MultiDBModelAdmin):
     readonly_fields = [
         "password",
         "id",
-        "phone_number",
         "web_link",
         "insta_link",
         "facebook_link",
