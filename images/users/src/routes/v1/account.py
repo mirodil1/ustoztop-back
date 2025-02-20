@@ -106,6 +106,15 @@ def get_user_account(user_id):
                         {
                             "id": branch.id,
                             "name": branch.name,
+                            "location": {
+                                "id": branch.location.location_id,
+                                "uz": branch.location.uz,
+                                "ru": branch.location.ru,
+                                "redion_id": branch.location.region_id,
+                                "longitude": branch.location.longitude,
+                                "latitude": branch.location.latitude,
+                            } if branch.location else None,
+                            "phone_number": branch.phone_number,
                         } for branch in user.learning_center.branch
                     ],
                     "schedule": [
@@ -208,6 +217,15 @@ def get_me():
             {
                 "id": branch.id,
                 "name": branch.name,
+                "location": {
+                    "id": branch.location.location_id,
+                    "uz": branch.location.uz,
+                    "ru": branch.location.ru,
+                    "redion_id": branch.location.region_id,
+                    "longitude": branch.location.longitude,
+                    "latitude": branch.location.latitude,
+                } if branch.location else None,
+                "phone_number": branch.phone_number,
             } for branch in user.learning_center.branch
         ]
         user_data["schedule"] = [
