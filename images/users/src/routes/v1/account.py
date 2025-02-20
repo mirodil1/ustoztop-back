@@ -109,7 +109,7 @@ def get_user_account(user_id):
                             "location": {
                                 "uz": branch.location.uz,
                                 "ru": branch.location.ru,
-                                "redion_id": branch.location.region_id,
+                                "region_id": branch.location.region_id,
                                 "longitude": branch.location.longitude,
                                 "latitude": branch.location.latitude,
                             } if branch.location else None,
@@ -219,7 +219,7 @@ def get_me():
                 "location": {
                     "uz": branch.location.uz,
                     "ru": branch.location.ru,
-                    "redion_id": branch.location.region_id,
+                    "region_id": branch.location.region_id,
                     "longitude": branch.location.longitude,
                     "latitude": branch.location.latitude,
                 } if branch.location else None,
