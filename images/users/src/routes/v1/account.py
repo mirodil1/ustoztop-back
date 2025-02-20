@@ -107,7 +107,6 @@ def get_user_account(user_id):
                             "id": branch.id,
                             "name": branch.name,
                             "location": {
-                                "id": branch.location.location_id,
                                 "uz": branch.location.uz,
                                 "ru": branch.location.ru,
                                 "redion_id": branch.location.region_id,
@@ -218,7 +217,6 @@ def get_me():
                 "id": branch.id,
                 "name": branch.name,
                 "location": {
-                    "id": branch.location.location_id,
                     "uz": branch.location.uz,
                     "ru": branch.location.ru,
                     "redion_id": branch.location.region_id,
