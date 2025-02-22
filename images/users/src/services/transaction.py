@@ -105,13 +105,14 @@ class TransactionService:
         if amount <= 0:
             raise InvalidAmount
 
-        if user.wallets.balance < amount:
-            raise InsufficientFunds
-
         if is_discount:
-            user.wallets.balance-= discount_price
+            if user.wallets.balance < discount_price:
+                raise InsufficientFunds
+            user.wallets.balance -= discount_price
         else:
-            user.wallets.balance-= amount
+            if user.wallets.balance < amount:
+                raise InsufficientFunds
+            user.wallets.balance -= amount
 
         if not user.is_premium:
             user.is_premium = True
@@ -155,13 +156,14 @@ class TransactionService:
         if amount <= 0:
             raise InvalidAmount
 
-        if user.wallets.balance < amount:
-            raise InsufficientFunds
-        
         if is_discount:
-            user.wallets.balance-= discount_price
+            if user.wallets.balance < discount_price:
+                raise InsufficientFunds
+            user.wallets.balance -= discount_price
         else:
-            user.wallets.balance-= amount
+            if user.wallets.balance < amount:
+                raise InsufficientFunds
+            user.wallets.balance -= amount
 
         content_type = cls._create_content_type(
             name="top",
