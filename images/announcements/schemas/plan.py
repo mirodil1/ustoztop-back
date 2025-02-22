@@ -66,3 +66,5 @@ class PlanOutputShortSchema(BaseModel):
     plan_type: str
     plan_audience: str
     duration: int
+    discount_price: int
+    is_discount: bool

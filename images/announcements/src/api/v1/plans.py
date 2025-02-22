@@ -58,4 +58,6 @@ async def service_detail(
         plan_type=plan.service_type,
         plan_audience=plan.service_audience,
         duration=plan.duration,
+        discount_price=plan.discount_price,
+        is_discount=plan.is_discount,
     )

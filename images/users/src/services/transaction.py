@@ -95,6 +95,8 @@ class TransactionService:
         service = cls._get_service(service_id)
         amount = service.get("price")
         duration = service.get("duration")
+        discount_price = service.get("discount_price")
+        is_discount = service.get("is_discount")
 
         user = UserService.get_user_by_id(user_id)
         start = datetime.datetime.now()
@@ -106,7 +108,11 @@ class TransactionService:
         if user.wallets.balance < amount:
             raise InsufficientFunds
 
-        user.wallets.balance-= amount
+        if is_discount:
+            user.wallets.balance-= discount_price
+        else:
+            user.wallets.balance-= amount
+
         if not user.is_premium:
             user.is_premium = True
             user.premium_started = start
@@ -143,13 +149,19 @@ class TransactionService:
 
         amount = service.get("price")
         duration = service.get("duration")
+        discount_price = service.get("discount_price")
+        is_discount = service.get("is_discount")
 
         if amount <= 0:
             raise InvalidAmount
 
         if user.wallets.balance < amount:
             raise InsufficientFunds
-        user.wallets.balance-= amount
+        
+        if is_discount:
+            user.wallets.balance-= discount_price
+        else:
+            user.wallets.balance-= amount
 
         content_type = cls._create_content_type(
             name="top",
