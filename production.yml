@@ -114,8 +114,8 @@ services:
       - '27017:27017'
     volumes:
       - ustoz_production_stats_mongo:/data/db
-    # env_file:
-    #   - ./images/statistics/.envs/.production
+    env_file:
+      - ./images/statistics/.envs/.production
 
   redis:
     restart: unless-stopped
@@ -147,3 +147,4 @@ services:
     volumes:
       - ustoz_production_staticfiles:/usr/share/nginx/staticfiles:ro
       - ustoz_production_media:/usr/share/nginx/media:ro
+x
