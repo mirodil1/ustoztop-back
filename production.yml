@@ -147,4 +147,3 @@ services:
     volumes:
       - ustoz_production_staticfiles:/usr/share/nginx/staticfiles:ro
       - ustoz_production_media:/usr/share/nginx/media:ro
-x
