@@ -45,7 +45,7 @@ class UserService:
                 joinedload(User.location),
                 selectinload(User.tags),
             ) \
-            .order_by(desc(User.premium_started)).all()
+            .order_by(User.premium_started).all()
         return premium_users
 
     @staticmethod
