@@ -26,13 +26,16 @@ class UserService:
 
     @classmethod
     def get_users(cls, gender: str | None, role_name: str | None):
+        users = []
         query = User.query
-        if gender:
+        if gender and role_name == "tutor":
             query = query.join(User.tutor).filter(Tutor.gender == gender)
-        if role_name:
+            users = query.all()
+        elif role_name:
             query = query.join(User.roles).filter(Role.role_name == role_name)
-        users = query.all()
-        if not users:
+            users = query.all()
+
+        if len(users) <= 0:
             raise UnknownUser
         return users
 
