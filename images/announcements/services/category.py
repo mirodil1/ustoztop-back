@@ -20,7 +20,7 @@ class CategoryService:
                     joinedload(Category.parent),
                 )
                 .filter(Category.parent_id.is_(None))
-        )
+        ).order_by(Category.order)
         paginated_categories = await paginate_per_page(categories, page, per_page)
 
         translated_categories = [
