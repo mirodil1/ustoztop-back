@@ -78,6 +78,18 @@ class Location(models.Model):
         db_table = "locations"
 
 
+class UserTag(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='tags', to_field='id')
+    category_id = models.IntegerField(null=True)
+    
+    class Meta:
+        db_table = 'user_tags'
+        unique_together = ('user', 'category_id')
+
+    def __str__(self):
+        return f"{self.user} - {self.category_id}"
+
+
 # User model (including relationships)
 class User(models.Model):
     id = models.BigIntegerField(primary_key=True)
@@ -99,6 +111,7 @@ class User(models.Model):
 
     class Meta:
         db_table = "users"
+        app_label = "members"
 
     def __str__(self):
         return self.phone_number
