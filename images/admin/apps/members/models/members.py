@@ -1,7 +1,16 @@
 import uuid
 
+from django.db.models import Manager
 from django.db import models
 from django.utils import timezone
+
+
+class MembersManager(Manager):
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).using("members")
+
+    def delete(self, *args, **kwargs):
+        return super().delete(*args, **kwargs).using("members")
 
 
 # LoginHistoryRecord model
@@ -15,10 +24,17 @@ class LoginHistoryRecord(models.Model):
     class Meta:
         unique_together = ["id", "device_type"]
         db_table = "login_history"
+        base_manager_name = 'objects'
+        default_manager_name = 'objects'
 
     def __str__(self):
         return f"<LoginHistoryRecord user={self.user.id} device={self.device.id} date={self.login_date}>"
 
+    def delete(self, using=None, keep_parents=False):
+        using = using or "members"  # Force deletion in "members"
+        super().delete(using=using, keep_parents=keep_parents)
+
+    objects = MembersManager()
 
 # Device model
 class Device(models.Model):
@@ -28,10 +44,13 @@ class Device(models.Model):
 
     class Meta:
         db_table = "devices"
+        base_manager_name = 'objects'
+        default_manager_name = 'objects'
 
     def __str__(self):
         return f"<Device id={self.id}, user_id={self.user.id}>"
 
+    objects = MembersManager()
 
 # UserRoleAssociation (many-to-many) model
 class UserRoleAssociation(models.Model):
@@ -112,6 +131,11 @@ class User(models.Model):
     class Meta:
         db_table = "users"
         app_label = "members"
+        base_manager_name = 'objects'
+        default_manager_name = 'objects'
+
 
     def __str__(self):
         return self.phone_number
+
+    objects = MembersManager()
