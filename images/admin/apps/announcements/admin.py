@@ -1,4 +1,4 @@
-from adminsortable2.admin import SortableAdminMixin
+from adminsortable2.admin import SortableAdminMixin, SortableStackedInline
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -18,15 +18,16 @@ class MyModelAdminForm(MPTTAdminForm, TranslatableModelForm):
         ].queryset.prefetch_related("translations")
 
 
-class CategoryChildInline(TranslatableStackedInline):
+class CategoryChildInline(SortableStackedInline, TranslatableStackedInline):
     model = Category
     exclude = ["slug"]
     fieldsets = (
         (
             _("General"),
-            {"fields": ("name", "parent")},
+            {"fields": ("name", "parent", "order")},
         ),
     )
+    ordering = ["order",]
     extra = 10
 
 
@@ -51,7 +52,7 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
     exclude = [
         "slug",
     ]
-    ordering = ("order",)
+    ordering = ["order",]
     inlines = [CategoryChildInline]
     form = MyModelAdminForm
     
@@ -83,4 +84,5 @@ class AnnouncementAdmin(admin.ModelAdmin):
         "is_active",
         "is_confirmed_by_admin",
     ]
+    readonly_fields = ["location"]
     # inlines = [LocationInline]

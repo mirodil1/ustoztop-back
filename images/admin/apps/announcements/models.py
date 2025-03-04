@@ -5,7 +5,7 @@ from django.db import models
 from django.template import defaultfilters
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
-from parler.models import TranslatableModel, TranslatedFields
+from parler.models import TranslatableModel, TranslatedFields, TranslationDoesNotExist
 from unidecode import unidecode
 
 from apps.announcements.managers import CategoryManager
@@ -52,14 +52,19 @@ class Category(TimeStampedModel, MPTTModel, TranslatableModel):
     class Meta:
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
+        ordering = ["order"]
         db_table = "category"
 
     def save(self, *args, **kwargs):
         self.slug = defaultfilters.slugify(unidecode(self.name))
         return super().save(*args, **kwargs)
 
-    def __str__(self) -> str:
-        return self.name
+    def __str__(self):
+        try:
+            return self.name
+        except TranslationDoesNotExist:
+            return ''
+
 
 
 class Location(models.Model):
