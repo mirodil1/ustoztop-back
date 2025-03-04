@@ -47,7 +47,7 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
 
     ]
     search_fields = [
-        "name",
+        "translations__name",
     ]
     exclude = [
         "slug",
@@ -71,6 +71,7 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.filter(parent=None)
+
 
 @admin.register(Location)
 class LocationInline(admin.ModelAdmin):
