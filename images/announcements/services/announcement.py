@@ -5,6 +5,7 @@ import datetime
 import httpx
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from fastapi import Depends
 from slugify import slugify
 
@@ -15,6 +16,7 @@ from schemas.announcement import (
     AnnouncementShortOutputSchema,
     AnnouncementStatusEnum,
 )
+from models.category import Category
 from src.paginator import paginate_per_page
 from db.postgres import get_db
 from services.announcement_filter import AnnouncementFilter
@@ -35,10 +37,12 @@ class AnnouncementService:
         user_gender = filters.gender
         role_name = filters.role
         ordering = filters.ordering
+        category_id = filters.category_id
 
         filters.gender = None
         filters.role = None
         filters.ordering = None
+        filters.category_id = None
 
         query = filters.filter(announcements)
 
@@ -52,6 +56,11 @@ class AnnouncementService:
                 if response.status_code == 200:
                     user_ids = [user["id"] for user in users]
                 query = query.filter(Announcement.user_id.in_(user_ids))
+        
+        if category_id is not None:
+            child_category_ids = await self._get_child_category_ids(category_id, self.db)
+            child_category_ids.append(category_id)
+            query = query.filter(Announcement.category_id.in_(child_category_ids))
 
         if ordering.value == "-created_at":
             query=query.order_by(
@@ -94,6 +103,21 @@ class AnnouncementService:
             "next_page": paginated_announce["next_page"],
             "previous_page": paginated_announce["previous_page"],
         }
+
+    async def _get_child_category_ids(self, parent_id: int, db: Session) -> list[int]:
+        """Recursively fetch all child category IDs for a given parent category."""
+        child_ids = []
+        # Query to find direct children of the parent category
+        stmt = stmt = select(Category.id).where(Category.parent_id == parent_id)
+        result = db.execute(stmt).scalars().all()
+        child_ids.extend(result)
+    
+        # Recursively fetch children of children
+        for child_id in result:
+            grand_child_ids = await self._get_child_category_ids(child_id, db)
+            child_ids.extend(grand_child_ids)
+
+        return child_ids
 
     async def get_announcement_by_slug(
             self, slug: str, user_agent: str, user_id: int | None = None
