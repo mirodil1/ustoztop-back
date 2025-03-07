@@ -290,7 +290,11 @@ def get_premium_accounts():
                 f"{app.config['BASE_URL']}/media/uploads/avatar/{user.learning_center.avatar}"
                 if user.learning_center.avatar else None
             )
-
+            user_info["branches"] = [
+            {
+                "name": branch.name,
+            } for branch in user.learning_center.branch
+        ]
         users_data.append(user_info)
 
     return users_data, 200
