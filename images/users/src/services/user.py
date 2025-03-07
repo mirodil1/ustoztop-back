@@ -1,7 +1,7 @@
 import requests
 from flask import current_app as app
-from sqlalchemy import desc
 from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.sql import func
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.db import db
@@ -34,7 +34,6 @@ class UserService:
         elif role_name:
             query = query.join(User.roles).filter(Role.role_name == role_name)
             users = query.all()
-
         if len(users) <= 0:
             raise UnknownUser
         return users
@@ -48,7 +47,7 @@ class UserService:
                 joinedload(User.location),
                 selectinload(User.tags),
             ) \
-            .order_by(User.premium_started).all()
+            .order_by(func.random()).all()
         return premium_users
 
     @staticmethod
