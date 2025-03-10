@@ -8,6 +8,7 @@ from db.postgres import get_db
 from src.paginator import paginate_per_page
 from models.category import Category
 from models.announcement import Announcement
+from schemas.announcement import AnnouncementStatusEnum
 from schemas.category import CategorySchema
 
 
@@ -21,6 +22,9 @@ class CategoryService:
             self.db.query(
                 Announcement.category_id,
                 func.count(Announcement.id).label("announcement_count")
+            )
+            .filter(
+                    Announcement.status==AnnouncementStatusEnum.active,
             )
             .group_by(Announcement.category_id)
             .subquery()
@@ -59,7 +63,7 @@ class CategoryService:
             CategorySchema.model_validate(category).model_dump(language=language)
             for category in category_list
         ]
-        
+
         return {
             "categories": translated_categories,
             "count": paginated_categories["count"],
