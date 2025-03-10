@@ -34,6 +34,7 @@ async def categories_list(
                 order=category.get("order"),
                 icon=f"{settings.base_url}/media/{category.get('icon')}" \
                     if category.get("icon") else None,
+                announcement_count=category.get("announcement_count", 0),    
                 children=category.get("children"),
             ) for category in paginated_result["categories"]
         ]

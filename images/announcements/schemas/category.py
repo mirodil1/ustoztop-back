@@ -19,6 +19,7 @@ class CategorySchema(TranslatedBaseModel):
     id: int
     order: int
     icon: str
+    announcement_count: int = 0
     translations: list[CategoryTranslationSchema]
     children: list["CategorySchema"]
 
@@ -34,4 +35,5 @@ class CategoryOutputSchema(BaseModel):
     slug: str
     order: int
     icon: str | None
+    announcement_count: int = 0
     children: list["CategoryOutputSchema"] = []
