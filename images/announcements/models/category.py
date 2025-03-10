@@ -1,5 +1,5 @@
 from sqlalchemy import BigInteger, Column, ForeignKey, Integer, String,UniqueConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from db.postgres import Base
 from models.core import TimeStampedModel
@@ -17,7 +17,7 @@ class Category(TimeStampedModel):
     level = Column(Integer)
     parent_id = Column(BigInteger, ForeignKey("category.id"))
 
-    parent = relationship("Category", remote_side=[id], backref="children")
+    parent = relationship("Category", remote_side=[id], backref=backref("children", order_by="Category.order"))
     translations = relationship("CategoryTranslation", back_populates="category")
 
     announcement = relationship("Announcement", back_populates="category")
