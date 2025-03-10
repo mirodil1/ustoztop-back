@@ -28,6 +28,9 @@ class ServiceAdmin(TranslatableAdmin):
         "name",
         "duration",
         "service_type",
+        "service_audience",
+        "price",
+        "discount_price",
         "is_discount",
         "is_active",
     ]

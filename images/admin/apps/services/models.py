@@ -25,7 +25,7 @@ class Service(TimeStampedModel, TranslatableModel):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, unique=True)
     translations = TranslatedFields(
         name=models.CharField(max_length=255, verbose_name=_("Name")),
-        description=models.CharField(
+        description=models.TextField(
             max_length=255,
             verbose_name=_("Description"),
         ),

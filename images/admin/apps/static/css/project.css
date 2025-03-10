@@ -17,6 +17,12 @@
     top: 10px;
 }
 
+textarea {
+    width: 100%;
+    overflow: auto;
+    resize: vertical;
+}
+
 .parler-language-tabs {
     flex: 0 0 100%;
     max-width: 100%;
