@@ -11,7 +11,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from core.config import settings
 from core.logger import LOGGING
 from db.postgres import Base, engine
-from src.api.v1 import announcements, categories, core
+from src.api.v1 import announcements, categories, core, sliders
 from src.api.v1 import plans
 from src.middlewares import JWTAuthBackend, PaginationMiddleware
 
@@ -44,6 +44,7 @@ app.include_router(announcements.router, prefix="/api/v1/announcements")
 app.include_router(plans.router, prefix="/api/v1/plans")
 app.include_router(categories.router, prefix="/api/v1/categories")
 app.include_router(core.router, prefix="/api/v1/regions")
+app.include_router(sliders.router, prefix="/api/v1/sliders")
 
 if __name__ == "__main__":
     uvicorn.run(

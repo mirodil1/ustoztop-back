@@ -44,7 +44,6 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
         "children_count",
         "icon_tag",
         "order",
-
     ]
     search_fields = [
         "translations__name",
@@ -55,7 +54,7 @@ class CategoryAdmin(SortableAdminMixin, TranslatableAdmin, MPTTModelAdmin):
     ordering = ["order",]
     inlines = [CategoryChildInline]
     form = MyModelAdminForm
-    
+
     @admin.display(description="Icon")
     def icon_tag(self, obj):
         return mark_safe(
@@ -86,4 +85,7 @@ class AnnouncementAdmin(admin.ModelAdmin):
         "is_confirmed_by_admin",
     ]
     readonly_fields = ["location"]
+    search_fields = [
+        "name", "description",
+    ]
     # inlines = [LocationInline]
