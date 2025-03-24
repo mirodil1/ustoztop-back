@@ -2,8 +2,10 @@ import uuid
 
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.template import defaultfilters
 from django.utils.translation import gettext_lazy as _
+from imagekit.models import ImageSpecField
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 from parler.models import TranslatableModel, TranslatedFields
 
 from apps.core.models import TimeStampedModel
@@ -70,3 +72,35 @@ class Service(TimeStampedModel, TranslatableModel):
 
     def __str__(self) -> str:
         return self.name
+
+
+class Slider(TimeStampedModel, TranslatableModel):
+    translations = TranslatedFields(
+        image_large=ProcessedImageField(
+            upload_to="slider",
+            processors=[ResizeToFill(1216, 388)],
+            format="webp",
+            options={"quality": 90},
+            verbose_name=_("Image (1216x388)"),
+        ),
+        image_medium=ProcessedImageField(
+            upload_to="slider",
+            processors=[ResizeToFill(728, 410)],
+            format="webp",
+            options={"quality": 90},
+            verbose_name=_("Image (728x410)"),
+        ),
+        link=models.CharField(max_length=500, verbose_name=_("Link")),
+    )
+    name = models.CharField(max_length=128, verbose_name=_("Name"))
+    is_active = models.BooleanField(default=False, verbose_name=_("Status"))
+    slider_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = "sliders"
+        verbose_name = _("Slider")
+        verbose_name_plural = _("Sliders")
+        ordering = ["slider_order"]
+
+    def __str__(self) -> str:
+        return self.link
