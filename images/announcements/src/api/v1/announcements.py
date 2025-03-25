@@ -1,6 +1,6 @@
 import base64
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Path
 from fastapi_filter import FilterDepends
 from starlette import status
 from starlette.requests import Request
@@ -253,6 +253,27 @@ async def update_announcement(
         status_code=400, detail="Something went wrong, please try again"
     )
 
+
+@router.post("/status-change/{announcement_id}/{status}", status_code=200)
+async def top_announcement_request(
+    request: Request,
+    announcement_id: int,
+    status: str = Path(..., enum=["active", "inactive"]),
+    annoincement_service: AnnouncementService = Depends(get_announcement_service),
+):
+    if not request.user.is_authenticated:
+        raise HTTPException(status_code=401, detail="Not authorized")
+    
+    announcement = await annoincement_service.change_status(
+        announcement_id=announcement_id,
+        user_id=request.user.user_id,
+        status=status
+    )
+    if announcement:
+        return {"message": "success"}
+    raise HTTPException(
+        status_code=400, detail="Something went wrong, please try again"
+    )
 
 
 @router.post("/promote/", include_in_schema=False, status_code=200)

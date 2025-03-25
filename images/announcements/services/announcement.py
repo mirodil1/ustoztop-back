@@ -172,7 +172,6 @@ class AnnouncementService:
             for key, value in data.items():
                 if hasattr(announcement, key):
                     setattr(announcement, key, value)
-            self.db.add(announcement)
             self.db.commit()
         return announcement
 
@@ -190,6 +189,21 @@ class AnnouncementService:
                 )
         )
         return announcements
+
+    async def change_status(
+            self, announcement_id: int, user_id: int, status: str,
+    ):
+        announcement = (
+            self.db.query(Announcement)
+                .filter(
+                    Announcement.id==announcement_id,
+                    Announcement.user_id==user_id,
+                ).scalar()
+        )
+        if announcement:
+            announcement.status = status
+            self.db.commit()
+        return announcement
     
     async def get_premium_user_announcement(
             self, user_id: int,
