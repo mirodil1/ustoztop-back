@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Region
+
+@admin.register(Region)
+class RegionAdmin(admin.ModelAdmin):
+    list_display = ["uz"]
+    search_fields = [
+        "uz", "ru"
+    ]
