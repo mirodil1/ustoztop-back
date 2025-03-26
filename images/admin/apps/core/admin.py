@@ -9,7 +9,7 @@ class RegionInline(admin.StackedInline):
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
-    list_display = ["uz"]
+    list_display = ["uz", "children_count"]
     search_fields = [
         "uz", "ru"
     ]
@@ -18,3 +18,8 @@ class RegionAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.filter(parent__isnull=True)
+
+    @admin.display(description="Children")
+    def children_count(self, obj):
+        count = obj.children.count()
+        return count
