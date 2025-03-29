@@ -142,9 +142,10 @@ async def announcements_detail(
             category_id= announcement.category_id,
             price=announcement.price,
             lessons_in_week=announcement.lessons_in_week,
-            lesson_duration_hours= announcement.lesson_duration_hours,
-            lesson_type= announcement.lesson_type,
-            lesson_place= announcement.lesson_place,
+            lesson_duration=announcement.lesson_duration,
+            lesson_duration_hours=announcement.lesson_duration_hours,
+            lesson_type=announcement.lesson_type,
+            lesson_place=announcement.lesson_place,
             lesson_language=announcement.lesson_language,
             lesson_audience=announcement.lesson_audience,
             location={

@@ -57,6 +57,7 @@ class Announcement(TimeStampedModel):
     phone_number = Column(String(length=14), nullable=False)
     price = Column(Numeric(14, 2), nullable=False)
     lessons_in_week = Column(Integer, nullable=True)
+    lesson_duration = Column(Integer, nullable=True)
     lesson_duration_hours = Column(Numeric(2, 1), nullable=False)
     lesson_type = Column(Enum(LessonTypeEnum), nullable=False)
     lesson_place = Column(Enum(LessonPlaceEnum), nullable=False)
