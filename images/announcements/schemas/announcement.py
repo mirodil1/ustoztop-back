@@ -115,7 +115,7 @@ class AnnouncementInputSchema(BaseModel):
     price: Decimal = Field(lte=99_000_000)
     lessons_in_week: int = Field(gt=0, lt=8)
     lesson_duration: int | None = None
-    lesson_duration_hours: Decimal = Field(lt=12)
+    lesson_duration_hours: Decimal
     lesson_type: LessonTypeEnum
     lesson_place: LessonPlaceEnum
     lesson_language: LessonLanguageEnum
