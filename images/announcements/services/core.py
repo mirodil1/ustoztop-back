@@ -18,6 +18,7 @@ class RegionService:
                     joinedload(Region.parent),
                 )
                 .filter(Region.parent_id.is_(None))
+                .order_by(Region.uz, Region.ru)
         )
 
         return categories
@@ -26,7 +27,11 @@ class RegionService:
             self,
             region_id: int,
     ) -> RegionOutputSchema | None:
-        regions = self.db.query(Region).filter(Region.parent_id == region_id).all()
+        regions = (
+            self.db.query(Region)
+            .filter(Region.parent_id == region_id)
+            .order_by(Region.uz, Region.ru)
+        )
         if regions:
             return regions
         return None
@@ -35,7 +40,11 @@ class RegionService:
             self,
             region_id: int,
     ) -> RegionOutputSchema | None:
-        regions = self.db.query(Region).filter(Region.parent_id == region_id).all()
+        regions = (
+            self.db.query(Region)
+            .filter(Region.parent_id == region_id)
+            .order_by(Region.uz, Region.ru)
+        )
         if regions:
             return regions
         return None
