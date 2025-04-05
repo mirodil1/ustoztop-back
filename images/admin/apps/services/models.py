@@ -78,10 +78,10 @@ class Slider(TimeStampedModel, TranslatableModel):
     translations = TranslatedFields(
         image_large=ProcessedImageField(
             upload_to="slider",
-            processors=[ResizeToFill(1216, 388)],
+            processors=[ResizeToFill(804, 488)],
             format="webp",
             options={"quality": 90},
-            verbose_name=_("Image (1216x388)"),
+            verbose_name=_("Image (804x488)"),
         ),
         image_medium=ProcessedImageField(
             upload_to="slider",
@@ -89,6 +89,8 @@ class Slider(TimeStampedModel, TranslatableModel):
             format="webp",
             options={"quality": 90},
             verbose_name=_("Image (728x410)"),
+            null=True,
+            blank=True
         ),
         link=models.CharField(max_length=500, verbose_name=_("Link")),
     )
